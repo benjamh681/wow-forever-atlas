@@ -71,6 +71,9 @@ button,input{font:inherit;color:inherit}
 .results .r-name{font-weight:600}
 .results .r-meta{color:var(--muted);font-size:13px;margin-left:auto;white-space:nowrap}
 .results .empty{padding:10px 12px;color:var(--muted)}
+.cta{flex:none;display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:8px 14px;font-weight:600;font-size:14px;cursor:pointer}
+.cta svg{width:16px;height:16px}
+.cta:hover{filter:brightness(1.08)}
 .tools{display:flex;align-items:center;gap:14px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
 .lvl{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px}
 .lvl input{width:64px;padding:7px 8px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;text-align:center;color:var(--text)}
@@ -205,6 +208,14 @@ ul.facts li .conf{display:flex;margin:0 0 1px}
 .tag.new{color:var(--accent);border-color:var(--accent)}
 .tag.fix{color:var(--c-r);border-color:var(--c-r)}
 .tag.data{color:var(--c-o);border-color:var(--c-o)}
+/* home */
+.tryl{font-size:12.5px;font-weight:600;color:var(--muted);margin:26px 0 10px !important}
+.chips{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.chip{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:14px;cursor:pointer;color:var(--text)}
+.chip:hover{border-color:var(--accent);background:var(--surface-2)}
+.chip .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.sep{height:1px;background:var(--line);margin:32px 0 26px}
+.share{display:flex;align-items:center;gap:10px;margin:12px 0 0}
 /* route planner */
 .seg.wide{display:flex;margin:0 0 8px}
 .seg.wide button{flex:1;padding:6px 4px;font-size:13px;white-space:nowrap}
@@ -249,6 +260,8 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 @media (max-width: 860px){
   .top{flex-wrap:wrap;gap:8px 12px;padding:8px 10px}
   .mark .s{display:none}
+  .cta{padding:7px 11px;font-size:13px}
+  .ver{display:none}
   .search{order:3;max-width:none;flex-basis:100%}
   .tools{gap:8px}
   .stage{flex-direction:column}
@@ -272,6 +285,7 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
     <input id="q" type="search" placeholder="Find a zone, town, dungeon or port" autocomplete="off" aria-label="Search the map" aria-controls="results">
     <div class="results" id="results" role="listbox"></div>
   </div>
+  <button class="cta" id="planCta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 000-7H9a3.5 3.5 0 010-7h6.5"/></svg>Plan a route</button>
   <div class="tools">
     <div class="lvl"><label for="lv">Your level</label><input id="lv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60"><button id="lvclear" hidden>clear</button></div>
     <div class="seg" role="group" aria-label="Color zones by">
@@ -800,6 +814,11 @@ const CITY_LINKS = [
 
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
 const CHANGELOG = [
+  { v: "3.1", d: "September 18, 2026", title: "The planner, front and center", items: [
+    ["new", "A \"Plan a route\" button in the top bar, always one click away."],
+    ["new", "The home panel now opens on the planner, with a few example trips you can run in one click."],
+    ["new", "Shareable routes: every itinerary has its own link. Copy it, paste it, and it opens the map on that exact trip."],
+    ["new", "A proper preview image and description when the map is shared on Discord, Reddit or X."]] },
   { v: "3.0", d: "September 18, 2026", title: "Flight paths", items: [
     ["new", "Flight masters on the map: a new \"Flight masters\" toggle at the top of the map key, off by default. Blue for Alliance, red for Horde, green where both factions can fly."],
     ["new", "The route planner can now fly. Tick \"I have the flight paths\" and it uses them wherever that is faster. Left off, it plans for a character who has not discovered them yet."],
@@ -1066,14 +1085,15 @@ function renderAbout(){ sheet.innerHTML=`<h1>About this map</h1><p class="where"
    <h2>Sources</h2><ul class="facts">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a></li>`).join("")}</ul>
    <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft, Warcraft and all related names are trademarks of Blizzard Entertainment, Inc. Spotted a mistake? That is what the comments are for.</p>`; }
 
-function renderHome(){ sheet.innerHTML=`<h1>Azeroth, as Forever redraws it</h1><p class="where">Classic's world, with the blank spots filled in</p>
-   <p class="lead">Select any zone to read its story, level range, who holds it, and what Forever adds. Gold outlines mark what is new.</p>
-   <h2>Start with the new zones</h2>${Object.values(ZONES).filter(z=>z.status==="new").map(z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`).join("")}
-   <h2>Useful to know</h2><ul class="facts">
-    <li>Type your level in the top bar to light up the zones and dungeons in your range.</li>
-    <li>Switch zone colors between faction control and level range.</li>
-    <li>Scroll or pinch to zoom. Towns and marker names appear as you get closer.</li>
-    <li>Every Forever claim carries a confidence label. The About tab explains them.<br>${seal("o")}${seal("r")}${seal("t")}${seal("c")}</li></ul>`; }
+function renderHome(){ sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:22px">Get the way there, and how long it takes.</p>
+   <div class="planbox"><div class="row"><label for="homeFrom">From</label><input id="homeFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div>
+   <div class="row"><label for="homeTo">To</label><input id="homeTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div></div>
+   <button class="btn primary" id="homeGo">Find route</button>
+   <p class="tryl">Or try one</p>
+   <div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>
+   <div class="sep"></div>
+   <h2 style="margin-top:0">Or explore the map</h2><p class="areas" style="margin-bottom:12px">Select any zone for its story, level range and what Forever changes. Gold outlines are new.</p>
+   ${Object.values(ZONES).filter(z=>z.status==="new").map(z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`).join("")}`; }
 
 function render(){ $$(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===state.tab));
   if(state.tab==="plan") renderPlan(); else if(state.tab==="travel") renderTravel(); else if(state.tab==="new") renderNew(); else if(state.tab==="about") renderAbout();
@@ -1105,6 +1125,7 @@ POIS.forEach(p=>{ PLACES[norm(p.n)]={type:"poi",id:p.id,name:p.n}; });
 $("#places").innerHTML=Object.values(PLACES).map(p=>`<option value="${esc(p.name)}">`).join("");
 const fromTo=n=>`<div class="fromto"><button class="btn" data-planfrom="${esc(n)}">Route from here</button><button class="btn" data-planto="${esc(n)}">Route to here</button></div>`;
 const foe=f=>f==="alliance"?"horde":"alliance";
+const EXAMPLES=[["Darnassus","Ironforge","alliance"],["Orgrimmar","Riverglades","horde"],["Auberdine","Mount Hyjal","alliance"],["Gadgetzan","Krol'dok Stronghold","horde"]];
 
 function buildGraph(f,strict,landK){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
   const S=spu();
@@ -1180,7 +1201,11 @@ function placeEnds(){ (plan.ends||[]).forEach(c=>{ if(c.isConnected) c.setAttrib
 function fitPlan(){ const all=plan.res.segs.flatMap(sg=>sg.pts), xs=all.map(p=>p[0]), ys=all.map(p=>p[1]); const b={x:Math.min(...xs),y:Math.min(...ys)}; b.width=Math.max(...xs)-b.x; b.height=Math.max(...ys)-b.y;
   const L=inset(),w=wrap.clientWidth-L,h=wrap.clientHeight; let k=Math.min(w/(b.width*1.15+120),h/(b.height*1.15+120)); k=Math.max(fitK*.9,Math.min(fitK*5,k)); to({k,x:L+w/2-(b.x+b.width/2)*k,y:h/2-(b.y+b.height/2)*k},true); }
 function readPlanInputs(){ const f=$("#planFrom"),t=$("#planTo"); if(f) plan.from=f.value; if(t) plan.to=t.value; }
-function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok) fitPlan(); }
+function planHash(){ const q=new URLSearchParams({from:plan.from,to:plan.to,f:plan.f,by:plan.speed}); if(plan.fp) q.set("fp","1"); return "#"+q.toString(); }
+function syncHash(){ try{ history.replaceState(null,"",plan.res&&plan.res.ok&&state.tab==="plan"?planHash():location.pathname+location.search); }catch(e){} }
+function loadHash(){ if(location.hash.length<2) return false; const q=new URLSearchParams(location.hash.slice(1)); if(!q.get("from")||!q.get("to")) return false;
+  plan.from=q.get("from"); plan.to=q.get("to"); if(q.get("f")==="horde"||q.get("f")==="alliance") plan.f=q.get("f"); if(SPEEDS[q.get("by")]){plan.speed=q.get("by");plan.auto=false;} plan.fp=q.get("fp")==="1"; return true; }
+function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok) fitPlan(); syncHash(); }
 function openPlan(){ state.tab="plan"; runPlan(); }
 
 function renderPlan(){ const r=plan.res;
@@ -1196,6 +1221,7 @@ function renderPlan(){ const r=plan.res;
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
+       <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2]):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
        <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Forever has announced no change to flight paths, and the new zones' flight masters are not known yet. New-zone links are as reliable as their label says.</p>`}`; }
 
@@ -1242,6 +1268,7 @@ wrap.addEventListener("wheel",ev=>{ if(ev.target.closest(".key")) return; ev.pre
 $("#zin").onclick=()=>zoomAt(1.6,wrap.clientWidth/2,wrap.clientHeight/2,true);
 $("#zout").onclick=()=>zoomAt(1/1.6,wrap.clientWidth/2,wrap.clientHeight/2,true);
 $("#zfit").onclick=()=>fitAll(true);
+$("#planCta").onclick=()=>{state.tab="plan";clearMarks();state.sel=null;render();drawPlan();paint();restyle();const f=$("#planFrom");if(f&&!plan.from)f.focus();};
 $("#ver").textContent="v"+CHANGELOG[0].v; $("#ver").onclick=()=>{state.tab="about";render();drawPlan();paint();};
 $("#home").onclick=ev=>{ev.preventDefault();state.tab="details";select(null);fitAll(true);};
 addEventListener("resize",()=>{const old=fitK;fitK=calcFit(); if(Math.abs(V.k-old)<1e-6) fitAll(false); else {V=clampV(V);apply();}});
@@ -1252,12 +1279,16 @@ sheet.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b)
   else if(b.dataset.planfrom!=null){plan.from=b.dataset.planfrom;openPlan();} else if(b.dataset.planto!=null){plan.to=b.dataset.planto;openPlan();}
   else if(b.dataset.pf){readPlanInputs();plan.f=b.dataset.pf;savePlan();runPlan();}
   else if(b.dataset.ps){readPlanInputs(); if(b.dataset.ps==="auto"){plan.auto=true;plan.speed=autoSpeed();} else {plan.auto=false;plan.speed=b.dataset.ps;} savePlan(); runPlan();}
+  else if(b.id==="homeGo"){plan.from=$("#homeFrom").value;plan.to=$("#homeTo").value;openPlan();}
+  else if(b.dataset.ex!=null){const e=EXAMPLES[+b.dataset.ex];plan.from=e[0];plan.to=e[1];plan.f=e[2];savePlan();openPlan();}
+  else if(b.id==="planCopy"){const url=location.origin+location.pathname+planHash();const done=()=>{b.textContent="Link copied";setTimeout(()=>{if(b.isConnected)b.textContent="Copy link to this route";},1800);};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url)); else prompt("Copy this link:",url);}
   else if(b.id==="planGo"){readPlanInputs();runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
   else if(b.id==="planClear"){plan.from=plan.to="";plan.res=null;drawPlan();paint();render();} });
-sheet.addEventListener("keydown",ev=>{ if(ev.key==="Enter"&&ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();runPlan();} });
-sheet.addEventListener("input",ev=>{ if(ev.target.matches("#planFrom,#planTo")) readPlanInputs(); });
+sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();runPlan();} else if(ev.target.matches("#homeFrom,#homeTo")){ev.preventDefault();plan.from=$("#homeFrom").value;plan.to=$("#homeTo").value;if(plan.from&&plan.to)openPlan();else(plan.from?$("#homeTo"):$("#homeFrom")).focus();} });
+sheet.addEventListener("input",ev=>{ if(ev.target.matches("#planFrom,#planTo")) readPlanInputs(); else if(ev.target.id==="homeFrom") plan.from=ev.target.value; else if(ev.target.id==="homeTo") plan.to=ev.target.value; });
 sheet.addEventListener("change",ev=>{ if(ev.target.id==="planFp"){ readPlanInputs(); plan.fp=ev.target.checked; savePlan(); runPlan(); } });
-$$(".tabs button").forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;render();drawPlan();paint();});
+$$(".tabs button").forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;render();drawPlan();paint();restyle();syncHash();});
 $$("[data-layer]").forEach(c=>c.onchange=()=>{state.layers[c.dataset.layer]=c.checked;paint();restyle();});
 $("#m-faction").onclick=()=>setMode("faction"); $("#m-level").onclick=()=>setMode("level");
 function setMode(m){state.mode=m;$("#m-faction").setAttribute("aria-pressed",m==="faction");$("#m-level").setAttribute("aria-pressed",m==="level");paint();}
@@ -1285,6 +1316,7 @@ document.addEventListener("keydown",ev=>{ if(ev.key==="/"&&document.activeElemen
 if(innerWidth<860) $("#key").removeAttribute("open");
 $("#key").addEventListener("toggle",()=>{const atFit=Math.abs(V.k-fitK)<1e-6; fitK=calcFit(); if(atFit) fitAll(true);});
 paint(); fitAll(false); render();
+if(loadHash()) openPlan();
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>restyle());
 })();
 </script>
