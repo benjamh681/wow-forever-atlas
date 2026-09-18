@@ -582,7 +582,7 @@ const POIS = [
 
   // Ports and zeppelin towers
   { id: "rutheran", n: "Rut'theran Village", t: "port", z: "teldrassil", k: [31.0, -0.8], f: "alliance", d: "Dock at the foot of Teldrassil.", c: "c", fp: "alliance" },
-  { id: "auberdine", n: "Auberdine", t: "port", z: "darkshore", k: [28.5, 14.6], f: "alliance", d: "Night elf harbor town. Three routes in Classic terms, plus two new ones in Forever.", c: "c", fp: "alliance" },
+  { id: "auberdine", n: "Auberdine", t: "port", z: "darkshore", k: [28.5, 14.6], f: "alliance", d: "Night elf harbor town. Two ships in Classic, to Menethil Harbor and to Rut'theran Village, plus two new lines in Forever: Stormwind Harbor, and Menethil by way of Southshore.", c: "c", fp: "alliance" },
   { id: "ratchet", n: "Ratchet", t: "port", z: "barrens", k: [70.6, 58.3], f: "neutral", d: "Steamwheedle Cartel port with the boat to Booty Bay.", c: "c", fp: "both" },
   { id: "theramore", n: "Theramore Isle", t: "port", z: "dustwallow", k: [79.3, 66.5], f: "alliance", d: "Jaina Proudmoore's island city. Boat to Menethil Harbor.", c: "c", fp: "alliance" },
   { id: "steamwheedle", n: "Steamwheedle Port", t: "port", z: "tanaris", k: [78.7, 86.0], f: "neutral", isNew: true, d: "Goblin port on the Tanaris coast. In Forever, the departure point of the new route to the Riverglades.", c: "o" },
@@ -818,7 +818,10 @@ const CHANGELOG = [
     ["new", "A \"Plan a route\" button in the top bar, always one click away."],
     ["new", "The home panel now opens on the planner, with a few example trips you can run in one click."],
     ["new", "Shareable routes: every itinerary has its own link. Copy it, paste it, and it opens the map on that exact trip."],
-    ["new", "A proper preview image and description when the map is shared on Discord, Reddit or X."]] },
+    ["new", "A proper preview image and description when the map is shared on Discord, Reddit or X."],
+    ["fix", "The Travel tab still said flight paths were not shown. It now has a flight paths section with a button to turn them on."],
+    ["fix", "Town cards claimed every town had a flight master. They now say so only where one exists."],
+    ["data", "Auberdine's card said three Classic ship routes. It has two: Menethil Harbor and Rut'theran Village."]] },
   { v: "3.0", d: "September 18, 2026", title: "Flight paths", items: [
     ["new", "Flight masters on the map: a new \"Flight masters\" toggle at the top of the map key, off by default. Blue for Alliance, red for Horde, green where both factions can fly."],
     ["new", "The route planner can now fly. Tick \"I have the flight paths\" and it uses them wherever that is faster. Left off, it plans for a character who has not discovered them yet."],
@@ -1040,7 +1043,7 @@ function renderZone(z){ const ps=POIS.filter(p=>p.z===z.id), grp=(ts)=>ps.filter
 function renderPoi(p){ const z=p.z&&ZONES[p.z]; const rts=ROUTES.filter(r=>[r.from,r.to,...(r.stops||[])].includes(p.id));
   sheet.innerHTML=`${z?`<button class="back" data-zone="${z.id}">\u2190 ${esc(z.name)}</button>`:""}<h1>${esc(p.n)}</h1><p class="where">${TNAME[p.t]}${z?" in "+esc(z.name):""}</p>${fromTo(p.n)}
    <div class="pills">${p.isNew?'<span class="pill new">New in Forever</span>':""}${p.lv?`<span class="pill">${p.lv[0]===p.lv[1]?"Level "+p.lv[0]:"Levels "+p.lv[0]+"\u2013"+p.lv[1]}</span>`:""}${p.f?`<span class="pill"><span class="dot" style="background:${FCOL[p.f]}"></span>${FSHORT[p.f]}</span>`:""}</div>
-   <p class="lead">${seal(p.c)} ${esc(p.d||(p.t==="town"?"Quest hub with a flight master in Classic.":""))}</p>
+   <p class="lead">${seal(p.c)} ${esc(p.d||(p.t==="town"?(p.fp?"Quest hub with a flight master.":"Quest hub. No flight master here in Classic."):""))}</p>
    ${p.lv&&(p.t==="dungeon")?`<p class="areas">${p.isNew?"Pre-release level range from BlizzCon coverage.":"Classic level range. Forever's dungeon tuning is not confirmed."}</p>`:""}
    ${rts.length?`<h2>Routes from ${esc(p.n)}</h2>${rts.map(routeCard).join("")}`:""}
    ${p.fp?flightSection(p):""}`; }
@@ -1058,12 +1061,15 @@ function renderRoute(r){ const stops=[r.from,...(r.stops||[]),r.to];
 
 function renderTravel(){ const grp=(k,n)=>{const l=ROUTES.filter(r=>r.kind===k);return `<h2>${n}</h2>`+l.sort((a,b)=>b.isNew-a.isNew).map(routeCard).join("");};
   sheet.innerHTML=`<h1>Getting around</h1><p class="lead">Forever keeps Classic's boats and zeppelins and adds three ship routes, so friends can meet up without shrinking the world with portals.</p>${grp("boat","Ships")}${grp("zep","Zeppelins (Horde)")}${grp("tram","Underground")}
-   <p class="foot">Flight paths are not shown. No changes to them have been announced.</p>`; }
+   <h2>Flight paths</h2><p>${POIS.filter(p=>p.fp).length} flight masters, shown in blue for the Alliance, red for the Horde and green where both factions can fly. They are hidden by default to keep the map readable.</p>
+   <div class="fromto"><button class="btn" id="showFp">${state.layers.flights?"Hide flight masters":"Show flight masters on the map"}</button><button class="btn" data-tabgo="plan">Open the route planner</button></div>
+   <p class="areas">Select a flight master to see where you can fly from there and how long it takes. In the route planner, tick "I have the flight paths" to let it fly you.</p>
+   <p class="foot">This is the Classic network. Blizzard has announced no change to flight paths for Forever, and the flight masters of the new zones are not known yet.</p>`; }
 
 function renderNew(){ const nz=Object.values(ZONES).filter(z=>z.status==="new"), cz=Object.values(ZONES).filter(z=>z.status==="changed");
   const zb=z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`;
   const nd=POIS.filter(p=>p.isNew&&(p.t==="dungeon"||p.t==="raid"||p.t==="bg")).sort((a,b)=>(a.lv?a.lv[0]:99)-(b.lv?b.lv[0]:99));
-  sheet.innerHTML=`<h1>New in Forever</h1><p class="lead">World of Warcraft: Forever launches November 4, 2026. The beta runs September 17 to October 21 with a level cap of 30. The level cap stays at 60, there is no flying, and new content expands original Azeroth instead of leaving it.</p>
+  sheet.innerHTML=`<h1>New in Forever</h1><p class="lead">World of Warcraft: Forever launches November 4, 2026. The beta runs September 17 to October 21 with a level cap of 30. The level cap stays at 60, there are no flying mounts (flight paths are still how you get around), and new content expands original Azeroth instead of leaving it.</p>
    <h2>New zones</h2>${nz.map(zb).join("")}
    <h2>New dungeons, raids and battleground</h2>${nd.map(placeBtn).join("")}
    <h2>New ship routes</h2>${ROUTES.filter(r=>r.isNew).map(routeCard).join("")}
@@ -1081,7 +1087,7 @@ function renderAbout(){ sheet.innerHTML=`<h1>About this map</h1><p class="where"
    <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
    <h2>About the map itself</h2><p>The continents are redrawn by hand in the spirit of the Classic world map. They are not traced from game files. Borders of the new zones, the position of new dungeons and every sea lane are approximations. Zephras Isle lies in Skywall; it is drawn in the Great Sea so it has somewhere to live.</p>
    <h2>About travel times</h2><p>A hand-drawn map has no scale, so one was measured. Flights move at a constant speed, and the Classic community has timed hundreds of them. Laying 291 of those timings over this map gave the same scale on both continents, within 2%. Walking and riding times are that scale converted to run speed, with a margin for winding roads. Expect them to be right within a quarter, not to the second.</p>
-   <p>Flight times are the measured Classic ones where they exist. Ships and zeppelins count two minutes on board plus up to five of waiting. Mount speeds come from datamining and are labelled Reported. If you time a trip in the beta and the planner is off, say so: the scale is one number and easy to correct.</p>
+   <p>Flight times are the measured Classic ones where they exist. Ships and zeppelins count two minutes on board plus up to five of waiting. Mount speeds come from datamining: reported, not confirmed by Blizzard. If you time a trip in the beta and the planner is off, say so: the scale is one number and easy to correct.</p>
    <h2>Sources</h2><ul class="facts">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a></li>`).join("")}</ul>
    <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft, Warcraft and all related names are trademarks of Blizzard Entertainment, Inc. Spotted a mistake? That is what the comments are for.</p>`; }
 
@@ -1217,7 +1223,7 @@ function renderPlan(){ const r=plan.res;
    <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div>
    <div class="row"><label for="planTo">To</label><input id="planTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div></div>
    <div class="row" style="display:flex;gap:8px;align-items:center"><button class="btn primary" id="planGo">Find route</button><button class="btn" id="planSwap">Swap</button>${plan.from||plan.to?'<button class="btn ghost" id="planClear">Clear</button>':""}</div>
-   ${!r?`<h2>How it works</h2><ul class="facts"><li>Pick two places, or select something on the map and use "Route from here" and "Route to here".</li><li>The planner chains roads, ships, zeppelins and the tram for your faction, and avoids enemy territory when it can.</li><li>Tick "I have the flight paths" once you have discovered them, and the planner will fly you where it is faster.</li><li>You get a time estimate for the way you travel: on foot, in travel form, or on a 60% or 100% mount.</li><li>Type your level in the top bar: it picks your mount for you and warns you when the route crosses zones above you.</li></ul>`
+   ${!r?`<h2>How it works</h2><ul class="facts"><li>Pick two places, or select something on the map and use "Route from here" and "Route to here".</li><li>The planner chains roads, ships, zeppelins, the tram and flight paths for your faction, and avoids enemy territory when it can.</li><li>Tick "I have the flight paths" once you have discovered them, and the planner will fly you where it is faster.</li><li>You get a time estimate for the way you travel: on foot, in travel form, or on a 60% or 100% mount.</li><li>Type your level in the top bar: it picks your mount for you and warns you when the route crosses zones above you.</li></ul>`
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
@@ -1275,7 +1281,8 @@ addEventListener("resize",()=>{const old=fitK;fitK=calcFit(); if(Math.abs(V.k-ol
 
 sheet.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b) return;
   if(b.dataset.goto) select({type:"poi",id:b.dataset.goto}); else if(b.dataset.zone) select({type:"zone",id:b.dataset.zone});
-  else if(b.dataset.route) select({type:"route",r:ROUTES.find(r=>r.id===b.dataset.route)}); else if(b.dataset.tabgo){state.tab=b.dataset.tabgo;render();}
+  else if(b.dataset.route) select({type:"route",r:ROUTES.find(r=>r.id===b.dataset.route)}); else if(b.id==="showFp"){const c=$("[data-layer=flights]");c.checked=!c.checked;state.layers.flights=c.checked;paint();restyle();render();}
+  else if(b.dataset.tabgo){state.tab=b.dataset.tabgo;render();drawPlan();paint();restyle();}
   else if(b.dataset.planfrom!=null){plan.from=b.dataset.planfrom;openPlan();} else if(b.dataset.planto!=null){plan.to=b.dataset.planto;openPlan();}
   else if(b.dataset.pf){readPlanInputs();plan.f=b.dataset.pf;savePlan();runPlan();}
   else if(b.dataset.ps){readPlanInputs(); if(b.dataset.ps==="auto"){plan.auto=true;plan.speed=autoSpeed();} else {plan.auto=false;plan.speed=b.dataset.ps;} savePlan(); runPlan();}
