@@ -215,6 +215,8 @@ ul.facts li .conf{display:flex;margin:0 0 1px}
 .chip:hover{border-color:var(--accent);background:var(--surface-2)}
 .chip .dot{width:8px;height:8px;border-radius:50%;flex:none}
 .sep{height:1px;background:var(--line);margin:32px 0 26px}
+.altnote{margin:12px 0 0;font-size:13.5px;line-height:1.5;color:var(--muted)}
+.altnote .linkish{font-size:13.5px}
 .share{display:flex;align-items:center;gap:10px;margin:12px 0 0}
 /* route planner */
 .seg.wide{display:flex;margin:0 0 8px}
@@ -814,6 +816,10 @@ const CITY_LINKS = [
 
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
 const CHANGELOG = [
+  { v: "3.2", d: "September 18, 2026", title: "No more bouncing across the sea", items: [
+    ["fix", "The planner could send you across the ocean and back just to move along the same coast: Stormwind to Theramore came out as three ships through Auberdine, when the tram and the Menethil boat do it. A route that crosses the sea more often now has to be clearly faster to win."],
+    ["new", "When a quicker route exists on paper but depends on catching every ship, the planner says so and lets you see it anyway."],
+    ["data", "Checked against 528 common trips for both factions. Routes with needless sea crossings went from 48 to 14, and the 14 left are the real shortcuts, like Theramore to Auberdine through Menethil."]] },
   { v: "3.1", d: "September 18, 2026", title: "The planner, front and center", items: [
     ["new", "A \"Plan a route\" button in the top bar, always one click away."],
     ["new", "The home panel now opens on the planner, with a few example trips you can run in one click."],
@@ -1111,7 +1117,7 @@ const norm=s=>s.toLowerCase().replace(/[\u2019'`]/g,"'");
 /* ---------------- route planner ---------------- */
 const GATES=GEO.gates||{};
 const NODE_POIS=POIS.filter(p=>["city","port","zep"].includes(p.t)||p.fp);
-const plan={f:"alliance",from:"",to:"",res:null,speed:"foot",auto:true,fp:false};
+const plan={f:"alliance",from:"",to:"",res:null,speed:"foot",auto:true,fp:false,alt:false};
 const SPEEDS={foot:["On foot",1],form:["Travel form",1.4],m60:["Mount 60%",1.6],m100:["Mount 100%",2]};
 try{const sv=JSON.parse(localStorage.getItem("fa-plan")||"{}"); if(sv.f==="horde"||sv.f==="alliance") plan.f=sv.f; if(SPEEDS[sv.speed]){plan.speed=sv.speed;plan.auto=false;} plan.fp=!!sv.fp;}catch(e){}
 const savePlan=()=>{try{localStorage.setItem("fa-plan",JSON.stringify({f:plan.f,speed:plan.auto?null:plan.speed,fp:plan.fp}))}catch(e){}};
@@ -1133,14 +1139,15 @@ const fromTo=n=>`<div class="fromto"><button class="btn" data-planfrom="${esc(n)
 const foe=f=>f==="alliance"?"horde":"alliance";
 const EXAMPLES=[["Darnassus","Ironforge","alliance"],["Orgrimmar","Riverglades","horde"],["Auberdine","Mount Hyjal","alliance"],["Gadgetzan","Krol'dok Stronghold","horde"]];
 
-function buildGraph(f,strict,landK){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
+const SEA_PEN=420; /* seconds added, for route choice only, each time a ship or zeppelin changes continent */
+function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
   const S=spu();
   LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)+dist(g,zc(b)))*S*landK,{k:"land",a,b,via,c,note}); });
   NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*S*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
   CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*S+30),{k:"link",via,fixed,verb}));
   if(plan.fp){ const fm=POIS.filter(p=>p.fp&&(p.fp==="both"||p.fp===f)); for(let i=0;i<fm.length;i++) for(let j=i+1;j<fm.length;j++) if(contOf(fm[i])===contOf(fm[j])){ const ft=flightTime(f,fm[i],fm[j]); add("p:"+fm[i].id,"p:"+fm[j].id,ft.sec+25,{k:"fly",ft}); } }
   ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; const stops=[r.from,...(r.stops||[]),r.to];
-    for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r); add("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800),{k:"ride",r,ok}); } });
+    for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r), cross=contOf(POI[stops[i]])!==contOf(POI[stops[i+1]]); add("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800)+(cross&&seaPen?SEA_PEN:0),{k:"ride",r,ok,cross}); } });
   return A; }
 function shortest(A,src,dst,f){ const D={[src]:0},P={},done=new Set();
   while(true){ let u=null; for(const n in D) if(!done.has(n)&&(u===null||D[n]<D[u])) u=n; if(u===null) return null; if(u===dst) break; done.add(u);
@@ -1160,14 +1167,17 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   if(a.id===b.id&&a.type===b.type) return {ok:false,msg:"That's the same place."};
   /* Graph weights hop between zone centres, which overstates walking. Try three weightings and keep the route whose real estimate is lowest. */
   let cands=[], forced=false; const seen=new Set();
-  const gather=strict=>[1,.75,.55].forEach(k=>{ const p=shortest(buildGraph(plan.f,strict,k),na,nb,plan.f); if(p&&!seen.has(p.nodes.join(">"))){seen.add(p.nodes.join(">"));cands.push(p);} });
+  const gather=strict=>[true,false].forEach(pen=>[1,.75,.55].forEach(k=>{ const p=shortest(buildGraph(plan.f,strict,k,pen),na,nb,plan.f); if(p&&!seen.has(p.nodes.join(">"))){seen.add(p.nodes.join(">"));cands.push(p);} }));
   gather(true); if(!cands.length){ gather(false); forced=true; }
   let path=cands[0];
   if(!path){ const zid=[a,b].map(pl=>pl.type==="zone"?pl.id:POI[pl.id].z).find(z=>z==="zephras");
     return {ok:false,msg:zid?"No known way in or out of Zephras Isle yet. Where Skyborne arrive on Azeroth after level 12 has not been announced.":"No known route between these two places."}; }
-  const built=cands.map(p=>buildPlan(p,a,b,forced)); built.sort((x,y)=>x.time.score-y.time.score); return built[0]; }
+  const built=cands.map(p=>buildPlan(p,a,b,forced)); built.sort((x,y)=>x.time.score-y.time.score);
+  const best=built[0], quick=built.slice(1).filter(x=>x.time.mid<best.time.mid-120&&x.crossings>best.crossings).sort((x,y)=>x.time.mid-y.time.mid)[0];
+  if(plan.alt&&quick){ quick.isAlt=true; quick.other=best; return quick; }
+  plan.alt=false; best.other=quick||null; return best; }
 function buildPlan(path,a,b,forced){
-  const F=plan.f, steps=[], zones=new Set(), segs=[], fps=[]; let cur=[placeXY(a)];
+  const F=plan.f, steps=[], zones=new Set(), segs=[], fps=[]; let cur=[placeXY(a)], crossings=0;
   const S=spu(); let prevPt=placeXY(a), pend=0; const leg=pt=>{ const s=dist(prevPt,pt)*S; prevPt=pt; return s; };
   const take=x=>{ const s=x+pend; pend=0; return s; };
   const zwarn=z=>{ const w=[]; if(z.faction===foe(F)) w.push([`${FSHORT[z.faction]} territory: guards and players will attack you.`,""]);
@@ -1183,6 +1193,7 @@ function buildPlan(path,a,b,forced){
     else if(e.k==="link"){ cur.push(nodeXY(v)); const walked=leg(nodeXY(v)), s=e.fixed||Math.max(30,walked); if(!last) steps.push({t:`${e.verb||"Walk to"} ${nodeName(v)}`,s:`Through ${e.via}`,w:[],sec:take(s),fix:e.fixed||0}); else pend+=s; }
     else { const r=e.r, ia=r.pts.indexOf(POI[u.slice(2)].xy), ib=r.pts.indexOf(POI[v.slice(2)].xy); let pts=r.pts.slice(Math.min(ia,ib),Math.max(ia,ib)+1); if(ia>ib) pts=pts.reverse();
       if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:r.kind==="tram"?"land":"sea",pts}); cur=[POI[v.slice(2)].xy]; zones.add(POI[v.slice(2)].z);
+      if(e.cross) crossings++;
       const w=zwarn(ZONES[POI[v.slice(2)].z]); if(!e.ok) w.push([`${FSHORT[r.f]} ports. Their guards will attack you on the docks. There is no ${FSHORT[F]} alternative.`,""]);
       if(r.stops&&r.stops.length) w.push(["Stop order on this line is not confirmed yet.","soft"]);
       const rd=rideOf(r); prevPt=POI[v.slice(2)].xy; steps.push({t:`${kindName(r)} from ${nodeName(u)} to ${nodeName(v)}`,s:r.isNew?"New in Forever":"Classic route",c:r.c!=="c"?r.c:null,w,ride:rd,sec:take(0)}); } });
@@ -1193,8 +1204,8 @@ function buildPlan(path,a,b,forced){
   else steps.push({sec:fin,t:`Arrive at ${b.name}`,s:(path.edges.length===0?"Same zone, just follow the roads · ":"")+(b.type==="poi"?`${TNAME[POI[b.id].t]} in ${ZONES[ez].name}`:`Level ${lvText(ZONES[ez])}`),w:ew,end:true});
   let land=0,fixed=0,rmin=0,rmax=0; steps.forEach(s=>{ const fx=Math.min(s.fix||0,s.sec||0); fixed+=fx; land+=(s.sec||0)-fx; if(s.ride){rmin+=s.ride[0]+s.ride[1]; rmax+=s.ride[0]+s.ride[2];} });
   const hostile=[...zones].filter(z=>ZONES[z]&&ZONES[z].faction===foe(F)).length;
-  const time={mid:land+fixed+(rmin+rmax)/2,lo:land*.8+fixed+rmin,hi:land*1.25+fixed+rmax,rides:rmax>0,score:land+fixed+(rmin+rmax)/2+hostile*600};
-  return {ok:true,steps,zones,segs,forced,time,fps}; }
+  const time={mid:land+fixed+(rmin+rmax)/2,lo:land*.8+fixed+rmin,hi:land*1.25+fixed+rmax,rides:rmax>0,score:land+fixed+(rmin+rmax)/2+hostile*600+crossings*SEA_PEN};
+  return {ok:true,steps,zones,segs,forced,time,fps,crossings}; }
 
 function arc(a,b){ const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,d=dist(a,b)||1; let nx=-(b[1]-a[1])/d,ny=(b[0]-a[0])/d; if(ny>0){nx=-nx;ny=-ny;} return [a,[mx+nx*d*.13,my+ny*d*.13],b]; }
 function drawPlan(){ const g=$("#gPlan"); g.innerHTML=""; const on=!!(plan.res&&plan.res.ok&&state.tab==="plan"); ROUTES.forEach(r=>r.line.classList.toggle("dimmed",on)); if(!on) return;
@@ -1207,10 +1218,10 @@ function placeEnds(){ (plan.ends||[]).forEach(c=>{ if(c.isConnected) c.setAttrib
 function fitPlan(){ const all=plan.res.segs.flatMap(sg=>sg.pts), xs=all.map(p=>p[0]), ys=all.map(p=>p[1]); const b={x:Math.min(...xs),y:Math.min(...ys)}; b.width=Math.max(...xs)-b.x; b.height=Math.max(...ys)-b.y;
   const L=inset(),w=wrap.clientWidth-L,h=wrap.clientHeight; let k=Math.min(w/(b.width*1.15+120),h/(b.height*1.15+120)); k=Math.max(fitK*.9,Math.min(fitK*5,k)); to({k,x:L+w/2-(b.x+b.width/2)*k,y:h/2-(b.y+b.height/2)*k},true); }
 function readPlanInputs(){ const f=$("#planFrom"),t=$("#planTo"); if(f) plan.from=f.value; if(t) plan.to=t.value; }
-function planHash(){ const q=new URLSearchParams({from:plan.from,to:plan.to,f:plan.f,by:plan.speed}); if(plan.fp) q.set("fp","1"); return "#"+q.toString(); }
+function planHash(){ const q=new URLSearchParams({from:plan.from,to:plan.to,f:plan.f,by:plan.speed}); if(plan.fp) q.set("fp","1"); if(plan.alt) q.set("alt","1"); return "#"+q.toString(); }
 function syncHash(){ try{ history.replaceState(null,"",plan.res&&plan.res.ok&&state.tab==="plan"?planHash():location.pathname+location.search); }catch(e){} }
 function loadHash(){ if(location.hash.length<2) return false; const q=new URLSearchParams(location.hash.slice(1)); if(!q.get("from")||!q.get("to")) return false;
-  plan.from=q.get("from"); plan.to=q.get("to"); if(q.get("f")==="horde"||q.get("f")==="alliance") plan.f=q.get("f"); if(SPEEDS[q.get("by")]){plan.speed=q.get("by");plan.auto=false;} plan.fp=q.get("fp")==="1"; return true; }
+  plan.from=q.get("from"); plan.to=q.get("to"); if(q.get("f")==="horde"||q.get("f")==="alliance") plan.f=q.get("f"); if(SPEEDS[q.get("by")]){plan.speed=q.get("by");plan.auto=false;} plan.fp=q.get("fp")==="1"; plan.alt=q.get("alt")==="1"; return true; }
 function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok) fitPlan(); syncHash(); }
 function openPlan(){ state.tab="plan"; runPlan(); }
 
@@ -1227,9 +1238,10 @@ function renderPlan(){ const r=plan.res;
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
+       ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
        <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2]):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
-       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Forever has announced no change to flight paths, and the new zones' flight masters are not known yet. New-zone links are as reliable as their label says.</p>`}`; }
+       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Forever has announced no change to flight paths, and the new zones' flight masters are not known yet. New-zone links are as reliable as their label says.</p>`}`; }
 
 /* ---------------- selection ---------------- */
 function clearMarks(){ selPath.setAttribute("d",""); $$(".poi.on").forEach(e=>e.classList.remove("on")); ROUTES.forEach(r=>{r.line.classList.remove("on","dimmed");}); }
@@ -1287,10 +1299,11 @@ sheet.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b)
   else if(b.dataset.pf){readPlanInputs();plan.f=b.dataset.pf;savePlan();runPlan();}
   else if(b.dataset.ps){readPlanInputs(); if(b.dataset.ps==="auto"){plan.auto=true;plan.speed=autoSpeed();} else {plan.auto=false;plan.speed=b.dataset.ps;} savePlan(); runPlan();}
   else if(b.id==="homeGo"){plan.from=$("#homeFrom").value;plan.to=$("#homeTo").value;openPlan();}
-  else if(b.dataset.ex!=null){const e=EXAMPLES[+b.dataset.ex];plan.from=e[0];plan.to=e[1];plan.f=e[2];savePlan();openPlan();}
+  else if(b.dataset.ex!=null){const e=EXAMPLES[+b.dataset.ex];plan.alt=false;plan.from=e[0];plan.to=e[1];plan.f=e[2];savePlan();openPlan();}
   else if(b.id==="planCopy"){const url=location.origin+location.pathname+planHash();const done=()=>{b.textContent="Link copied";setTimeout(()=>{if(b.isConnected)b.textContent="Copy link to this route";},1800);};
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url)); else prompt("Copy this link:",url);}
-  else if(b.id==="planGo"){readPlanInputs();runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
+  else if(b.id==="planAlt"){plan.alt=!plan.alt;runPlan();}
+  else if(b.id==="planGo"){readPlanInputs();plan.alt=false;runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
   else if(b.id==="planClear"){plan.from=plan.to="";plan.res=null;drawPlan();paint();render();} });
 sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();runPlan();} else if(ev.target.matches("#homeFrom,#homeTo")){ev.preventDefault();plan.from=$("#homeFrom").value;plan.to=$("#homeTo").value;if(plan.from&&plan.to)openPlan();else(plan.from?$("#homeTo"):$("#homeFrom")).focus();} });
 sheet.addEventListener("input",ev=>{ if(ev.target.matches("#planFrom,#planTo")) readPlanInputs(); else if(ev.target.id==="homeFrom") plan.from=ev.target.value; else if(ev.target.id==="homeTo") plan.to=ev.target.value; });
