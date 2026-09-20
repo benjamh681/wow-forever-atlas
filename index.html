@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Forever Atlas: interactive map of Azeroth for WoW Forever</title>
-<meta name="description" content="Interactive map of Azeroth for World of Warcraft: Forever. Zone level ranges, faction control, the new zones and dungeons, ships and zeppelins, flight paths, and a route planner with travel times.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Travelcraft: map and route planner for WoW Forever</title>
+<meta name="description" content="Interactive map of Azeroth for World of Warcraft: Forever. Zone level ranges, faction control, the new zones and dungeons, ships and zeppelins, flight paths, and a route planner with travel times. Formerly Forever Atlas.">
 <link rel="canonical" href="https://benjamh681.github.io/wow-forever-atlas/">
 <meta name="theme-color" content="#0a1422">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Forever Atlas">
-<meta property="og:title" content="Forever Atlas: interactive map of Azeroth">
+<meta property="og:site_name" content="Travelcraft">
+<meta property="og:title" content="Travelcraft: map and route planner for WoW Forever">
 <meta property="og:description" content="New zones, level ranges, dungeons, ships and zeppelins, flight paths, and a route planner that tells you how to get there and how long it takes.">
 <meta property="og:url" content="https://benjamh681.github.io/wow-forever-atlas/">
 <meta property="og:image" content="https://benjamh681.github.io/wow-forever-atlas/share.png">
@@ -17,11 +17,11 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Map of Kalimdor and the Eastern Kingdoms with zone names, level ranges and ship routes.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Forever Atlas: interactive map of Azeroth">
+<meta name="twitter:title" content="Travelcraft: map and route planner for WoW Forever">
 <meta name="twitter:description" content="New zones, level ranges, dungeons, ships and zeppelins, flight paths, and a route planner with travel times.">
 <meta name="twitter:image" content="https://benjamh681.github.io/wow-forever-atlas/share.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 32'%3E%3Ccircle r='15' fill='%230a1422'/%3E%3Ccircle r='13' fill='none' stroke='%233d9bff' stroke-width='1.5'/%3E%3Cpath d='M0-12L3 0 0 12-3 0z' fill='%233d9bff'/%3E%3Cpath d='M0-12L3 0H0z' fill='%23e0b95a'/%3E%3C/svg%3E">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Forever Atlas","applicationCategory":"ReferenceApplication","url":"https://benjamh681.github.io/wow-forever-atlas/","description":"Interactive fan-made map of Azeroth for World of Warcraft: Forever, with zone level ranges, new zones and dungeons, transport routes and a route planner.","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Travelcraft","alternateName":"Forever Atlas","applicationCategory":"ReferenceApplication","url":"https://benjamh681.github.io/wow-forever-atlas/","description":"Interactive fan-made map of Azeroth for World of Warcraft: Forever, with zone level ranges, new zones and dungeons, transport routes and a route planner.","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <style>
@@ -152,10 +152,6 @@ button,input{font:inherit;color:inherit}
 
 /* ---------- side panel ---------- */
 .panel{width:var(--panel-w);flex:none;display:flex;flex-direction:column;border-left:1px solid var(--line);background:var(--surface);min-height:0;z-index:4}
-.tabs{display:flex;gap:4px;padding:0 14px;border-bottom:1px solid var(--line);flex:none}
-.tabs button{padding:12px 8px 10px;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap}
-.tabs button:hover{color:var(--text)}
-.tabs button[aria-selected="true"]{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
 .sheet{flex:1;overflow:auto;padding:20px 20px 28px;scrollbar-color:var(--line-2) transparent}
 .sheet h1{font-size:23px;font-weight:700;letter-spacing:-.015em;line-height:1.2;margin:0 0 2px}
 .sheet .where{color:var(--muted);margin:0 0 12px;font-size:14px}
@@ -189,7 +185,15 @@ ul.facts li .conf{display:flex;margin:0 0 1px}
 .routecard .rk .dot{width:8px;height:8px;border-radius:50%}
 .routecard .rn{color:var(--muted);font-size:13.5px;margin-top:4px}
 .routecard .rn .conf{display:flex;margin:0 0 1px}
-.back{background:none;border:0;color:var(--accent);cursor:pointer;padding:0;margin:0 0 10px;font-size:14px}
+.back{background:none;border:0;color:var(--accent);cursor:pointer;padding:6px 0;margin:-6px 0 8px;font-size:14px;min-height:32px}
+.backs{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 8px}.backs .back{margin:-6px 0 0}.backs .back+.back::before{content:"\00b7";color:var(--muted);margin-right:8px}
+.planbtns{display:flex;gap:8px;align-items:center;margin:0 0 14px}
+.opts{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);margin:0 0 4px}
+.opts summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;font-size:14px;font-weight:500}
+.opts summary::-webkit-details-marker{display:none}
+.opts .optc{color:var(--accent);font-size:13px;font-weight:600;flex:none}
+.opts[open] .optc{visibility:hidden}
+.optb{padding:2px 12px 2px;border-top:1px solid var(--line)}.optb .seg{margin-top:12px}.optb .check{margin:0 0 12px}.optb .seg.wide{background:var(--surface)}
 .lead{font-size:15.5px}
 .lead .conf{display:flex;margin:0 0 2px}
 .foot{font-size:13px;color:var(--muted);margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
@@ -270,16 +274,29 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
   .panel{width:auto;height:46%;border-left:0;border-top:1px solid var(--line)}
   .key{width:210px}
   .compass{display:none}
-  .tabs{overflow-x:auto}
+  .top{padding:8px 12px;gap:8px 10px}
+  .mark .t{font-size:16px}
+  .cta{display:none}
+  .lvl label{display:none}
+  .lvl input{width:58px}
+  .seg button{padding:5px 10px}
+  .search input,.planbox input,.lvl input{font-size:16px}
+  .panel{height:50%}
+  .sheet{padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
+  .sheet h1{font-size:21px}
+  .place{padding:10px 4px}
+  .chips{flex-direction:row;flex-wrap:wrap}
+  .zoom button{width:40px;height:38px}
 }
+@media (max-width: 380px){ .mark svg{display:none} }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style>
 </head>
 <body>
 <header class="top">
-  <a class="mark" href="#" id="home" aria-label="Forever Atlas, reset view">
+  <a class="mark" href="#" id="home" aria-label="Travelcraft, reset view">
     <svg viewBox="-16 -16 32 32" aria-hidden="true"><circle r="14.5" fill="none" stroke="#3d9bff" stroke-width="1.5"/><path d="M0-13L3.4 0 0 13-3.4 0z" fill="#3d9bff"/><path d="M-13 0L0-3.4 13 0 0 3.4z" fill="#3d9bff" opacity=".55"/><path d="M0-13L3.4 0H0z" fill="#e0b95a"/></svg>
-    <span><div class="t">Forever Atlas</div><div class="s">Unofficial map of Azeroth, beta edition</div></span>
+    <span><div class="t">Travelcraft</div><div class="s">Map and route planner for WoW Forever</div></span>
   </a>
   <button class="ver" id="ver" title="Patch notes"></button>
   <div class="search" role="combobox" aria-expanded="false" aria-owns="results" aria-haspopup="listbox">
@@ -331,13 +348,6 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
   </div>
 
   <aside class="panel" aria-label="Details">
-    <div class="tabs" role="tablist">
-      <button role="tab" data-tab="details" aria-selected="true">Details</button>
-      <button role="tab" data-tab="plan" aria-selected="false">Route</button>
-      <button role="tab" data-tab="travel" aria-selected="false">Travel</button>
-      <button role="tab" data-tab="new" aria-selected="false">New</button>
-      <button role="tab" data-tab="about" aria-selected="false">About</button>
-    </div>
     <div class="sheet" id="sheet" tabindex="0"></div>
     <datalist id="places"></datalist>
   </aside>
@@ -373,7 +383,8 @@ const ZONES = {
       { t: "New endgame zone set in the aftermath of the Battle for Mount Hyjal, reached through Darkwhisper Gorge.", c: "o" },
       { t: "Hosts Hyjal Summit (20 players) and one of three reported entrances to The Barrow Deeps (10 players). Both open December 9, 2026.", c: "r" },
       { t: "Multiple questlines, several reputations, solo and group content; story involves the wild gods.", c: "r" },
-      { t: "A separate 'Hyjal Crater' instance map was datamined. Purpose unknown.", c: "r" }] },
+      { t: "Two flight points in the beta client: Summit of Eternity and Tainted Foothills. Faction and position unknown.", c: "r" },
+      { t: "'Hyjal Crater' appears in the client as a 5-player queue, alongside a Mak'gora Arena. Not a zone.", c: "r" }] },
   ashenvale: { name: "Ashenvale", cont: "Kalimdor", lv: [18, 30], faction: "contested", status: "classic",
     lore: "Ancient night elf forest and the first real front line of the faction war, where Warsong lumber crews cut into Sentinel territory. Most players meet the other faction here for the first time.",
     areas: ["Astranaar", "Splintertree Post", "Zoram Strand", "Raynewood Retreat", "Felfire Hill", "Warsong Lumber Camp"], forever: [] },
@@ -495,6 +506,7 @@ const ZONES = {
     areas: ["Coldridge Valley (dwarf & gnome start)", "Kharanos", "Brewnall Village", "Gol'Bolar Quarry", "Frostmane Hold"],
     forever: [
       { t: "Hall of Thanes, a new dungeon beneath Ironforge: intruders have disturbed the tombs of the dwarven kings.", c: "o" },
+      { t: "A new flight point, Tidegear Coast, appears in the beta client. Its position on the coast is an estimate.", c: "r" },
       { t: "Starting zones gain new NPCs, quests, recipes and profession hooks.", c: "o" }] },
   lochmodan: { name: "Loch Modan", cont: "Eastern Kingdoms", lv: [10, 20], faction: "alliance", status: "classic",
     lore: "A highland lake held back by the Stonewrought Dam, with the dwarven town of Thelsamar on its shore and troggs pouring out of the Explorers' League digs.",
@@ -520,7 +532,8 @@ const ZONES = {
       { t: "Connected to Burning Steppes, Redridge Mountains, Swamp of Sorrows and Badlands.", c: "o" },
       { t: "Factions present: the Powderfuse goblins, the Twilight's Hammer and the Brotherhood of the Horse.", c: "o" },
       { t: "Expected to be a world PvP hotspot; new reputations to earn.", c: "r" },
-      { t: "Coastline, borders and the position of Powderfuse Port are estimates until beta maps are verified.", c: "t" }] },
+      { t: "Three flight points in the beta client: Farholde Keep for the Alliance, Rog'mar for the Horde, and Powderfuse Port.", c: "r" },
+      { t: "Coastline, borders and the position of every marker in the zone are estimates until beta maps are verified.", c: "t" }] },
   elwynn: { name: "Elwynn Forest", cont: "Eastern Kingdoms", lv: [1, 10], faction: "alliance", status: "changed",
     lore: "The green heart of the kingdom of Stormwind. Humans start at Northshire Abbey, learn to fear Hogger, and walk the road to Goldshire a thousand times.",
     areas: ["Northshire Abbey (human start)", "Goldshire", "Eastvale Logging Camp", "Fargodeep and Jasperlode mines", "Westbrook Garrison"],
@@ -596,7 +609,14 @@ const POIS = [
   { id: "southshore", n: "Southshore", t: "port", z: "hillsbrad", e: [48.4, 33.9], f: "alliance", isNew: true, d: "Alliance fishing town. In Forever it is a stop on the Menethil to Auberdine route.", c: "o", fp: "alliance" },
   { id: "swharbor", n: "Stormwind Harbor", t: "port", z: "elwynn", e: [35.4, 69.8], f: "alliance", isNew: true, d: "New in Forever. Ship to Auberdine.", c: "o" },
   { id: "bootybay", n: "Booty Bay", t: "port", z: "stv", e: [50.0, 98.1], f: "neutral", d: "Pirate-flavored goblin port at the southern tip of Stranglethorn. Boat to Ratchet.", c: "c", fp: "both" },
-  { id: "powderfuse", n: "Powderfuse Port", t: "port", z: "riverglades", e: [98.1, 73.6], f: "neutral", isNew: true, d: "Neutral goblin port of the Powderfuse goblins. Ship to Steamwheedle Port in Tanaris. Exact position to be confirmed.", c: "t" },
+  { id: "powderfuse", n: "Powderfuse Port", t: "port", z: "riverglades", e: [98.1, 73.6], f: "neutral", isNew: true, d: "Neutral goblin port of the Powderfuse goblins. Ship to Steamwheedle Port in Tanaris, and a flight point in the beta client. Exact position to be confirmed.", c: "t", fp: "both" },
+  { id: "farholde", n: "Farholde Keep", t: "town", z: "riverglades", e: [87.5, 76.4], f: "alliance", isNew: true, d: "Alliance hold of the Riverglades and the faction's flight point there. Position estimated.", c: "r", fp: "alliance" },
+  { id: "rogmar", n: "Rog'mar", t: "town", z: "riverglades", e: [92.6, 67.4], f: "horde", isNew: true, d: "Horde settlement of the Riverglades and the faction's flight point there. Position estimated.", c: "r", fp: "horde" },
+  { n: "Sunnyglade", t: "area", z: "riverglades", e: [91.0, 75.2], isNew: true, d: "Farming town of Stormwind burned by the Old Horde in the First War, rebuilt by freed peasants. Position estimated.", c: "r" },
+  { n: "Bolder'ok", t: "area", z: "riverglades", e: [94.4, 70.0], isNew: true, d: "Settlement of the Bolder'ok ogre clan. Position estimated.", c: "r" },
+  { id: "eternity", n: "Summit of Eternity", t: "town", z: "hyjal", k: [65.6, 22.8], isNew: true, d: "Flight point on Mount Hyjal in the beta client. Which faction it serves, and its position, are unknown.", c: "t", fp: "both" },
+  { id: "taintedfoot", n: "Tainted Foothills", t: "town", z: "hyjal", k: [57.2, 24.9], isNew: true, d: "Second flight point of Mount Hyjal in the beta client. Which faction it serves, and its position, are unknown.", c: "t", fp: "both" },
+  { id: "tidegear", n: "Tidegear Coast", t: "town", z: "dunmorogh", e: [39.0, 52.6], f: "alliance", isNew: true, d: "New Dun Morogh flight point in the beta client, on the coast. Position estimated.", c: "r", fp: "alliance" },
   { id: "uczep", n: "Tirisfal zeppelin towers", t: "zep", z: "tirisfal", e: [47.6, 13.4], f: "horde", d: "Outside the Undercity. Zeppelins to Orgrimmar and Grom'gol.", c: "c" },
   { id: "gromgol", n: "Grom'gol Base Camp", t: "zep", z: "stv", e: [46.6, 89.2], f: "horde", d: "Horde camp in northern Stranglethorn. Zeppelins to Orgrimmar and Tirisfal.", c: "c", fp: "horde" },
 
@@ -705,7 +725,7 @@ const POIS = [
   { n: "Warsong Gulch", t: "bg", z: "ashenvale", k: [62.5, 39.6], d: "10v10 capture the flag. A winter version of the map was datamined.", c: "c" },
   { n: "Arathi Basin", t: "bg", z: "arathi", e: [73.5, 34.6], d: "15v15 resource control.", c: "c" },
   { n: "Alterac Valley", t: "bg", z: "alterac", e: [49.5, 22.6], d: "40v40.", c: "c" },
-  { n: "Darkspear Islands", t: "bg", z: null, a: [1130, 1085], isNew: true, d: "New 15v15 battleground, similar to Eye of the Storm but with interactable capture points. Instanced: this marker is symbolic.", c: "o" },
+  { n: "Darkspear Islands", t: "bg", z: null, a: [1130, 1085], lv: [30, 60], isNew: true, d: "New 15v15 battleground for levels 30-60, joining Warsong Gulch and Arathi Basin in the random pool. Similar to Eye of the Storm but with interactable capture points. Instanced: this marker is symbolic.", c: "o" },
 ];
 
 // ---- Travel routes. via = absolute sea waypoints between the two endpoints
@@ -747,6 +767,8 @@ const SOURCES = [
   ["Guided: ship routes and Grim Batol", "https://guided.news/en/news/wow-forever-everglades-with-200-quests-new-ship-routes-and-a-mystery-at-grim-batol/"],
   ["Warcraft Wiki: World of Warcraft: Forever", "https://warcraft.wiki.gg/wiki/World_of_Warcraft:_Forever"],
   ["InFlight addon: community-measured Classic flight times", "https://github.com/BLCtbc/inflight"],
+  ["Warcraft Wiki: the Riverglades (beta patch 1.60.1)", "https://warcraft.wiki.gg/wiki/Riverglades"],
+  ["WoW Forever Builds: beta datamine tracker (flight points, PvP queues)", "https://wowforeverbuilds.com/wow-forever-beta"],
   ["Icy Veins: first wave of Forever mounts (60% at 40, 100% at 60)", "https://www.icy-veins.com/wow-forever/news/wow-forever-just-revealed-its-first-wave-of-mounts-spoiler-warning/"],
 ];
 
@@ -801,10 +823,10 @@ const LAND_EDGES = [
   ["duskwood", "stv", "the road south", "c"],
   ["deadwind", "swamp", "the pass road east", "c"],
   ["swamp", "blastedlands", "the road south", "c"],
-  ["riverglades", "redridge", "a new turnoff on the road to the Burning Steppes", "r"],
-  ["riverglades", "burningsteppes", "the shared border", "o", RG_BORDER],
-  ["riverglades", "swamp", "the shared border", "o", RG_BORDER],
-  ["riverglades", "badlands", "the shared border", "o", RG_BORDER],
+  ["riverglades", "redridge", "Redridge Pass, south of the Bristle Hills", "r"],
+  ["riverglades", "burningsteppes", "Blackrock Pass, west of the Bristle Hills then north", "r"],
+  ["riverglades", "swamp", "Redridge Pass, or a swim south of Wheeler's Grange", "r"],
+  ["riverglades", "badlands", "the border north of Twilight's Shroud", "r"],
 ];
 // Short hops between a transport hub and the city it serves
 const CITY_LINKS = [
@@ -816,6 +838,17 @@ const CITY_LINKS = [
 
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
 const CHANGELOG = [
+  { v: "4.1", d: "September 20, 2026", title: "Six new flight points", items: [
+    ["data", "The beta client has six flight points that do not exist in Classic: Farholde Keep (Alliance), Rog'mar (Horde) and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. They are on the map, and the planner can route through them. Datamined, not announced by Blizzard, and their positions are estimates."],
+    ["fix", "The map said Forever changed nothing about flight paths and that the new zones' flight masters were unknown. Both are out of date."],
+    ["data", "The Riverglades: how each border is crossed now follows the zone's own beta page, and two settlements are added, Sunnyglade and Bolder'ok."],
+    ["data", "Hyjal Crater turns out to be a 5-player queue in the client, next to a Mak'gora Arena, not a mystery zone. Darkspear Islands is a 30-60 battleground in the random pool."]] },
+  { v: "4.0", d: "September 20, 2026", title: "Forever Atlas is now Travelcraft", items: [
+    ["new", "New name: Travelcraft, the same name as the in-game addon on the way. Same address, so your links and shared routes still work."],
+    ["new", "One panel instead of five tabs. The route planner is always there; tap anything on the map for its details, and a back button brings you to your route."],
+    ["new", "What is new in Forever (zones, dungeons, ship routes) now sits under the planner. The full list of ships and zeppelins is on the map itself."],
+    ["new", "Faction, travel mode and flight paths fold into one line under the planner, so the trip time comes first."],
+    ["fix", "Phones: a slimmer top bar, bigger tap targets, and no more zooming in when you type in a box on iPhone."]] },
   { v: "3.2", d: "September 18, 2026", title: "No more bouncing across the sea", items: [
     ["fix", "The planner could send you across the ocean and back just to move along the same coast: Stormwind to Theramore came out as three ships through Auberdine, when the tram and the Menethil boat do it. A route that crosses the sea more often now has to be clearly faster to win."],
     ["new", "When a quicker route exists on paper but depends on catching every ship, the planner says so and lets you see it anyway."],
@@ -889,7 +922,7 @@ function lvColor(z){ if(!z.lv) return z.status==="closed"?"url(#hatch)":"#55657d
 
 POIS.forEach((p,i)=>{p.id=p.id||"p"+i; p.xy=abs(p); p.c=p.c||"c";});
 const POI=Object.fromEntries(POIS.map(p=>[p.id,p]));
-const state={mode:"faction",level:null,sel:null,tab:"details",layers:{flights:false,levels:true,boats:true,zeps:true,dungeons:true,towns:true,onlynew:false}};
+const state={mode:"faction",level:null,sel:null,tab:"plan",layers:{flights:false,levels:true,boats:true,zeps:true,dungeons:true,towns:true,onlynew:false}};
 
 /* ---------------- draw: sea decor ---------------- */
 const gSea=$("#gSea");
@@ -1032,7 +1065,7 @@ function routeCard(r){ return `<button class="routecard${state.sel&&state.sel.r=
 function renderZone(z){ const ps=POIS.filter(p=>p.z===z.id), grp=(ts)=>ps.filter(p=>ts.includes(p.t));
   const sec=(title,list)=>list.length?`<h2>${title}</h2>${list.map(placeBtn).join("")}`:"";
   const rts=ROUTES.filter(r=>[r.from,r.to,...(r.stops||[])].some(id=>POI[id].z===z.id));
-  sheet.innerHTML=`<h1>${esc(z.name)}</h1><p class="where">${esc(z.cont)}</p>${z.status!=="closed"?fromTo(z.name):""}
+  sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>${esc(z.name)}</h1><p class="where">${esc(z.cont)}</p>${z.status!=="closed"?fromTo(z.name):""}
    <div class="pills">${z.status==="new"?'<span class="pill new">New in Forever</span>':`<span class="pill">${STATUS[z.status]}</span>`}
     <span class="pill">${z.lv?"Level "+lvText(z):(z.status==="closed"?"No level range":"Level range unknown")}</span>
     <span class="pill"><span class="dot" style="background:${z.faction==="none"?"#55657d":FCOL[z.faction]}"></span>${FNAME[z.faction]}</span></div>
@@ -1047,7 +1080,7 @@ function renderZone(z){ const ps=POIS.filter(p=>p.z===z.id), grp=(ts)=>ps.filter
    <p class="foot">Level ranges and faction control for Classic zones follow WoW Classic. Forever has no realms, and its PvP rules per zone are not detailed yet.</p>`; }
 
 function renderPoi(p){ const z=p.z&&ZONES[p.z]; const rts=ROUTES.filter(r=>[r.from,r.to,...(r.stops||[])].includes(p.id));
-  sheet.innerHTML=`${z?`<button class="back" data-zone="${z.id}">\u2190 ${esc(z.name)}</button>`:""}<h1>${esc(p.n)}</h1><p class="where">${TNAME[p.t]}${z?" in "+esc(z.name):""}</p>${fromTo(p.n)}
+  sheet.innerHTML=`<div class="backs"><button class="back" data-tabgo="plan">\u2190 Route planner</button>${z?`<button class="back" data-zone="${z.id}">${esc(z.name)}</button>`:""}</div><h1>${esc(p.n)}</h1><p class="where">${TNAME[p.t]}${z?" in "+esc(z.name):""}</p>${fromTo(p.n)}
    <div class="pills">${p.isNew?'<span class="pill new">New in Forever</span>':""}${p.lv?`<span class="pill">${p.lv[0]===p.lv[1]?"Level "+p.lv[0]:"Levels "+p.lv[0]+"\u2013"+p.lv[1]}</span>`:""}${p.f?`<span class="pill"><span class="dot" style="background:${FCOL[p.f]}"></span>${FSHORT[p.f]}</span>`:""}</div>
    <p class="lead">${seal(p.c)} ${esc(p.d||(p.t==="town"?(p.fp?"Quest hub with a flight master.":"Quest hub. No flight master here in Classic."):""))}</p>
    ${p.lv&&(p.t==="dungeon")?`<p class="areas">${p.isNew?"Pre-release level range from BlizzCon coverage.":"Classic level range. Forever's dungeon tuning is not confirmed."}</p>`:""}
@@ -1055,61 +1088,31 @@ function renderPoi(p){ const z=p.z&&ZONES[p.z]; const rts=ROUTES.filter(r=>[r.fr
    ${p.fp?flightSection(p):""}`; }
 function flightSection(p){ const facs=p.fp==="both"?["alliance","horde"]:[p.fp];
   const rows=f=>POIS.filter(q=>q.fp&&q!==p&&(q.fp==="both"||q.fp===f)&&contOf(q)===contOf(p)).map(q=>({q,ft:flightTime(f,p,q)})).filter(x=>x.ft.real).sort((a,b)=>a.ft.sec-b.ft.sec).slice(0,8);
-  return `<h2>Flight master</h2><p class="areas">${FPNAME[p.fp]}. ${seal("c")} Classic network. No changes announced for Forever, and flight masters in the new zones are not known yet.</p>`+
+  return `<h2>Flight master</h2><p class="areas">${FPNAME[p.fp]}. ${seal("c")} Classic network, plus ${seal("r")} six flight points found in the beta client: three in the Riverglades, two on Mount Hyjal and one in Dun Morogh.</p>`+
    facs.map(f=>{ const r=rows(f); return r.length?`${facs.length>1?`<p class="areas" style="margin:10px 0 2px;font-weight:600">${FSHORT[f]}</p>`:""}${r.map(x=>`<button class="place" data-goto="${x.q.id}"><svg class="ico" viewBox="-11 -11 22 22">${fpIcon(x.q.fp)}</svg><span class="pn">${esc(x.q.n)}</span><span class="pm">${fmtMin(x.ft.sec)}</span></button>`).join("")}`:""; }).join("")+
    `<p class="areas" style="margin-top:8px">Flight times measured in Classic by the InFlight addon community.</p>`; }
 
 function renderRoute(r){ const stops=[r.from,...(r.stops||[]),r.to];
-  sheet.innerHTML=`<button class="back" data-tabgo="travel">\u2190 All routes</button><h1>${esc(routeTitle(r))}</h1><p class="where">${kindName(r)}</p>
+  sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>${esc(routeTitle(r))}</h1><p class="where">${kindName(r)}</p>
    <div class="pills">${r.isNew?'<span class="pill new">New in Forever</span>':'<span class="pill">Classic route</span>'}<span class="pill"><span class="dot" style="background:${FCOL[r.f]}"></span>${r.f==="neutral"?"Both factions":FSHORT[r.f]+" ports"}</span></div>
    <p class="lead">${seal(r.c)} ${esc(r.note)}</p><h2>Stops</h2>${stops.map(id=>placeBtn(POI[id])).join("")}
    <p class="foot">Sea lanes on this map are drawn for readability. In game, ships sail out of sight and arrive after a loading screen.</p>`; }
 
-function renderTravel(){ const grp=(k,n)=>{const l=ROUTES.filter(r=>r.kind===k);return `<h2>${n}</h2>`+l.sort((a,b)=>b.isNew-a.isNew).map(routeCard).join("");};
-  sheet.innerHTML=`<h1>Getting around</h1><p class="lead">Forever keeps Classic's boats and zeppelins and adds three ship routes, so friends can meet up without shrinking the world with portals.</p>${grp("boat","Ships")}${grp("zep","Zeppelins (Horde)")}${grp("tram","Underground")}
-   <h2>Flight paths</h2><p>${POIS.filter(p=>p.fp).length} flight masters, shown in blue for the Alliance, red for the Horde and green where both factions can fly. They are hidden by default to keep the map readable.</p>
-   <div class="fromto"><button class="btn" id="showFp">${state.layers.flights?"Hide flight masters":"Show flight masters on the map"}</button><button class="btn" data-tabgo="plan">Open the route planner</button></div>
-   <p class="areas">Select a flight master to see where you can fly from there and how long it takes. In the route planner, tick "I have the flight paths" to let it fly you.</p>
-   <p class="foot">This is the Classic network. Blizzard has announced no change to flight paths for Forever, and the flight masters of the new zones are not known yet.</p>`; }
-
-function renderNew(){ const nz=Object.values(ZONES).filter(z=>z.status==="new"), cz=Object.values(ZONES).filter(z=>z.status==="changed");
-  const zb=z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`;
-  const nd=POIS.filter(p=>p.isNew&&(p.t==="dungeon"||p.t==="raid"||p.t==="bg")).sort((a,b)=>(a.lv?a.lv[0]:99)-(b.lv?b.lv[0]:99));
-  sheet.innerHTML=`<h1>New in Forever</h1><p class="lead">World of Warcraft: Forever launches November 4, 2026. The beta runs September 17 to October 21 with a level cap of 30. The level cap stays at 60, there are no flying mounts (flight paths are still how you get around), and new content expands original Azeroth instead of leaving it.</p>
-   <h2>New zones</h2>${nz.map(zb).join("")}
-   <h2>New dungeons, raids and battleground</h2>${nd.map(placeBtn).join("")}
-   <h2>New ship routes</h2>${ROUTES.filter(r=>r.isNew).map(routeCard).join("")}
-   <h2>Classic zones with announced changes</h2>${cz.map(zb).join("")}
-   <h2>Open mysteries for the beta</h2><ul class="facts">
-    <li>${seal("r")}Grim Batol: go there as a ghost, said the developers. Lots of red dragons.</li>
-    <li>${seal("r")}Azshara: its 'crater-sized hole' of content is said to be partly filled.</li>
-    <li>${seal("r")}The Barrow Deeps has three entrances. Only Mount Hyjal and the Blackmaw Hold tunnels are known.</li>
-    <li>${seal("t")}Where do Skyborne land on Azeroth after Zephras Isle?</li>
-    <li>${seal("r")}Datamined instance maps with no announced purpose: Hyjal Crater, Manor Mistmantle, Half-Pint Tavern, 'Eastern Kingdoms Preserved'.</li></ul>`; }
-
-function renderAbout(){ sheet.innerHTML=`<h1>About this map</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}</p>
+function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
    <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
-   <h2>Sources and confidence</h2><p class="lead">This is a fan-made atlas, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
+   <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
    <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
    <h2>About the map itself</h2><p>The continents are redrawn by hand in the spirit of the Classic world map. They are not traced from game files. Borders of the new zones, the position of new dungeons and every sea lane are approximations. Zephras Isle lies in Skywall; it is drawn in the Great Sea so it has somewhere to live.</p>
+   <h2>New flight points</h2><p>Six flight points appear in the beta client and in the zone pages built from it: Farholde Keep, Rog'mar and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. Blizzard has not announced them, no one has timed a flight from them, and their positions on this map are estimates. Which faction the two Hyjal points serve is unknown; they are drawn as neutral here.</p>
    <h2>About travel times</h2><p>A hand-drawn map has no scale, so one was measured. Flights move at a constant speed, and the Classic community has timed hundreds of them. Laying 291 of those timings over this map gave the same scale on both continents, within 2%. Walking and riding times are that scale converted to run speed, with a margin for winding roads. Expect them to be right within a quarter, not to the second.</p>
    <p>Flight times are the measured Classic ones where they exist. Ships and zeppelins count two minutes on board plus up to five of waiting. Mount speeds come from datamining: reported, not confirmed by Blizzard. If you time a trip in the beta and the planner is off, say so: the scale is one number and easy to correct.</p>
    <h2>Sources</h2><ul class="facts">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a></li>`).join("")}</ul>
    <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft, Warcraft and all related names are trademarks of Blizzard Entertainment, Inc. Spotted a mistake? That is what the comments are for.</p>`; }
 
-function renderHome(){ sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:22px">Get the way there, and how long it takes.</p>
-   <div class="planbox"><div class="row"><label for="homeFrom">From</label><input id="homeFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div>
-   <div class="row"><label for="homeTo">To</label><input id="homeTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div></div>
-   <button class="btn primary" id="homeGo">Find route</button>
-   <p class="tryl">Or try one</p>
-   <div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>
-   <div class="sep"></div>
-   <h2 style="margin-top:0">Or explore the map</h2><p class="areas" style="margin-bottom:12px">Select any zone for its story, level range and what Forever changes. Gold outlines are new.</p>
-   ${Object.values(ZONES).filter(z=>z.status==="new").map(z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`).join("")}`; }
-
-function render(){ $$(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===state.tab));
-  if(state.tab==="plan") renderPlan(); else if(state.tab==="travel") renderTravel(); else if(state.tab==="new") renderNew(); else if(state.tab==="about") renderAbout();
-  else { const s=state.sel; if(!s) renderHome(); else if(s.type==="zone") renderZone(ZONES[s.id]); else if(s.type==="poi") renderPoi(POI[s.id]); else renderRoute(s.r); }
+function render(){ const s=state.sel;
+  if(state.tab==="about") renderAbout();
+  else if(state.tab==="details"&&s){ if(s.type==="zone") renderZone(ZONES[s.id]); else if(s.type==="poi") renderPoi(POI[s.id]); else renderRoute(s.r); }
+  else { state.tab="plan"; renderPlan(); }
   sheet.scrollTop=0; }
 
 
@@ -1117,7 +1120,7 @@ const norm=s=>s.toLowerCase().replace(/[\u2019'`]/g,"'");
 /* ---------------- route planner ---------------- */
 const GATES=GEO.gates||{};
 const NODE_POIS=POIS.filter(p=>["city","port","zep"].includes(p.t)||p.fp);
-const plan={f:"alliance",from:"",to:"",res:null,speed:"foot",auto:true,fp:false,alt:false};
+const plan={f:"alliance",from:"",to:"",res:null,speed:"foot",auto:true,fp:false,alt:false,opts:false};
 const SPEEDS={foot:["On foot",1],form:["Travel form",1.4],m60:["Mount 60%",1.6],m100:["Mount 100%",2]};
 try{const sv=JSON.parse(localStorage.getItem("fa-plan")||"{}"); if(sv.f==="horde"||sv.f==="alliance") plan.f=sv.f; if(SPEEDS[sv.speed]){plan.speed=sv.speed;plan.auto=false;} plan.fp=!!sv.fp;}catch(e){}
 const savePlan=()=>{try{localStorage.setItem("fa-plan",JSON.stringify({f:plan.f,speed:plan.auto?null:plan.speed,fp:plan.fp}))}catch(e){}};
@@ -1222,30 +1225,38 @@ function planHash(){ const q=new URLSearchParams({from:plan.from,to:plan.to,f:pl
 function syncHash(){ try{ history.replaceState(null,"",plan.res&&plan.res.ok&&state.tab==="plan"?planHash():location.pathname+location.search); }catch(e){} }
 function loadHash(){ if(location.hash.length<2) return false; const q=new URLSearchParams(location.hash.slice(1)); if(!q.get("from")||!q.get("to")) return false;
   plan.from=q.get("from"); plan.to=q.get("to"); if(q.get("f")==="horde"||q.get("f")==="alliance") plan.f=q.get("f"); if(SPEEDS[q.get("by")]){plan.speed=q.get("by");plan.auto=false;} plan.fp=q.get("fp")==="1"; plan.alt=q.get("alt")==="1"; return true; }
-function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok) fitPlan(); syncHash(); }
+function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok){ fitPlan(); const e=$(".eta"); if(e&&innerWidth<860) sheet.scrollTop=e.offsetTop-sheet.offsetTop-12; } syncHash(); }
 function openPlan(){ state.tab="plan"; runPlan(); }
 
+function newList(){ const nz=Object.values(ZONES).filter(z=>z.status==="new");
+  const nd=POIS.filter(p=>p.isNew&&(p.t==="dungeon"||p.t==="raid"||p.t==="bg")).sort((a,b)=>(a.lv?a.lv[0]:99)-(b.lv?b.lv[0]:99));
+  return `<div class="sep"></div><h2 style="margin-top:0">New in Forever</h2><p class="areas" style="margin-bottom:8px">Launches November 4, 2026. Tap one to see it on the map. Gold outlines are new.</p>
+   ${nz.map(z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`).join("")}
+   <h2>Dungeons and raids</h2>${nd.map(placeBtn).join("")}
+   <h2>Ship routes</h2>${ROUTES.filter(r=>r.isNew).map(r=>`<button class="place" data-route="${r.id}"><span class="pn">${esc(routeTitle(r))}</span><span class="pm">${kindName(r)}</span></button>`).join("")}
+   <p class="foot">Travelcraft was called Forever Atlas until September 20, 2026. <button class="linkish" data-tabgo="about">About, sources and patch notes</button></p>`; }
 function renderPlan(){ const r=plan.res;
-  sheet.innerHTML=`<h1>Route planner</h1><p class="where" style="margin-bottom:20px">How do I get from here to there?</p>
-   <div class="seg" role="group" aria-label="Your faction" style="display:inline-flex;margin:0 0 20px"><button data-pf="alliance" aria-pressed="${plan.f==="alliance"}">Alliance</button><button data-pf="horde" aria-pressed="${plan.f==="horde"}">Horde</button></div>
-   <div class="seg wide" role="group" aria-label="How you travel on land">${Object.entries(SPEEDS).map(([k,v])=>`<button data-ps="${k}" aria-pressed="${plan.speed===k}">${v[0]}</button>`).join("")}</div>
-   <p class="hint">${plan.auto?(state.level!=null?`Picked from your level (${state.level}). Change it if you ride something else.`:"Type your level in the top bar and this picks itself."):"Your choice. "}${plan.auto?"":'<button class="linkish" data-ps="auto">Back to automatic</button>'}</p>
-   <label class="check"><input type="checkbox" id="planFp" ${plan.fp?"checked":""}><span>I have the flight paths<small>Off by default: a new character has to reach each flight master on foot first.</small></span></label>
-   <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div>
-   <div class="row"><label for="planTo">To</label><input id="planTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off"></div></div>
-   <div class="row" style="display:flex;gap:8px;align-items:center"><button class="btn primary" id="planGo">Find route</button><button class="btn" id="planSwap">Swap</button>${plan.from||plan.to?'<button class="btn ghost" id="planClear">Clear</button>':""}</div>
-   ${!r?`<h2>How it works</h2><ul class="facts"><li>Pick two places, or select something on the map and use "Route from here" and "Route to here".</li><li>The planner chains roads, ships, zeppelins, the tram and flight paths for your faction, and avoids enemy territory when it can.</li><li>Tick "I have the flight paths" once you have discovered them, and the planner will fly you where it is faster.</li><li>You get a time estimate for the way you travel: on foot, in travel form, or on a 60% or 100% mount.</li><li>Type your level in the top bar: it picks your mount for you and warns you when the route crosses zones above you.</li></ul>`
+  sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:18px">Get the way there, and how long it takes.</p>
+   <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="next"></div>
+   <div class="row"><label for="planTo">To</label><input id="planTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="go"></div></div>
+   <div class="planbtns"><button class="btn primary" id="planGo">Find route</button><button class="btn" id="planSwap" aria-label="Swap from and to">Swap</button>${plan.from||plan.to?'<button class="btn ghost" id="planClear">Clear</button>':""}</div>
+   <details class="opts" id="opts"${plan.opts?" open":""}><summary><span>${FSHORT[plan.f]} \u00b7 ${SPEEDS[plan.speed][0]} \u00b7 ${plan.fp?"flight paths":"no flight paths"}</span><span class="optc">Change</span></summary>
+    <div class="optb"><div class="seg" role="group" aria-label="Your faction" style="display:inline-flex;margin:0 0 12px"><button data-pf="alliance" aria-pressed="${plan.f==="alliance"}">Alliance</button><button data-pf="horde" aria-pressed="${plan.f==="horde"}">Horde</button></div>
+    <div class="seg wide" role="group" aria-label="How you travel on land">${Object.entries(SPEEDS).map(([k,v])=>`<button data-ps="${k}" aria-pressed="${plan.speed===k}">${v[0]}</button>`).join("")}</div>
+    <p class="hint">${plan.auto?(state.level!=null?`Picked from your level (${state.level}). Change it if you ride something else.`:"Type your level at the top and this picks itself."):"Your choice. "}${plan.auto?"":'<button class="linkish" data-ps="auto">Back to automatic</button>'}</p>
+    <label class="check"><input type="checkbox" id="planFp" ${plan.fp?"checked":""}><span>I have the flight paths<small>Off by default: a new character has to reach each flight master on foot first.</small></span></label></div></details>
+   ${!r?`<p class="tryl">Or try one</p><div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>${newList()}`
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
        <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2]):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
-       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Forever has announced no change to flight paths, and the new zones' flight masters are not known yet. New-zone links are as reliable as their label says.</p>`}`; }
+       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
 
 /* ---------------- selection ---------------- */
 function clearMarks(){ selPath.setAttribute("d",""); $$(".poi.on").forEach(e=>e.classList.remove("on")); ROUTES.forEach(r=>{r.line.classList.remove("on","dimmed");}); }
-function select(s,opts={}){ clearMarks(); state.sel=s; if(s) state.tab=opts.keepTab?state.tab:"details";
+function select(s,opts={}){ clearMarks(); state.sel=s; if(s) state.tab=opts.keepTab&&state.tab!=="plan"?state.tab:"details"; else if(state.tab==="details") state.tab="plan";
   if(s&&s.type==="zone"){ selPath.setAttribute("d",GEO.zones[s.id].d); if(opts.focus!==false) focusBox(zoneEls[s.id].getBBox(),4.5); }
   if(s&&s.type==="poi"){ const p=POI[s.id]; poiEls[s.id].classList.add("on"); if(p.z) selPath.setAttribute("d",GEO.zones[p.z].d);
     if(opts.focus!==false) focusBox({x:p.xy[0]-60,y:p.xy[1]-60,width:120,height:120},6); }
@@ -1287,28 +1298,27 @@ $("#zin").onclick=()=>zoomAt(1.6,wrap.clientWidth/2,wrap.clientHeight/2,true);
 $("#zout").onclick=()=>zoomAt(1/1.6,wrap.clientWidth/2,wrap.clientHeight/2,true);
 $("#zfit").onclick=()=>fitAll(true);
 $("#planCta").onclick=()=>{state.tab="plan";clearMarks();state.sel=null;render();drawPlan();paint();restyle();const f=$("#planFrom");if(f&&!plan.from)f.focus();};
-$("#ver").textContent="v"+CHANGELOG[0].v; $("#ver").onclick=()=>{state.tab="about";render();drawPlan();paint();};
-$("#home").onclick=ev=>{ev.preventDefault();state.tab="details";select(null);fitAll(true);};
+$("#ver").textContent="v"+CHANGELOG[0].v; $("#ver").onclick=()=>{state.tab="about";render();drawPlan();paint();syncHash();};
+$("#home").onclick=ev=>{ev.preventDefault();state.tab="plan";select(null);drawPlan();paint();fitAll(true);};
 addEventListener("resize",()=>{const old=fitK;fitK=calcFit(); if(Math.abs(V.k-old)<1e-6) fitAll(false); else {V=clampV(V);apply();}});
 
 sheet.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b) return;
   if(b.dataset.goto) select({type:"poi",id:b.dataset.goto}); else if(b.dataset.zone) select({type:"zone",id:b.dataset.zone});
   else if(b.dataset.route) select({type:"route",r:ROUTES.find(r=>r.id===b.dataset.route)}); else if(b.id==="showFp"){const c=$("[data-layer=flights]");c.checked=!c.checked;state.layers.flights=c.checked;paint();restyle();render();}
-  else if(b.dataset.tabgo){state.tab=b.dataset.tabgo;render();drawPlan();paint();restyle();}
+  else if(b.dataset.tabgo){state.tab=b.dataset.tabgo;if(state.tab==="plan"){clearMarks();state.sel=null;}render();drawPlan();paint();restyle();syncHash();if(state.tab==="plan"&&plan.res&&plan.res.ok)fitPlan();}
   else if(b.dataset.planfrom!=null){plan.from=b.dataset.planfrom;openPlan();} else if(b.dataset.planto!=null){plan.to=b.dataset.planto;openPlan();}
   else if(b.dataset.pf){readPlanInputs();plan.f=b.dataset.pf;savePlan();runPlan();}
   else if(b.dataset.ps){readPlanInputs(); if(b.dataset.ps==="auto"){plan.auto=true;plan.speed=autoSpeed();} else {plan.auto=false;plan.speed=b.dataset.ps;} savePlan(); runPlan();}
-  else if(b.id==="homeGo"){plan.from=$("#homeFrom").value;plan.to=$("#homeTo").value;openPlan();}
   else if(b.dataset.ex!=null){const e=EXAMPLES[+b.dataset.ex];plan.alt=false;plan.from=e[0];plan.to=e[1];plan.f=e[2];savePlan();openPlan();}
   else if(b.id==="planCopy"){const url=location.origin+location.pathname+planHash();const done=()=>{b.textContent="Link copied";setTimeout(()=>{if(b.isConnected)b.textContent="Copy link to this route";},1800);};
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url)); else prompt("Copy this link:",url);}
   else if(b.id==="planAlt"){plan.alt=!plan.alt;runPlan();}
   else if(b.id==="planGo"){readPlanInputs();plan.alt=false;runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
   else if(b.id==="planClear"){plan.from=plan.to="";plan.res=null;drawPlan();paint();render();} });
-sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();runPlan();} else if(ev.target.matches("#homeFrom,#homeTo")){ev.preventDefault();plan.from=$("#homeFrom").value;plan.to=$("#homeTo").value;if(plan.from&&plan.to)openPlan();else(plan.from?$("#homeTo"):$("#homeFrom")).focus();} });
-sheet.addEventListener("input",ev=>{ if(ev.target.matches("#planFrom,#planTo")) readPlanInputs(); else if(ev.target.id==="homeFrom") plan.from=ev.target.value; else if(ev.target.id==="homeTo") plan.to=ev.target.value; });
+sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();if(plan.from&&plan.to){plan.alt=false;runPlan();ev.target.blur();}else(plan.from?$("#planTo"):$("#planFrom")).focus();}  });
+sheet.addEventListener("input",ev=>{ if(ev.target.matches("#planFrom,#planTo")) readPlanInputs(); });
+sheet.addEventListener("toggle",ev=>{ if(ev.target.id==="opts") plan.opts=ev.target.open; },true);
 sheet.addEventListener("change",ev=>{ if(ev.target.id==="planFp"){ readPlanInputs(); plan.fp=ev.target.checked; savePlan(); runPlan(); } });
-$$(".tabs button").forEach(b=>b.onclick=()=>{state.tab=b.dataset.tab;render();drawPlan();paint();restyle();syncHash();});
 $$("[data-layer]").forEach(c=>c.onchange=()=>{state.layers[c.dataset.layer]=c.checked;paint();restyle();});
 $("#m-faction").onclick=()=>setMode("faction"); $("#m-level").onclick=()=>setMode("level");
 function setMode(m){state.mode=m;$("#m-faction").setAttribute("aria-pressed",m==="faction");$("#m-level").setAttribute("aria-pressed",m==="level");paint();}
@@ -1333,7 +1343,7 @@ document.addEventListener("pointerdown",ev=>{ if(!ev.target.closest(".search")) 
 document.addEventListener("keydown",ev=>{ if(ev.key==="/"&&document.activeElement!==q&&!/input/i.test(document.activeElement.tagName)){ev.preventDefault();q.focus();} else if(ev.key==="Escape"&&document.activeElement!==q){select(null,{keepTab:true});} });
 
 /* init */
-if(innerWidth<860) $("#key").removeAttribute("open");
+if(innerWidth<860){ $("#key").removeAttribute("open"); $("#lv").placeholder="Lvl"; }
 $("#key").addEventListener("toggle",()=>{const atFit=Math.abs(V.k-fitK)<1e-6; fitK=calcFit(); if(atFit) fitAll(true);});
 paint(); fitAll(false); render();
 if(loadHash()) openPlan();
