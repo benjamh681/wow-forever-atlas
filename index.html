@@ -145,7 +145,6 @@ button,input{font:inherit;color:inherit}
 .zoom button:last-child{border-bottom:0}
 .zoom button:hover{background:var(--surface-2)}
 .zoom .fit{font-size:12px;font-weight:600}
-.compass{position:absolute;right:16px;bottom:14px;width:64px;height:64px;opacity:.8;pointer-events:none;z-index:2}
 .tip{position:absolute;pointer-events:none;background:#0a1422;color:#e7eef8;border:1px solid #2f4766;border-radius:8px;padding:6px 10px;font-size:13px;line-height:1.35;z-index:6;display:none;max-width:260px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
 .tip b{font-weight:600}
 .tip span{color:#8da2bd}
@@ -273,7 +272,6 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
   .stage{flex-direction:column}
   .panel{width:auto;height:46%;border-left:0;border-top:1px solid var(--line)}
   .key{width:210px}
-  .compass{display:none}
   .top{padding:8px 12px;gap:8px 10px}
   .mark .t{font-size:16px}
   .cta{display:none}
@@ -339,11 +337,6 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
       </div>
     </details>
     <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">&minus;</button><button id="zfit" class="fit" aria-label="Show the whole map">All</button></div>
-    <svg class="compass" viewBox="-50 -50 100 100" aria-hidden="true">
-      <circle r="40" fill="none" stroke="#6f9bd1" stroke-width="1" opacity=".6"/>
-      <path d="M0-44L8 0 0 44-8 0z" fill="#9dbbe0" opacity=".85"/><path d="M-44 0L0-8 44 0 0 8z" fill="#6f9bd1" opacity=".6"/><path d="M0-44L8 0H0z" fill="#e0b95a"/>
-      <text y="-30" x="14" text-anchor="middle" font-family="Hanken Grotesk,system-ui,sans-serif" font-weight="600" font-size="11" fill="#e7eef8">N</text>
-    </svg>
     <div class="tip" id="tip"></div>
   </div>
 
@@ -841,7 +834,7 @@ const CHANGELOG = [
   { v: "4.2", d: "September 21, 2026", title: "The Travelcraft addon", items: [
     ["new", "Travelcraft is now also an addon for the game. It plans the same routes, inside the world map, with the same data and the same travel times as this map."],
     ["new", "In the addon, pick a start and a destination from a menu, by typing, or by Ctrl-clicking the map. It uses the flight masters your character has discovered, and you can track the route next to your quests."],
-    ["new", "A new logo, shared by the map and the addon."]] },
+    ["new", "A new logo, shared by the map and the addon. The compass rose is gone."]] },
   { v: "4.1", d: "September 20, 2026", title: "Six new flight points", items: [
     ["data", "The beta client has six flight points that do not exist in Classic: Farholde Keep (Alliance), Rog'mar (Horde) and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. They are on the map, and the planner can route through them. Datamined, not announced by Blizzard, and their positions are estimates."],
     ["fix", "The map said Forever changed nothing about flight paths and that the new zones' flight masters were unknown. Both are out of date."],
