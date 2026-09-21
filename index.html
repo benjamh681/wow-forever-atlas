@@ -313,6 +313,7 @@ ol.howto li{padding:5px 0}
 </style>
 </head>
 <body>
+<noscript><p style="padding:16px;font:16px/1.5 sans-serif">Travelcraft is an interactive map and route planner for World of Warcraft: Forever. It needs JavaScript. A text version with every zone, level range, dungeon, ship route and travel time is here: <a href="guide.html">WoW Forever guide</a>.</p></noscript>
 <header class="top">
   <a class="mark" href="#" id="home" aria-label="Travelcraft, reset view">
     <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7.5" fill="#0f1c2f" stroke="#2f4766" stroke-width="1.5"/><path d="M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8" fill="none" stroke="#06121f" stroke-width="3.6" stroke-linecap="round"/><path d="M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8" fill="none" stroke="#e0b95a" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2.6 2.2"/><circle cx="8.5" cy="22.5" r="2.6" fill="#3fb27a" stroke="#06121f" stroke-width="1"/><path d="M23 13.2c-.7-1.3-2.9-2.8-2.9-5a2.9 2.9 0 015.8 0c0 2.2-2.2 3.7-2.9 5z" fill="#3d9bff" stroke="#06121f" stroke-width=".9"/><circle cx="23" cy="8.2" r="1" fill="#e7eef8"/></svg>
@@ -858,6 +859,8 @@ const CITY_LINKS = [
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
+  { v: "4.4", d: "September 21, 2026", title: "A text guide", items: [
+    ["new", "A text version of the map: every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, with a short FAQ. Easier to read on a phone, and readable by search engines and AI assistants."]] },
   { v: "4.3", d: "September 21, 2026", title: "Get the addon", items: [
     ["new", "A green Get the addon button in the top bar, and an addon page: what it does, how it works, how to install it. The download goes live as soon as CurseForge approves the addon."],
     ["new", "Under the route planner, a short card points to the addon, so you can take your routes into the game."],
@@ -1148,6 +1151,7 @@ function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">
 
 function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
    <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map, so both give the same travel time for the same trip. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button></p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
+   <h2>Text guide</h2><p>Every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, on one page: <a href="guide.html">WoW Forever guide</a>.</p>
    <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
    <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
    <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
@@ -1284,7 +1288,7 @@ function newList(){ const nz=Object.values(ZONES).filter(z=>z.status==="new");
    ${nz.map(z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`).join("")}
    <h2>Dungeons and raids</h2>${nd.map(placeBtn).join("")}
    <h2>Ship routes</h2>${ROUTES.filter(r=>r.isNew).map(r=>`<button class="place" data-route="${r.id}"><span class="pn">${esc(routeTitle(r))}</span><span class="pm">${kindName(r)}</span></button>`).join("")}
-   <p class="foot">Travelcraft was called Forever Atlas until September 20, 2026. <button class="linkish" data-tabgo="about">About, sources and patch notes</button></p>`; }
+   <p class="foot">Travelcraft was called Forever Atlas until September 20, 2026. <button class="linkish" data-tabgo="about">About, sources and patch notes</button> <a href="guide.html">Text guide: zones, levels, ships and travel times</a></p>`; }
 function renderPlan(){ const r=plan.res;
   sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:18px">Get the way there, and how long it takes.</p>
    <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="next"></div>
