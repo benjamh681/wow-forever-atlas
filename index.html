@@ -107,6 +107,8 @@ button,input{font:inherit;color:inherit}
 .route{fill:none;vector-effect:non-scaling-stroke;stroke-linecap:round;pointer-events:none}
 .route.boat{stroke:#a9d2ff;stroke-width:1.6;stroke-dasharray:7 5;opacity:.85}
 .route.zep{stroke:#ff9f8c;stroke-width:1.6;stroke-dasharray:2 5;opacity:.85}
+.route.sky{stroke:#a9d2ff;stroke-width:1.6;stroke-dasharray:2 5;opacity:.85}
+.route.portal{stroke:#c9a8ff;stroke-width:1.6;stroke-dasharray:1 4;opacity:.9}
 .route.tram{stroke:#e7eef8;stroke-width:2;stroke-dasharray:1 4}
 .route.is-new{stroke:#e0b95a;stroke-width:2.2;opacity:1}
 .route.on{stroke-width:3.6;stroke-dasharray:none;opacity:1}
@@ -260,6 +262,7 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 .planline.land{stroke:#ffffff;stroke-width:3.2}
 .planline.sea{stroke:#ffffff;stroke-width:3.2;stroke-dasharray:8 6}
 .planline.air{stroke:#7cc0ff;stroke-width:3;stroke-dasharray:1 7}
+.planline.portal{stroke:#c9a8ff;stroke-width:3;stroke-dasharray:1 7}
 .planend{vector-effect:non-scaling-stroke;pointer-events:none}
 
 @media (max-width: 860px){
@@ -353,7 +356,7 @@ ol.howto li{padding:5px 0}
         <label><input type="checkbox" data-layer="flights">Flight masters</label>
         <label><input type="checkbox" data-layer="levels" checked>Zone level ranges</label>
         <label><input type="checkbox" data-layer="boats" checked>Ship routes</label>
-        <label><input type="checkbox" data-layer="zeps" checked>Zeppelins and tram</label>
+        <label><input type="checkbox" data-layer="zeps" checked>Zeppelins, tram, portals</label>
         <label><input type="checkbox" data-layer="dungeons" checked>Dungeons and raids</label>
         <label id="townsLabel"><input type="checkbox" data-layer="towns" checked><span>Towns and landmarks<small id="townsHint">Zoom in to see them</small></span></label>
         <label><input type="checkbox" data-layer="onlynew">Only what is new in Forever</label>
@@ -494,7 +497,8 @@ const ZONES = {
     forever: [
       { t: "Dalaran's barrier falls and the rebuilt city can be entered; players help its denizens.", c: "r" },
       { t: "City of Dalaran is a new dungeon about strange magical trouble inside the city.", c: "o" },
-      { t: "Whether Dalaran works as a sanctuary or city hub for both factions is not known.", c: "t" }] },
+      { t: "A skyship links Dalaran to Valanaar on Zephras Isle, and a Skyborne portal in the Violet Citadel links the city to the Mage Tower in Stormwind, both ways. The Kirin Tor set it up for the High Order; whether other races can use it is not known.", c: "r" },
+      { t: "Whether Dalaran works as a sanctuary for both factions is not known.", c: "t" }] },
   hillsbrad: { name: "Hillsbrad Foothills", cont: "Eastern Kingdoms", lv: [20, 30], faction: "contested", status: "changed",
     lore: "Green farmland between Southshore and Tarren Mill, two towns a short ride apart and the site of the longest-running world PvP brawl in the game's history.",
     areas: ["Southshore", "Tarren Mill", "Hillsbrad Fields", "Durnholde Keep", "Azurelode Mine", "Purgation Isle"],
@@ -597,7 +601,10 @@ const ZONES = {
       { t: "Starting zone for the new Skyborne race, levels 1-12. Requires the Skyborne pack.", c: "o" },
       { t: "Players choose Horde or Alliance at character creation; all Skyborne start here.", c: "o" },
       { t: "Designed as a self-contained experience: developers said players will not be sent back for a raid.", c: "r" },
-      { t: "The isle lies in the elemental plane of Skywall. Its position on this map is symbolic, and where Skyborne arrive on Azeroth after level 12 is not announced.", c: "t" }] },
+      { t: "The isle lies in the elemental plane of Skywall. Its position on this map is symbolic.", c: "o" },
+      { t: "Alliance way out: a skyship from Valanaar, in the south of the isle, to Dalaran, then the Skyborne portal in the Violet Citadel to the Mage Tower in Stormwind, and back the same way. Seen on the beta.", c: "r" },
+      { t: "The planner uses the skyship and the Skyborne portals only for trips to or from Zephras Isle, since they are meant for Skyborne.", c: "o" },
+      { t: "How Horde Skyborne leave the isle is not documented yet. The planner has no Horde route in or out.", c: "t" }] },
 };
 
 // ---- Points of interest. k = Kalimdor frame, e = Eastern Kingdoms frame, a = absolute map units
@@ -610,13 +617,14 @@ const POIS = [
   { id: "stormwind", n: "Stormwind City", t: "city", z: "elwynn", e: [38.2, 70.6], f: "alliance", d: "Human capital. In Forever it gains a harbor with a ship to Auberdine.", c: "c", fp: "alliance" },
   { id: "ironforge", n: "Ironforge", t: "city", z: "dunmorogh", e: [52.5, 53.4], f: "alliance", d: "Dwarven capital carved into the mountain. The Deeprun Tram links it to Stormwind.", c: "c", fp: "alliance" },
   { id: "undercity", n: "Undercity", t: "city", z: "tirisfal", e: [45, 15.8], f: "horde", d: "Forsaken capital in the sewers beneath the ruins of Lordaeron.", c: "c", fp: "horde" },
-  { id: "dalaran", n: "Dalaran", t: "city", z: "alterac", e: [38.6, 24.6], f: "neutral", isNew: true, d: "The Kirin Tor's city on Lordamere Lake. Its barrier falls in Forever and the rebuilt streets can be entered. Hub status for each faction is not known.", c: "r" },
+  { id: "dalaran", n: "Dalaran", t: "city", z: "alterac", e: [38.6, 24.6], f: "neutral", isNew: true, d: "The Kirin Tor's city on Lordamere Lake. Its barrier falls in Forever and the rebuilt streets can be entered. Skyship to Zephras Isle, and a Skyborne portal to Stormwind, both for the High Order.", c: "r" },
 
   // Ports and zeppelin towers
   { id: "rutheran", n: "Rut'theran Village", t: "port", z: "teldrassil", k: [31.0, -0.8], f: "alliance", d: "Dock at the foot of Teldrassil.", c: "c", fp: "alliance" },
   { id: "auberdine", n: "Auberdine", t: "port", z: "darkshore", k: [28.5, 14.6], f: "alliance", d: "Night elf harbor town. Two ships in Classic, to Menethil Harbor and to Rut'theran Village, plus two new lines in Forever: Stormwind Harbor, and Menethil by way of Southshore.", c: "c", fp: "alliance" },
   { id: "ratchet", n: "Ratchet", t: "port", z: "barrens", k: [70.6, 58.3], f: "neutral", d: "Steamwheedle Cartel port with the boat to Booty Bay.", c: "c", fp: "both" },
   { id: "theramore", n: "Theramore Isle", t: "port", z: "dustwallow", k: [79.3, 66.5], f: "alliance", d: "Jaina Proudmoore's island city. Boat to Menethil Harbor.", c: "c", fp: "alliance" },
+  { id: "valanaar", n: "Valanaar", t: "sky", z: "zephras", a: [1242, 204], f: "alliance", isNew: true, d: "High Order city in the south of Zephras Isle. Its skyship dock, south-east of the city, flies to Dalaran. Position on this map is symbolic.", c: "r" },
   { id: "steamwheedle", n: "Steamwheedle Port", t: "port", z: "tanaris", k: [78.7, 86.0], f: "neutral", isNew: true, d: "Goblin port on the Tanaris coast. In Forever, the departure point of the new route to the Riverglades.", c: "o" },
   { id: "feathermoon", n: "Feathermoon Stronghold", t: "port", z: "feralas", k: [5.8, 75.7], f: "alliance", d: "Night elf stronghold on the northern shore of Sardor Isle, the northern of the two islands off the Feralas coast.", c: "c", fp: "alliance" },
   { n: "Isle of Dread", t: "area", z: "feralas", k: [4.2, 80.4], d: "The southern island off Feralas, overrun by naga. No dock, no ferry: night elves on Sardor Isle watch it from across the water.", c: "c" },
@@ -769,6 +777,12 @@ const ROUTES = [
   { id: "r-org-uc", kind: "zep", f: "horde", from: "orgzep", to: "uczep", isNew: false, c: "c", note: "Classic zeppelin.", via: [[1180, 470]] },
   { id: "r-org-gg", kind: "zep", f: "horde", from: "orgzep", to: "gromgol", isNew: false, c: "c", note: "Classic zeppelin.", via: [[1200, 1130]] },
   { id: "r-uc-gg", kind: "zep", f: "horde", from: "uczep", to: "gromgol", isNew: false, c: "c", note: "Classic zeppelin.", via: [[1480, 560], [1470, 1000]] },
+  { id: "r-val-dal", kind: "sky", f: "alliance", skyborne: true, from: "valanaar", to: "dalaran", isNew: true, c: "r",
+    note: "New in Forever: the High Order skyship between Zephras Isle and Dalaran, seen on the beta. Made for Alliance Skyborne; whether other races can board is not known. The isle floats in Skywall, so this sky lane is symbolic.",
+    via: [[1330, 262], [1500, 330]] },
+  { id: "r-dal-sw", kind: "portal", f: "alliance", skyborne: true, from: "dalaran", to: "stormwind", isNew: true, c: "r",
+    note: "New in Forever: the Skyborne portals between the Violet Citadel in Dalaran and the Mage Tower in Stormwind, set up by the Kirin Tor for the High Order. Seen on the beta in both directions. Whether other Alliance races can use them is not known.",
+    via: [] },
   { id: "r-tram", kind: "tram", f: "alliance", from: "stormwind", to: "ironforge", isNew: false, c: "c", note: "The Deeprun Tram, under the mountains and the sea floor.", via: [] },
 ];
 
@@ -783,6 +797,8 @@ const SOURCES = [
   ["Blizzard Watch: zones, dungeons, raids", "https://blizzardwatch.com/2026/09/13/know-world-warcraft-forevers-new-zones-quests-dungeons-raids/"],
   ["Guided: ship routes and Grim Batol", "https://guided.news/en/news/wow-forever-everglades-with-200-quests-new-ship-routes-and-a-mystery-at-grim-batol/"],
   ["Warcraft Wiki: World of Warcraft: Forever", "https://warcraft.wiki.gg/wiki/World_of_Warcraft:_Forever"],
+  ["Warcraft Tavern: from Zephras Isle to Ironforge (skyship and portal)", "https://www.warcrafttavern.com/forever/guides/how-to-get-to-ironforge-from-the-zephras-isle/"],
+  ["Wowhead: Welcome to Azeroth, the High Order quest through the Skyborne portal", "https://www.wowhead.com/forever/quest=94947/welcome-to-azeroth"],
   ["InFlight addon: community-measured Classic flight times", "https://github.com/BLCtbc/inflight"],
   ["Warcraft Wiki: the Riverglades (beta patch 1.60.1)", "https://warcraft.wiki.gg/wiki/Riverglades"],
   ["WoW Forever Builds: beta datamine tracker (flight points, PvP queues)", "https://wowforeverbuilds.com/wow-forever-beta"],
@@ -859,6 +875,11 @@ const CITY_LINKS = [
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
+  { v: "4.5", d: "September 21, 2026", title: "The way out of Zephras Isle", items: [
+    ["new", "Alliance Skyborne now have a route off Zephras Isle: the skyship from Valanaar to Dalaran, then the Skyborne portal from the Violet Citadel to the Mage Tower in Stormwind, and back. Thanks to the Reddit players who reported it."],
+    ["new", "Portals now show on the map, as a purple dotted line."],
+    ["data", "The skyship and the Skyborne portals are made for the High Order, so the planner only uses them for trips to or from Zephras Isle."],
+    ["data", "The Horde way out of Zephras Isle is still undocumented, so the planner shows no Horde route there yet."]] },
   { v: "4.4", d: "September 21, 2026", title: "A text guide", items: [
     ["new", "A text version of the map: every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, with a short FAQ. Easier to read on a phone, and readable by search engines and AI assistants."]] },
   { v: "4.3", d: "September 21, 2026", title: "Get the addon", items: [
@@ -941,7 +962,7 @@ const FCOL={alliance:"#2f74d6",horde:"#c4432f",contested:"#3a5172",neutral:"#3c9
 const FNAME={alliance:"Alliance territory",horde:"Horde territory",contested:"Contested",neutral:"Neutral sanctuary",both:"Both factions (Skyborne start)",none:"Not accessible"};
 const FSHORT={alliance:"Alliance",horde:"Horde",neutral:"Neutral",contested:"Contested",both:"Both factions"};
 const CONF={o:["Official","Stated by Blizzard"],r:["Reported","From press coverage, panels or datamining; not in Blizzard's written material"],t:["To confirm","Our estimate or an open question; check it in the beta"],c:["Classic","Carried over from WoW Classic; Forever may still change it"]};
-const TNAME={city:"Capital city",town:"Town or outpost",port:"Harbor",zep:"Zeppelin tower",dungeon:"Dungeon",raid:"Raid",bg:"Battleground",area:"Landmark"};
+const TNAME={city:"Capital city",town:"Town or outpost",port:"Harbor",zep:"Zeppelin tower",sky:"Skyship dock",dungeon:"Dungeon",raid:"Raid",bg:"Battleground",area:"Landmark"};
 const STATUS={new:"New in Forever",changed:"Updated in Forever",classic:"Classic zone",closed:"Not accessible"};
 const seal=c=>`<span class="conf ${c}" title="${esc(CONF[c][1])}"><i></i>${CONF[c][0]}</span>`;
 const lvText=z=>z.lv?(z.lv[0]===z.lv[1]?`${z.lv[0]}`:`${z.lv[0]}\u2013${z.lv[1]}`):(z.status==="closed"?"closed":"?");
@@ -996,7 +1017,7 @@ ROUTES.forEach(r=>{ const pts=[POI[r.from].xy,...r.via.map(v=>typeof v==="string
   r.line=el("path",{d,class:`route ${r.kind}${r.isNew?" is-new":""}`},g);
   const hit=el("path",{d,class:"rhit",tabindex:0,role:"button","aria-label":routeTitle(r)},g); hit._r=r; routeEls[r.id]=g; });
 function routeTitle(r){return [POI[r.from].n,...(r.stops||[]).map(s=>POI[s].n),POI[r.to].n].join(" \u2194 ");}
-const kindName=r=>r.kind==="boat"?"Ship":r.kind==="zep"?"Zeppelin":"Deeprun Tram";
+const kindName=r=>r.kind==="boat"?"Ship":r.kind==="zep"?"Zeppelin":r.kind==="sky"?"Skyship":r.kind==="portal"?"Skyborne portal":"Deeprun Tram";
 
 /* ---------------- draw: POIs ---------------- */
 const ICON={
@@ -1004,12 +1025,13 @@ const ICON={
  town:'<circle r="3.6" fill="#e7eef8" stroke="#081220" stroke-width="1.4"/>',
  port:'<circle r="8" fill="#0f2c52" stroke="#a9d2ff" stroke-width="1.4"/><path d="M0-4.4v8.6M-4 1.2c.4 2.4 1.9 3.4 4 3.4s3.6-1 4-3.4M-2.3-2h4.6" fill="none" stroke="#a9d2ff" stroke-width="1.5" stroke-linecap="round"/><circle cy="-4.9" r="1.2" fill="#a9d2ff"/>',
  zep:'<circle r="8" fill="#3a1713" stroke="#ff9f8c" stroke-width="1.4"/><ellipse cy="-1.4" rx="4.8" ry="2.7" fill="#ff9f8c"/><path d="M-1.8 1.8h3.6v2.2h-3.6z" fill="#ff9f8c"/>',
+ sky:'<circle r="8" fill="#0f2c52" stroke="#a9d2ff" stroke-width="1.4"/><ellipse cy="-1.4" rx="4.8" ry="2.7" fill="#a9d2ff"/><path d="M-1.8 1.8h3.6v2.2h-3.6z" fill="#a9d2ff"/>',
  dungeon:'<path d="M0-8L7 0 0 8-7 0z" fill="#081220" stroke="#e7eef8" stroke-width="1.4"/><path d="M-2.1 2.4v-2.9a2.1 2.1 0 014.2 0v2.9z" fill="#e7eef8"/>',
  raid:'<path d="M0-10L9 0 0 10-9 0z" fill="#3b1d66" stroke="#d4bcff" stroke-width="1.5"/><path d="M-3.4 2.4l.8-5 2.6 2.4 2.6-2.4.8 5z" fill="#d4bcff"/>',
  bg:'<circle r="8" fill="#081220" stroke="#e7eef8" stroke-width="1.4"/><path d="M-3.6-3.6l7.2 7.2M3.6-3.6l-7.2 7.2" stroke="#e7eef8" stroke-width="1.7" stroke-linecap="round"/>',
  area:'<circle r="4" fill="#081220" fill-opacity=".5" stroke="#e7eef8" stroke-width="1.4"/><circle r="1.3" fill="#e7eef8"/>'
 };
-const RAD={city:9,town:4,port:8,zep:8,dungeon:8,raid:10,bg:8,area:4.2};
+const RAD={city:9,town:4,port:8,zep:8,sky:8,dungeon:8,raid:10,bg:8,area:4.2};
 const ORDER={area:0,town:1,bg:2,dungeon:3,raid:4,zep:5,port:6,city:7};
 const poiEls={};
 [...POIS].sort((a,b)=>ORDER[a.t]-ORDER[b.t]).forEach(p=>{
@@ -1055,7 +1077,7 @@ function restyle(){ const k=V.k, rel=k/fitK, inv=1/k, L=state.layers;
     g.lastChild.style.display=L.levels?"":"none"; }
   for(const id in poiEls){ const g=poiEls[id], p=g._p; let show=true;
     if(p.t==="dungeon"||p.t==="raid"||p.t==="bg") show=L.dungeons; else if(p.t==="town"||p.t==="area") show=L.towns&&(rel>TOWN_Z||p.isNew&&rel>1.05);
-    else if(p.t==="port") show=L.boats||L.towns; else if(p.t==="zep") show=L.zeps;
+    else if(p.t==="port") show=L.boats||L.towns; else if(p.t==="zep"||p.t==="sky") show=L.zeps;
     if(L.onlynew&&!p.isNew&&p.t!=="city") show=false;
     if(state.sel&&state.sel.type==="poi"&&state.sel.id===id) show=true;
     if(state.sel&&state.sel.type==="route"){const r=state.sel.r; if([r.from,r.to,...(r.stops||[])].includes(id)) show=true;}
@@ -1083,7 +1105,7 @@ function paint(){ for(const id in zoneEls){ const z=ZONES[id], e=zoneEls[id];
 function legend(){ const L=$("#legend");
   if(state.mode==="faction") L.innerHTML=`<h3>Zone colors: who holds it</h3><div class="legend">`+["alliance","horde","contested","neutral","both"].map(f=>`<div><span class="sw" style="background:${FCOL[f]}"></span>${FNAME[f]}</div>`).join("")+`<div><span class="sw" style="background:repeating-linear-gradient(40deg,#16263c 0 3px,#2c4263 3px 5px)"></span>Not accessible</div></div>`;
   else L.innerHTML=`<h3>Zone colors: level range</h3><div class="ramp"></div><div class="ramp-l"><span>1</span><span>20</span><span>35</span><span>50</span><span>60</span></div>`;
-  L.innerHTML+=`<h3>Markers</h3><div class="legend">`+[["city","Capital city"],["port","Harbor"],["zep","Zeppelin tower"],["dungeon","Dungeon"],["raid","Raid"],["bg","Battleground"]].map(([t,n])=>`<div><svg class="ico" viewBox="-11 -11 22 22">${ICON[t]}</svg>${n}</div>`).join("")+
+  L.innerHTML+=`<h3>Markers</h3><div class="legend">`+[["city","Capital city"],["port","Harbor"],["zep","Zeppelin tower"],["sky","Skyship dock"],["dungeon","Dungeon"],["raid","Raid"],["bg","Battleground"]].map(([t,n])=>`<div><svg class="ico" viewBox="-11 -11 22 22">${ICON[t]}</svg>${n}</div>`).join("")+
    (state.layers.flights?["alliance","horde","both"].map(f=>`<div><svg class="ico" viewBox="-11 -11 22 22">${fpIcon(f)}</svg>${FPNAME[f]}</div>`).join(""):"")+
    `<div><svg class="ico" viewBox="-11 -11 22 22"><circle r="8" fill="none" stroke="#e0b95a" stroke-width="2"/><circle r="3.6" fill="#e7eef8" stroke="#081220" stroke-width="1.4"/></svg>Gold ring or line: new in Forever</div></div>`; }
 
@@ -1104,7 +1126,7 @@ function renderZone(z){ const ps=POIS.filter(p=>p.z===z.id), grp=(ts)=>ps.filter
    <p class="lead">${esc(z.lore)}</p>
    ${z.forever.length?`<h2>What Forever changes here</h2><ul class="facts">${z.forever.map(f=>`<li>${seal(f.c)}${esc(f.t)}</li>`).join("")}</ul>`:`<h2>What Forever changes here</h2><p class="areas">Nothing announced for this zone yet. Blizzard says more than 1,000 new quests are spread across the 1\u201360 journey, so expect additions.</p>`}
    ${sec("Dungeons and raids",grp(["dungeon","raid","bg"]).sort((a,b)=>(a.lv?a.lv[0]:99)-(b.lv?b.lv[0]:99)))}
-   ${sec("Cities, towns and harbors",grp(["city","port","zep","town"]))}
+   ${sec("Cities, towns and harbors",grp(["city","port","zep","sky","town"]))}
    ${sec("Landmarks",grp(["area"]))}
    ${z.areas.length?`<h2>Questing areas and places of note</h2><p class="areas">${z.areas.map(esc).join(" \u00b7 ")}</p>`:""}
    ${rts.length?`<h2>Travel from here</h2>${rts.map(routeCard).join("")}`:""}
@@ -1173,7 +1195,7 @@ function render(){ const s=state.sel;
 const norm=s=>s.toLowerCase().replace(/[\u2019'`]/g,"'");
 /* ---------------- route planner ---------------- */
 const GATES=GEO.gates||{};
-const NODE_POIS=POIS.filter(p=>["city","port","zep"].includes(p.t)||p.fp);
+const NODE_POIS=POIS.filter(p=>["city","port","zep","sky"].includes(p.t)||p.fp);
 const plan={f:"alliance",from:"",to:"",res:null,speed:"foot",auto:true,fp:false,alt:false,opts:false};
 const SPEEDS={foot:["On foot",1],form:["Travel form",1.4],m60:["Mount 60%",1.6],m100:["Mount 100%",2]};
 try{const sv=JSON.parse(localStorage.getItem("fa-plan")||"{}"); if(sv.f==="horde"||sv.f==="alliance") plan.f=sv.f; if(SPEEDS[sv.speed]){plan.speed=sv.speed;plan.auto=false;} plan.fp=!!sv.fp;}catch(e){}
@@ -1183,7 +1205,7 @@ const savePlan=()=>{try{localStorage.setItem("fa-plan",JSON.stringify({f:plan.f,
 const FOOT_SPU=19*1.15/7;
 const autoSpeed=()=>state.level>=60?"m100":state.level>=40?"m60":"foot";
 const spu=()=>FOOT_SPU/SPEEDS[plan.speed][1];
-const RIDE={boat:[120,0,300],zep:[120,0,300],ferry:[90,0,180],tram:[75,0,90]}; /* seconds on board, min wait, max wait */
+const RIDE={boat:[120,0,300],zep:[120,0,300],sky:[120,0,300],portal:[15,0,0],ferry:[90,0,180],tram:[75,0,90]}; /* seconds on board, min wait, max wait */
 const rideOf=r=>RIDE[r.kind==="tram"?"tram":(r.id==="r-aub-rut"||r.id==="r-fea-for")?"ferry":r.kind];
 
 const zc=id=>[GEO.zones[id].cx,GEO.zones[id].cy];
@@ -1203,7 +1225,7 @@ function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A
   NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*S*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
   CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*S+30),{k:"link",via,fixed,verb}));
   if(plan.fp){ const fm=POIS.filter(p=>p.fp&&(p.fp==="both"||p.fp===f)); for(let i=0;i<fm.length;i++) for(let j=i+1;j<fm.length;j++) if(contOf(fm[i])===contOf(fm[j])){ const ft=flightTime(f,fm[i],fm[j]); add("p:"+fm[i].id,"p:"+fm[j].id,ft.sec+25,{k:"fly",ft}); } }
-  ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; const stops=[r.from,...(r.stops||[]),r.to];
+  ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; if(r.skyborne&&(!ok||!plan.sky)) return; /* Skyborne-only links: used only for trips to or from Zephras Isle, where the traveler must be a Skyborne */ const stops=[r.from,...(r.stops||[]),r.to];
     for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r), cross=contOf(POI[stops[i]])!==contOf(POI[stops[i+1]]); add("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800)+(cross&&seaPen?SEA_PEN:0),{k:"ride",r,ok,cross}); } });
   return A; }
 function shortest(A,src,dst,f){ const D={[src]:0},P={},done=new Set();
@@ -1223,12 +1245,13 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   if(!na||!nb) return {ok:false,msg:dead(!na?a:b)||"No route."};
   if(a.id===b.id&&a.type===b.type) return {ok:false,msg:"That's the same place."};
   /* Graph weights hop between zone centres, which overstates walking. Try three weightings and keep the route whose real estimate is lowest. */
+  plan.sky=[a,b].some(pl=>(pl.type==="zone"?pl.id:POI[pl.id].z)==="zephras");
   let cands=[], forced=false; const seen=new Set();
   const gather=strict=>[true,false].forEach(pen=>[1,.75,.55].forEach(k=>{ const p=shortest(buildGraph(plan.f,strict,k,pen),na,nb,plan.f); if(p&&!seen.has(p.nodes.join(">"))){seen.add(p.nodes.join(">"));cands.push(p);} }));
   gather(true); if(!cands.length){ gather(false); forced=true; }
   let path=cands[0];
   if(!path){ const zid=[a,b].map(pl=>pl.type==="zone"?pl.id:POI[pl.id].z).find(z=>z==="zephras");
-    return {ok:false,msg:zid?"No known way in or out of Zephras Isle yet. Where Skyborne arrive on Azeroth after level 12 has not been announced.":"No known route between these two places."}; }
+    return {ok:false,msg:zid?(plan.f==="horde"?"No known Horde way in or out of Zephras Isle yet. The Alliance takes a skyship to Dalaran; the Horde route is not documented.":"No known way in or out of Zephras Isle for this trip."):"No known route between these two places."}; }
   const built=cands.map(p=>buildPlan(p,a,b,forced)); built.sort((x,y)=>x.time.score-y.time.score);
   const best=built[0], quick=built.slice(1).filter(x=>x.time.mid<best.time.mid-120&&x.crossings>best.crossings).sort((x,y)=>x.time.mid-y.time.mid)[0];
   if(plan.alt&&quick){ quick.isAlt=true; quick.other=best; return quick; }
@@ -1249,10 +1272,11 @@ function buildPlan(path,a,b,forced){
       steps.push({t:`Fly from ${A.n} to ${B.n}`,s:e.ft.real?"Flight path · time measured in Classic":"Flight path · estimated time",w:zwarn(ZONES[B.z]),sec:take(0)+e.ft.sec,fix:e.ft.sec}); }
     else if(e.k==="link"){ cur.push(nodeXY(v)); const walked=leg(nodeXY(v)), s=e.fixed||Math.max(30,walked); if(!last) steps.push({t:`${e.verb||"Walk to"} ${nodeName(v)}`,s:`Through ${e.via}`,w:[],sec:take(s),fix:e.fixed||0}); else pend+=s; }
     else { const r=e.r, ia=r.pts.indexOf(POI[u.slice(2)].xy), ib=r.pts.indexOf(POI[v.slice(2)].xy); let pts=r.pts.slice(Math.min(ia,ib),Math.max(ia,ib)+1); if(ia>ib) pts=pts.reverse();
-      if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:r.kind==="tram"?"land":"sea",pts}); cur=[POI[v.slice(2)].xy]; zones.add(POI[v.slice(2)].z);
+      if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:r.kind==="tram"?"land":r.kind==="portal"?"portal":"sea",pts}); cur=[POI[v.slice(2)].xy]; zones.add(POI[v.slice(2)].z);
       if(e.cross) crossings++;
       const w=zwarn(ZONES[POI[v.slice(2)].z]); if(!e.ok) w.push([`${FSHORT[r.f]} ports. Their guards will attack you on the docks. There is no ${FSHORT[F]} alternative.`,""]);
       if(r.stops&&r.stops.length) w.push(["Stop order on this line is not confirmed yet.","soft"]);
+      if(r.skyborne) w.push(["Made for Skyborne of the High Order. Other races may not be able to use it.","soft"]);
       const rd=rideOf(r); prevPt=POI[v.slice(2)].xy; steps.push({t:`${kindName(r)} from ${nodeName(u)} to ${nodeName(v)}`,s:r.isNew?"New in Forever":"Classic route",c:r.c!=="c"?r.c:null,w,ride:rd,sec:take(0)}); } });
   const ez=b.type==="zone"?b.id:POI[b.id].z; zones.add(ez); cur.push(placeXY(b)); if(cur.length>1) segs.push({k:"land",pts:cur});
   const ew=[]; if(b.type==="poi"&&POI[b.id].f===foe(F)) ew.push([`${FSHORT[POI[b.id].f]} ${POI[b.id].t==="city"?"capital":"town"}. You will not be welcome.`,""]);
@@ -1305,7 +1329,7 @@ function renderPlan(){ const r=plan.res;
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
        <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}
-       <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2]):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
+       <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?(s.ride[1]===s.ride[2]?fmtMin(s.ride[0]+s.ride[1]):fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2])):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
        <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
 
 /* ---------------- selection ---------------- */
