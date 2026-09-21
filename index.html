@@ -497,7 +497,7 @@ const ZONES = {
     forever: [
       { t: "Dalaran's barrier falls and the rebuilt city can be entered; players help its denizens.", c: "r" },
       { t: "City of Dalaran is a new dungeon about strange magical trouble inside the city.", c: "o" },
-      { t: "A skyship links Dalaran to Valanaar on Zephras Isle, and a Skyborne portal in the Violet Citadel links the city to the Mage Tower in Stormwind, both ways. The Kirin Tor set it up for the High Order; whether other races can use it is not known.", c: "r" },
+      { t: "A skyship links Dalaran to Valanaar on Zephras Isle, and a Skyborne portal in the Violet Citadel links the city to the Mage Tower in Stormwind, both ways. The Kirin Tor set it up for the High Order, and players report that only Skyborne can use it.", c: "r" },
       { t: "Whether Dalaran works as a sanctuary for both factions is not known.", c: "t" }] },
   hillsbrad: { name: "Hillsbrad Foothills", cont: "Eastern Kingdoms", lv: [20, 30], faction: "contested", status: "changed",
     lore: "Green farmland between Southshore and Tarren Mill, two towns a short ride apart and the site of the longest-running world PvP brawl in the game's history.",
@@ -603,8 +603,8 @@ const ZONES = {
       { t: "Designed as a self-contained experience: developers said players will not be sent back for a raid.", c: "r" },
       { t: "The isle lies in the elemental plane of Skywall. Its position on this map is symbolic.", c: "o" },
       { t: "Alliance way out: a skyship from Valanaar, in the south of the isle, to Dalaran, then the Skyborne portal in the Violet Citadel to the Mage Tower in Stormwind, and back the same way. Seen on the beta.", c: "r" },
-      { t: "The planner uses the skyship and the Skyborne portals only for trips to or from Zephras Isle, since they are meant for Skyborne.", c: "o" },
-      { t: "How Horde Skyborne leave the isle is not documented yet. The planner has no Horde route in or out.", c: "t" }] },
+      { t: "Horde way out: a zeppelin from the isle to Thunder Bluff, seen on the beta. No portal onward to Orgrimmar was seen on arrival.", c: "r" },
+      { t: "Players report that only Skyborne can take the Skyborne portal in Stormwind; other races are turned away. The planner uses these Skyborne links only for trips to or from Zephras Isle.", c: "r" }] },
 };
 
 // ---- Points of interest. k = Kalimdor frame, e = Eastern Kingdoms frame, a = absolute map units
@@ -613,7 +613,7 @@ const POIS = [
   // Cities
   { id: "darnassus", n: "Darnassus", t: "city", z: "teldrassil", k: [27.5, -8.5], f: "alliance", d: "Night elf capital in the boughs of Teldrassil.", c: "c" },
   { id: "orgrimmar", n: "Orgrimmar", t: "city", z: "durotar", k: [72.6, 41.6], f: "horde", d: "Horde capital, named for Orgrim Doomhammer. Zeppelin towers stand outside the gates.", c: "c", fp: "horde" },
-  { id: "thunderbluff", n: "Thunder Bluff", t: "city", z: "mulgore", k: [41.5, 57.8], f: "horde", d: "Tauren capital on the mesas of northern Mulgore.", c: "c", fp: "horde" },
+  { id: "thunderbluff", n: "Thunder Bluff", t: "city", z: "mulgore", k: [41.5, 57.8], f: "horde", d: "Tauren capital on the mesas of northern Mulgore. In Forever, a zeppelin links it to Zephras Isle for Horde Skyborne.", c: "c", fp: "horde" },
   { id: "stormwind", n: "Stormwind City", t: "city", z: "elwynn", e: [38.2, 70.6], f: "alliance", d: "Human capital. In Forever it gains a harbor with a ship to Auberdine.", c: "c", fp: "alliance" },
   { id: "ironforge", n: "Ironforge", t: "city", z: "dunmorogh", e: [52.5, 53.4], f: "alliance", d: "Dwarven capital carved into the mountain. The Deeprun Tram links it to Stormwind.", c: "c", fp: "alliance" },
   { id: "undercity", n: "Undercity", t: "city", z: "tirisfal", e: [45, 15.8], f: "horde", d: "Forsaken capital in the sewers beneath the ruins of Lordaeron.", c: "c", fp: "horde" },
@@ -624,7 +624,7 @@ const POIS = [
   { id: "auberdine", n: "Auberdine", t: "port", z: "darkshore", k: [28.5, 14.6], f: "alliance", d: "Night elf harbor town. Two ships in Classic, to Menethil Harbor and to Rut'theran Village, plus two new lines in Forever: Stormwind Harbor, and Menethil by way of Southshore.", c: "c", fp: "alliance" },
   { id: "ratchet", n: "Ratchet", t: "port", z: "barrens", k: [70.6, 58.3], f: "neutral", d: "Steamwheedle Cartel port with the boat to Booty Bay.", c: "c", fp: "both" },
   { id: "theramore", n: "Theramore Isle", t: "port", z: "dustwallow", k: [79.3, 66.5], f: "alliance", d: "Jaina Proudmoore's island city. Boat to Menethil Harbor.", c: "c", fp: "alliance" },
-  { id: "valanaar", n: "Valanaar", t: "sky", z: "zephras", a: [1242, 204], f: "alliance", isNew: true, d: "High Order city in the south of Zephras Isle. Its skyship dock, south-east of the city, flies to Dalaran. Position on this map is symbolic.", c: "r" },
+  { id: "valanaar", n: "Valanaar", t: "sky", z: "zephras", a: [1242, 204], f: "neutral", isNew: true, d: "Skyborne city in the south of Zephras Isle. A skyship flies to Dalaran for the Alliance and a zeppelin to Thunder Bluff for the Horde. The exact Horde departure point is not documented. Position on this map is symbolic.", c: "r" },
   { id: "steamwheedle", n: "Steamwheedle Port", t: "port", z: "tanaris", k: [78.7, 86.0], f: "neutral", isNew: true, d: "Goblin port on the Tanaris coast. In Forever, the departure point of the new route to the Riverglades.", c: "o" },
   { id: "feathermoon", n: "Feathermoon Stronghold", t: "port", z: "feralas", k: [5.8, 75.7], f: "alliance", d: "Night elf stronghold on the northern shore of Sardor Isle, the northern of the two islands off the Feralas coast.", c: "c", fp: "alliance" },
   { n: "Isle of Dread", t: "area", z: "feralas", k: [4.2, 80.4], d: "The southern island off Feralas, overrun by naga. No dock, no ferry: night elves on Sardor Isle watch it from across the water.", c: "c" },
@@ -778,10 +778,13 @@ const ROUTES = [
   { id: "r-org-gg", kind: "zep", f: "horde", from: "orgzep", to: "gromgol", isNew: false, c: "c", note: "Classic zeppelin.", via: [[1200, 1130]] },
   { id: "r-uc-gg", kind: "zep", f: "horde", from: "uczep", to: "gromgol", isNew: false, c: "c", note: "Classic zeppelin.", via: [[1480, 560], [1470, 1000]] },
   { id: "r-val-dal", kind: "sky", f: "alliance", skyborne: true, from: "valanaar", to: "dalaran", isNew: true, c: "r",
-    note: "New in Forever: the High Order skyship between Zephras Isle and Dalaran, seen on the beta. Made for Alliance Skyborne; whether other races can board is not known. The isle floats in Skywall, so this sky lane is symbolic.",
+    note: "New in Forever: the High Order skyship between Zephras Isle and Dalaran, seen on the beta. Made for Alliance Skyborne. The isle floats in Skywall, so this sky lane is symbolic.",
     via: [[1330, 262], [1500, 330]] },
+  { id: "r-val-tb", kind: "zep", f: "horde", skyborne: true, from: "valanaar", to: "thunderbluff", isNew: true, c: "r",
+    note: "New in Forever: the Windshaper zeppelin between Zephras Isle and Thunder Bluff, seen on the beta. Made for Horde Skyborne. Where it docks on the isle is not documented, and the isle floats in Skywall, so this sky lane is symbolic.",
+    via: [[1100, 330], [800, 560], [600, 790]] },
   { id: "r-dal-sw", kind: "portal", f: "alliance", skyborne: true, from: "dalaran", to: "stormwind", isNew: true, c: "r",
-    note: "New in Forever: the Skyborne portals between the Violet Citadel in Dalaran and the Mage Tower in Stormwind, set up by the Kirin Tor for the High Order. Seen on the beta in both directions. Whether other Alliance races can use them is not known.",
+    note: "New in Forever: the Skyborne portals between the Violet Citadel in Dalaran and the Mage Tower in Stormwind, set up by the Kirin Tor for the High Order. Seen on the beta in both directions. Players report that only Skyborne can use them.",
     via: [] },
   { id: "r-tram", kind: "tram", f: "alliance", from: "stormwind", to: "ironforge", isNew: false, c: "c", note: "The Deeprun Tram, under the mountains and the sea floor.", via: [] },
 ];
@@ -798,6 +801,7 @@ const SOURCES = [
   ["Guided: ship routes and Grim Batol", "https://guided.news/en/news/wow-forever-everglades-with-200-quests-new-ship-routes-and-a-mystery-at-grim-batol/"],
   ["Warcraft Wiki: World of Warcraft: Forever", "https://warcraft.wiki.gg/wiki/World_of_Warcraft:_Forever"],
   ["Warcraft Tavern: from Zephras Isle to Ironforge (skyship and portal)", "https://www.warcrafttavern.com/forever/guides/how-to-get-to-ironforge-from-the-zephras-isle/"],
+  ["Beta video: Horde Skyborne zeppelin from Zephras Isle to Thunder Bluff", "https://youtu.be/rvSuSkz5qlU"],
   ["Wowhead: Welcome to Azeroth, the High Order quest through the Skyborne portal", "https://www.wowhead.com/forever/quest=94947/welcome-to-azeroth"],
   ["InFlight addon: community-measured Classic flight times", "https://github.com/BLCtbc/inflight"],
   ["Warcraft Wiki: the Riverglades (beta patch 1.60.1)", "https://warcraft.wiki.gg/wiki/Riverglades"],
@@ -875,11 +879,11 @@ const CITY_LINKS = [
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
-  { v: "4.5", d: "September 21, 2026", title: "The way out of Zephras Isle", items: [
+  { v: "4.5", d: "September 21, 2026", title: "The ways out of Zephras Isle", items: [
     ["new", "Alliance Skyborne now have a route off Zephras Isle: the skyship from Valanaar to Dalaran, then the Skyborne portal from the Violet Citadel to the Mage Tower in Stormwind, and back. Thanks to the Reddit players who reported it."],
+    ["new", "Horde Skyborne too: the zeppelin from Zephras Isle to Thunder Bluff."],
     ["new", "Portals now show on the map, as a purple dotted line."],
-    ["data", "The skyship and the Skyborne portals are made for the High Order, so the planner only uses them for trips to or from Zephras Isle."],
-    ["data", "The Horde way out of Zephras Isle is still undocumented, so the planner shows no Horde route there yet."]] },
+    ["data", "Players report that only Skyborne can take the Skyborne portal in Stormwind. The planner uses the Skyborne links only for trips to or from Zephras Isle."]] },
   { v: "4.4", d: "September 21, 2026", title: "A text guide", items: [
     ["new", "A text version of the map: every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, with a short FAQ. Easier to read on a phone, and readable by search engines and AI assistants."]] },
   { v: "4.3", d: "September 21, 2026", title: "Get the addon", items: [
@@ -962,7 +966,7 @@ const FCOL={alliance:"#2f74d6",horde:"#c4432f",contested:"#3a5172",neutral:"#3c9
 const FNAME={alliance:"Alliance territory",horde:"Horde territory",contested:"Contested",neutral:"Neutral sanctuary",both:"Both factions (Skyborne start)",none:"Not accessible"};
 const FSHORT={alliance:"Alliance",horde:"Horde",neutral:"Neutral",contested:"Contested",both:"Both factions"};
 const CONF={o:["Official","Stated by Blizzard"],r:["Reported","From press coverage, panels or datamining; not in Blizzard's written material"],t:["To confirm","Our estimate or an open question; check it in the beta"],c:["Classic","Carried over from WoW Classic; Forever may still change it"]};
-const TNAME={city:"Capital city",town:"Town or outpost",port:"Harbor",zep:"Zeppelin tower",sky:"Skyship dock",dungeon:"Dungeon",raid:"Raid",bg:"Battleground",area:"Landmark"};
+const TNAME={city:"Capital city",town:"Town or outpost",port:"Harbor",zep:"Zeppelin tower",sky:"Sky dock",dungeon:"Dungeon",raid:"Raid",bg:"Battleground",area:"Landmark"};
 const STATUS={new:"New in Forever",changed:"Updated in Forever",classic:"Classic zone",closed:"Not accessible"};
 const seal=c=>`<span class="conf ${c}" title="${esc(CONF[c][1])}"><i></i>${CONF[c][0]}</span>`;
 const lvText=z=>z.lv?(z.lv[0]===z.lv[1]?`${z.lv[0]}`:`${z.lv[0]}\u2013${z.lv[1]}`):(z.status==="closed"?"closed":"?");
@@ -1105,7 +1109,7 @@ function paint(){ for(const id in zoneEls){ const z=ZONES[id], e=zoneEls[id];
 function legend(){ const L=$("#legend");
   if(state.mode==="faction") L.innerHTML=`<h3>Zone colors: who holds it</h3><div class="legend">`+["alliance","horde","contested","neutral","both"].map(f=>`<div><span class="sw" style="background:${FCOL[f]}"></span>${FNAME[f]}</div>`).join("")+`<div><span class="sw" style="background:repeating-linear-gradient(40deg,#16263c 0 3px,#2c4263 3px 5px)"></span>Not accessible</div></div>`;
   else L.innerHTML=`<h3>Zone colors: level range</h3><div class="ramp"></div><div class="ramp-l"><span>1</span><span>20</span><span>35</span><span>50</span><span>60</span></div>`;
-  L.innerHTML+=`<h3>Markers</h3><div class="legend">`+[["city","Capital city"],["port","Harbor"],["zep","Zeppelin tower"],["sky","Skyship dock"],["dungeon","Dungeon"],["raid","Raid"],["bg","Battleground"]].map(([t,n])=>`<div><svg class="ico" viewBox="-11 -11 22 22">${ICON[t]}</svg>${n}</div>`).join("")+
+  L.innerHTML+=`<h3>Markers</h3><div class="legend">`+[["city","Capital city"],["port","Harbor"],["zep","Zeppelin tower"],["sky","Sky dock"],["dungeon","Dungeon"],["raid","Raid"],["bg","Battleground"]].map(([t,n])=>`<div><svg class="ico" viewBox="-11 -11 22 22">${ICON[t]}</svg>${n}</div>`).join("")+
    (state.layers.flights?["alliance","horde","both"].map(f=>`<div><svg class="ico" viewBox="-11 -11 22 22">${fpIcon(f)}</svg>${FPNAME[f]}</div>`).join(""):"")+
    `<div><svg class="ico" viewBox="-11 -11 22 22"><circle r="8" fill="none" stroke="#e0b95a" stroke-width="2"/><circle r="3.6" fill="#e7eef8" stroke="#081220" stroke-width="1.4"/></svg>Gold ring or line: new in Forever</div></div>`; }
 
@@ -1251,7 +1255,7 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   gather(true); if(!cands.length){ gather(false); forced=true; }
   let path=cands[0];
   if(!path){ const zid=[a,b].map(pl=>pl.type==="zone"?pl.id:POI[pl.id].z).find(z=>z==="zephras");
-    return {ok:false,msg:zid?(plan.f==="horde"?"No known Horde way in or out of Zephras Isle yet. The Alliance takes a skyship to Dalaran; the Horde route is not documented.":"No known way in or out of Zephras Isle for this trip."):"No known route between these two places."}; }
+    return {ok:false,msg:zid?"No known way in or out of Zephras Isle for this trip.":"No known route between these two places."}; }
   const built=cands.map(p=>buildPlan(p,a,b,forced)); built.sort((x,y)=>x.time.score-y.time.score);
   const best=built[0], quick=built.slice(1).filter(x=>x.time.mid<best.time.mid-120&&x.crossings>best.crossings).sort((x,y)=>x.time.mid-y.time.mid)[0];
   if(plan.alt&&quick){ quick.isAlt=true; quick.other=best; return quick; }
@@ -1276,7 +1280,7 @@ function buildPlan(path,a,b,forced){
       if(e.cross) crossings++;
       const w=zwarn(ZONES[POI[v.slice(2)].z]); if(!e.ok) w.push([`${FSHORT[r.f]} ports. Their guards will attack you on the docks. There is no ${FSHORT[F]} alternative.`,""]);
       if(r.stops&&r.stops.length) w.push(["Stop order on this line is not confirmed yet.","soft"]);
-      if(r.skyborne) w.push(["Made for Skyborne of the High Order. Other races may not be able to use it.","soft"]);
+      if(r.skyborne) w.push([r.kind==="portal"?"Skyborne only. Players report that other races cannot take it.":"Made for Skyborne. Whether other races can board is not known.","soft"]);
       const rd=rideOf(r); prevPt=POI[v.slice(2)].xy; steps.push({t:`${kindName(r)} from ${nodeName(u)} to ${nodeName(v)}`,s:r.isNew?"New in Forever":"Classic route",c:r.c!=="c"?r.c:null,w,ride:rd,sec:take(0)}); } });
   const ez=b.type==="zone"?b.id:POI[b.id].z; zones.add(ez); cur.push(placeXY(b)); if(cur.length>1) segs.push({k:"land",pts:cur});
   const ew=[]; if(b.type==="poi"&&POI[b.id].f===foe(F)) ew.push([`${FSHORT[POI[b.id].f]} ${POI[b.id].t==="city"?"capital":"town"}. You will not be welcome.`,""]);
