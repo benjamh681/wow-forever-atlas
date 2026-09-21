@@ -275,6 +275,8 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
   .top{padding:8px 12px;gap:8px 10px}
   .mark .t{font-size:16px}
   .cta{display:none}
+  .cta.addon{display:inline-flex;padding:6px 10px;font-size:12.5px}
+  .cta.addon svg{display:none}
   .lvl label{display:none}
   .lvl input{width:58px}
   .seg button{padding:5px 10px}
@@ -288,6 +290,26 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 }
 @media (max-width: 380px){ .mark svg{display:none} }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+
+/* Travelcraft addon: green call to action */
+:root{--get:#2fa56a;--get-hi:#38b877;--get-ink:#ffffff}
+.cta.addon{background:var(--get);color:var(--get-ink)}
+.cta .soon{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(255,255,255,.2);border-radius:5px;padding:2px 6px;margin-left:2px}
+.get{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;box-sizing:border-box;background:var(--get);color:var(--get-ink);border:0;border-radius:10px;padding:14px 18px;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;margin:6px 0 8px}
+.get:hover{background:var(--get-hi)}
+.get svg{width:20px;height:20px}
+.get.waiting{cursor:default;opacity:.92}
+.get.waiting:hover{background:var(--get)}
+.getnote{font-size:13px;color:var(--muted);text-align:center;margin:0 0 18px}
+.addoncard{display:flex;gap:12px;align-items:center;background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--get);border-radius:10px;padding:12px 14px;margin:18px 0 4px}
+.addoncard .ac-t{font-weight:600;font-size:14.5px}
+.addoncard .ac-s{font-size:13px;color:var(--muted);margin-top:2px}
+.addoncard .ac-b{flex:none;background:var(--get);color:var(--get-ink);border:0;border-radius:8px;padding:8px 12px;font-weight:600;font-size:13.5px;cursor:pointer}
+.addoncard .ac-b:hover{background:var(--get-hi)}
+.shot{width:100%;height:auto;border-radius:10px;border:1px solid var(--line);display:block;margin:6px 0 4px}
+.shotcap{font-size:12.5px;color:var(--muted);margin:0 0 16px}
+ol.howto{margin:0;padding-left:20px}
+ol.howto li{padding:5px 0}
 </style>
 </head>
 <body>
@@ -303,6 +325,7 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
     <div class="results" id="results" role="listbox"></div>
   </div>
   <button class="cta" id="planCta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 000-7H9a3.5 3.5 0 010-7h6.5"/></svg>Plan a route</button>
+  <button class="cta addon" id="addonCta" data-gc="addon-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Get the addon<span class="soon" id="addonSoon">Soon</span></button>
   <div class="tools">
     <div class="lvl"><label for="lv">Your level</label><input id="lv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60"><button id="lvclear" hidden>clear</button></div>
     <div class="seg" role="group" aria-label="Color zones by">
@@ -830,7 +853,15 @@ const CITY_LINKS = [
 ];
 
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
+/* Travelcraft addon. Paste the CurseForge page address here once the project is approved:
+   every button on the map switches from "coming soon" to a real download link. */
+const ADDON_URL = "";
+const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
+  { v: "4.3", d: "September 21, 2026", title: "Get the addon", items: [
+    ["new", "A green Get the addon button in the top bar, and an addon page: what it does, how it works, how to install it. The download goes live as soon as CurseForge approves the addon."],
+    ["new", "Under the route planner, a short card points to the addon, so you can take your routes into the game."],
+    ["new", "Link straight to the addon page with #addon at the end of the address."]] },
   { v: "4.2", d: "September 21, 2026", title: "The Travelcraft addon", items: [
     ["new", "Travelcraft is now also an addon for the game. It plans the same routes, inside the world map, with the same data and the same travel times as this map."],
     ["new", "In the addon, pick a start and a destination from a menu, by typing, or by Ctrl-clicking the map. It uses the flight masters your character has discovered, and you can track the route next to your quests."],
@@ -1095,8 +1126,28 @@ function renderRoute(r){ const stops=[r.from,...(r.stops||[]),r.to];
    <p class="lead">${seal(r.c)} ${esc(r.note)}</p><h2>Stops</h2>${stops.map(id=>placeBtn(POI[id])).join("")}
    <p class="foot">Sea lanes on this map are drawn for readability. In game, ships sail out of sight and arrive after a loading screen.</p>`; }
 
+function addonGet(src){ return ADDON_LIVE
+  ? `<a class="get" href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-download-${src}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Download on CurseForge</a>`
+  : `<div class="get waiting" data-gc="addon-soon-${src}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Coming soon on CurseForge</div>`; }
+function addonCard(src){ return `<div class="addoncard"><div style="flex:1"><div class="ac-t">Take your routes into the game</div><div class="ac-s">The Travelcraft addon plans the same trips inside the world map${ADDON_LIVE?".":", coming soon."}</div></div><button class="ac-b" data-tabgo="addon" data-gc="addon-card-${src}">${ADDON_LIVE?"Get it":"See it"}</button></div>`; }
+function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>Travelcraft in game</h1>
+   <p class="lead">The same route planner, inside your world map. Pick where you are going, see every step and how long it takes, and follow it next to your quests.</p>
+   ${addonGet("page")}
+   <p class="getnote">${ADDON_LIVE?"Free. Also on WowUp and other addon managers.":"The addon is being reviewed by CurseForge. This button becomes the download link as soon as it is approved."}</p>
+   <img class="shot" src="addon-panel.jpg" alt="Illustration of the Travel panel inside the world map: a route from Undercity to Booty Bay, its steps and travel time" loading="lazy">
+   <p class="shotcap">Illustration: the Travel panel opens where the quest log usually is.</p>
+   <h2>How it works</h2><ol class="howto">
+    <li>Open the world map and click the round button under the map legend.</li>
+    <li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li>
+    <li>Choose how you travel: on foot, travel form or mount, with the flight masters you know, all of them, or none.</li>
+    <li>Click Track route to follow the steps next to your quests. They update as you move.</li></ol>
+   <h2>Same answers as this map</h2><p>The addon runs this planner on the same data, so a trip gives the same travel time in both. In game, it also knows which flight masters your character has found, and it draws the route on the game's own maps.</p>
+   <h2>Install</h2><p>${ADDON_LIVE?`Install it with the CurseForge app, or download the file and put the Travelcraft folder in your game's Interface\\AddOns folder.`:`When it is out: install it with the CurseForge app, or download the file and put the Travelcraft folder in your game's Interface\\AddOns folder.`} It is in English and French, and built on the Forever beta.</p>
+   ${addonGet("bottom")}
+   <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. <button class="linkish" data-tabgo="about">About, sources and patch notes</button></p>`; }
+
 function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
-   <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, available on CurseForge (search for Travelcraft). It runs the same planner on the same data as this map, so both give the same travel time for the same trip.</p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
+   <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map, so both give the same travel time for the same trip. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button></p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
    <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
    <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
    <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
@@ -1109,6 +1160,7 @@ function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">
 
 function render(){ const s=state.sel;
   if(state.tab==="about") renderAbout();
+  else if(state.tab==="addon") renderAddon();
   else if(state.tab==="details"&&s){ if(s.type==="zone") renderZone(ZONES[s.id]); else if(s.type==="poi") renderPoi(POI[s.id]); else renderRoute(s.r); }
   else { state.tab="plan"; renderPlan(); }
   sheet.scrollTop=0; }
@@ -1220,7 +1272,7 @@ function fitPlan(){ const all=plan.res.segs.flatMap(sg=>sg.pts), xs=all.map(p=>p
   const L=inset(),w=wrap.clientWidth-L,h=wrap.clientHeight; let k=Math.min(w/(b.width*1.15+120),h/(b.height*1.15+120)); k=Math.max(fitK*.9,Math.min(fitK*5,k)); to({k,x:L+w/2-(b.x+b.width/2)*k,y:h/2-(b.y+b.height/2)*k},true); }
 function readPlanInputs(){ const f=$("#planFrom"),t=$("#planTo"); if(f) plan.from=f.value; if(t) plan.to=t.value; }
 function planHash(){ const q=new URLSearchParams({from:plan.from,to:plan.to,f:plan.f,by:plan.speed}); if(plan.fp) q.set("fp","1"); if(plan.alt) q.set("alt","1"); return "#"+q.toString(); }
-function syncHash(){ try{ history.replaceState(null,"",plan.res&&plan.res.ok&&state.tab==="plan"?planHash():location.pathname+location.search); }catch(e){} }
+function syncHash(){ try{ history.replaceState(null,"",plan.res&&plan.res.ok&&state.tab==="plan"?planHash():location.pathname+location.search+(state.tab==="addon"?"#addon":"")); }catch(e){} }
 function loadHash(){ if(location.hash.length<2) return false; const q=new URLSearchParams(location.hash.slice(1)); if(!q.get("from")||!q.get("to")) return false;
   plan.from=q.get("from"); plan.to=q.get("to"); if(q.get("f")==="horde"||q.get("f")==="alliance") plan.f=q.get("f"); if(SPEEDS[q.get("by")]){plan.speed=q.get("by");plan.auto=false;} plan.fp=q.get("fp")==="1"; plan.alt=q.get("alt")==="1"; return true; }
 function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok){ fitPlan(); const e=$(".eta"); if(e&&innerWidth<860) sheet.scrollTop=e.offsetTop-sheet.offsetTop-12; } syncHash(); }
@@ -1243,12 +1295,12 @@ function renderPlan(){ const r=plan.res;
     <div class="seg wide" role="group" aria-label="How you travel on land">${Object.entries(SPEEDS).map(([k,v])=>`<button data-ps="${k}" aria-pressed="${plan.speed===k}">${v[0]}</button>`).join("")}</div>
     <p class="hint">${plan.auto?(state.level!=null?`Picked from your level (${state.level}). Change it if you ride something else.`:"Type your level at the top and this picks itself."):"Your choice. "}${plan.auto?"":'<button class="linkish" data-ps="auto">Back to automatic</button>'}</p>
     <label class="check"><input type="checkbox" id="planFp" ${plan.fp?"checked":""}><span>I have the flight paths<small>Off by default: a new character has to reach each flight master on foot first.</small></span></label></div></details>
-   ${!r?`<p class="tryl">Or try one</p><div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>${newList()}`
+   ${!r?`<p class="tryl">Or try one</p><div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>${addonCard("empty")}${newList()}`
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
-       <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>
+       <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2]):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
        <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
 
@@ -1296,6 +1348,10 @@ $("#zin").onclick=()=>zoomAt(1.6,wrap.clientWidth/2,wrap.clientHeight/2,true);
 $("#zout").onclick=()=>zoomAt(1/1.6,wrap.clientWidth/2,wrap.clientHeight/2,true);
 $("#zfit").onclick=()=>fitAll(true);
 $("#planCta").onclick=()=>{state.tab="plan";clearMarks();state.sel=null;render();drawPlan();paint();restyle();const f=$("#planFrom");if(f&&!plan.from)f.focus();};
+$("#addonCta").onclick=()=>{state.tab="addon";clearMarks();state.sel=null;render();drawPlan();paint();restyle();syncHash();};
+if(ADDON_LIVE) $("#addonSoon").remove();
+/* Count clicks on the addon buttons in GoatCounter (buttons are drawn after the counter loads, so count by hand) */
+document.addEventListener("click",e=>{ const t=e.target.closest("[data-gc]"); if(t&&window.goatcounter&&window.goatcounter.count) window.goatcounter.count({path:t.dataset.gc,title:t.textContent.trim().slice(0,60),event:true}); });
 $("#ver").textContent="v"+CHANGELOG[0].v; $("#ver").onclick=()=>{state.tab="about";render();drawPlan();paint();syncHash();};
 $("#home").onclick=ev=>{ev.preventDefault();state.tab="plan";select(null);drawPlan();paint();fitAll(true);};
 addEventListener("resize",()=>{const old=fitK;fitK=calcFit(); if(Math.abs(V.k-old)<1e-6) fitAll(false); else {V=clampV(V);apply();}});
@@ -1345,6 +1401,7 @@ if(innerWidth<860){ $("#key").removeAttribute("open"); $("#lv").placeholder="Lvl
 $("#key").addEventListener("toggle",()=>{const atFit=Math.abs(V.k-fitK)<1e-6; fitK=calcFit(); if(atFit) fitAll(true);});
 paint(); fitAll(false); render();
 if(loadHash()) openPlan();
+else if(location.hash==="#addon"){ state.tab="addon"; render(); }
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>restyle());
 })();
 </script>
