@@ -20,7 +20,7 @@
 <meta name="twitter:title" content="Travelcraft: map and route planner for WoW Forever">
 <meta name="twitter:description" content="New zones, level ranges, dungeons, ships and zeppelins, flight paths, and a route planner with travel times.">
 <meta name="twitter:image" content="https://benjamh681.github.io/wow-forever-atlas/share.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-16 -16 32 32'%3E%3Ccircle r='15' fill='%230a1422'/%3E%3Ccircle r='13' fill='none' stroke='%233d9bff' stroke-width='1.5'/%3E%3Cpath d='M0-12L3 0 0 12-3 0z' fill='%233d9bff'/%3E%3Cpath d='M0-12L3 0H0z' fill='%23e0b95a'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox=%220 0 32 32%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect x=%221%22 y=%221%22 width=%2230%22 height=%2230%22 rx=%227.5%22 fill=%22%230f1c2f%22 stroke=%22%232f4766%22 stroke-width=%221.5%22/%3E%3Cpath d=%22M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8%22 fill=%22none%22 stroke=%22%2306121f%22 stroke-width=%223.6%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8%22 fill=%22none%22 stroke=%22%23e0b95a%22 stroke-width=%221.8%22 stroke-linecap=%22round%22 stroke-dasharray=%222.6 2.2%22/%3E%3Ccircle cx=%228.5%22 cy=%2222.5%22 r=%222.6%22 fill=%22%233fb27a%22 stroke=%22%2306121f%22 stroke-width=%221%22/%3E%3Cpath d=%22M23 13.2c-.7-1.3-2.9-2.8-2.9-5a2.9 2.9 0 015.8 0c0 2.2-2.2 3.7-2.9 5z%22 fill=%22%233d9bff%22 stroke=%22%2306121f%22 stroke-width=%22.9%22/%3E%3Ccircle cx=%2223%22 cy=%228.2%22 r=%221%22 fill=%22%23e7eef8%22/%3E%3C/svg%3E">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Travelcraft","alternateName":"Forever Atlas","applicationCategory":"ReferenceApplication","url":"https://benjamh681.github.io/wow-forever-atlas/","description":"Interactive fan-made map of Azeroth for World of Warcraft: Forever, with zone level ranges, new zones and dungeons, transport routes and a route planner.","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
@@ -295,7 +295,7 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 <body>
 <header class="top">
   <a class="mark" href="#" id="home" aria-label="Travelcraft, reset view">
-    <svg viewBox="-16 -16 32 32" aria-hidden="true"><circle r="14.5" fill="none" stroke="#3d9bff" stroke-width="1.5"/><path d="M0-13L3.4 0 0 13-3.4 0z" fill="#3d9bff"/><path d="M-13 0L0-3.4 13 0 0 3.4z" fill="#3d9bff" opacity=".55"/><path d="M0-13L3.4 0H0z" fill="#e0b95a"/></svg>
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7.5" fill="#0f1c2f" stroke="#2f4766" stroke-width="1.5"/><path d="M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8" fill="none" stroke="#06121f" stroke-width="3.6" stroke-linecap="round"/><path d="M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8" fill="none" stroke="#e0b95a" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="2.6 2.2"/><circle cx="8.5" cy="22.5" r="2.6" fill="#3fb27a" stroke="#06121f" stroke-width="1"/><path d="M23 13.2c-.7-1.3-2.9-2.8-2.9-5a2.9 2.9 0 015.8 0c0 2.2-2.2 3.7-2.9 5z" fill="#3d9bff" stroke="#06121f" stroke-width=".9"/><circle cx="23" cy="8.2" r="1" fill="#e7eef8"/></svg>
     <span><div class="t">Travelcraft</div><div class="s">Map and route planner for WoW Forever</div></span>
   </a>
   <button class="ver" id="ver" title="Patch notes"></button>
@@ -838,6 +838,10 @@ const CITY_LINKS = [
 
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
 const CHANGELOG = [
+  { v: "4.2", d: "September 21, 2026", title: "The Travelcraft addon", items: [
+    ["new", "Travelcraft is now also an addon for the game. It plans the same routes, inside the world map, with the same data and the same travel times as this map."],
+    ["new", "In the addon, pick a start and a destination from a menu, by typing, or by Ctrl-clicking the map. It uses the flight masters your character has discovered, and you can track the route next to your quests."],
+    ["new", "A new logo, shared by the map and the addon."]] },
   { v: "4.1", d: "September 20, 2026", title: "Six new flight points", items: [
     ["data", "The beta client has six flight points that do not exist in Classic: Farholde Keep (Alliance), Rog'mar (Horde) and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. They are on the map, and the planner can route through them. Datamined, not announced by Blizzard, and their positions are estimates."],
     ["fix", "The map said Forever changed nothing about flight paths and that the new zones' flight masters were unknown. Both are out of date."],
@@ -1099,6 +1103,7 @@ function renderRoute(r){ const stops=[r.from,...(r.stops||[]),r.to];
    <p class="foot">Sea lanes on this map are drawn for readability. In game, ships sail out of sight and arrive after a loading screen.</p>`; }
 
 function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
+   <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, available on CurseForge (search for Travelcraft). It runs the same planner on the same data as this map, so both give the same travel time for the same trip.</p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
    <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
    <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
    <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
