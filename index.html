@@ -879,6 +879,8 @@ const CITY_LINKS = [
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
+  { v: "4.6.1", d: "September 22, 2026", title: "Clearer level warnings", items: [
+    ["fix", "Level warnings now read \"At level 8, the mobs here will be well above you.\""]] },
   { v: "4.6", d: "September 22, 2026", title: "Routes that fit your level", items: [
     ["new", "With your level set, the planner now keeps you out of zones far above it, and goes the long way round when that is safer. A note tells you how much longer the safer route is."],
     ["data", "Without a level, routes are unchanged."]] },
@@ -1280,7 +1282,7 @@ function buildPlan(path,a,b,forced){
   const S=spu(); let prevPt=placeXY(a), pend=0; const leg=pt=>{ const s=dist(prevPt,pt)*S; prevPt=pt; return s; };
   const take=x=>{ const s=x+pend; pend=0; return s; };
   const zwarn=z=>{ const w=[]; if(z.faction===foe(F)) w.push([`${FSHORT[z.faction]} territory: guards and players will attack you.`,""]);
-    if(state.level!=null&&z.lv&&z.lv[0]>state.level+3) w.push([`Level ${lvText(z)} zone. At ${state.level} the mobs here will be well above you.`,"soft"]); return w; };
+    if(state.level!=null&&z.lv&&z.lv[0]>state.level+3) w.push([`Level ${lvText(z)} zone. At level ${state.level}, the mobs here will be well above you.`,"soft"]); return w; };
   const sz=a.type==="zone"?a.id:POI[a.id].z; zones.add(sz);
   steps.push({t:`Start in ${a.name}`,s:a.type==="poi"?`${TNAME[POI[a.id].t]} in ${ZONES[sz].name}`:`Level ${lvText(ZONES[sz])}`,w:zwarn(ZONES[sz])});
   path.edges.forEach((e,i)=>{ const u=path.nodes[i], v=path.nodes[i+1], last=i===path.edges.length-1;
