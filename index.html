@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Travelcraft: map and route planner for WoW Forever</title>
 <meta name="description" content="Interactive map of Azeroth for World of Warcraft: Forever. Zone level ranges, faction control, the new zones and dungeons, ships and zeppelins, flight paths, and a route planner with travel times. Formerly Forever Atlas.">
-<link rel="canonical" href="https://benjamh681.github.io/wow-forever-atlas/">
+<link rel="canonical" href="https://wow-travelcraft.com/">
 <meta name="theme-color" content="#0a1422">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Travelcraft">
 <meta property="og:title" content="Travelcraft: map and route planner for WoW Forever">
 <meta property="og:description" content="New zones, level ranges, dungeons, ships and zeppelins, flight paths, and a route planner that tells you how to get there and how long it takes.">
-<meta property="og:url" content="https://benjamh681.github.io/wow-forever-atlas/">
-<meta property="og:image" content="https://benjamh681.github.io/wow-forever-atlas/share.png">
+<meta property="og:url" content="https://wow-travelcraft.com/">
+<meta property="og:image" content="https://wow-travelcraft.com/share.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Map of Kalimdor and the Eastern Kingdoms with zone names, level ranges and ship routes.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Travelcraft: map and route planner for WoW Forever">
 <meta name="twitter:description" content="New zones, level ranges, dungeons, ships and zeppelins, flight paths, and a route planner with travel times.">
-<meta name="twitter:image" content="https://benjamh681.github.io/wow-forever-atlas/share.png">
+<meta name="twitter:image" content="https://wow-travelcraft.com/share.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox=%220 0 32 32%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect x=%221%22 y=%221%22 width=%2230%22 height=%2230%22 rx=%227.5%22 fill=%22%230f1c2f%22 stroke=%22%232f4766%22 stroke-width=%221.5%22/%3E%3Cpath d=%22M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8%22 fill=%22none%22 stroke=%22%2306121f%22 stroke-width=%223.6%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M8.5 22.5C13 23.5 11.8 16.5 16 16.3 20.3 16.1 18.8 11.4 23 9.8%22 fill=%22none%22 stroke=%22%23e0b95a%22 stroke-width=%221.8%22 stroke-linecap=%22round%22 stroke-dasharray=%222.6 2.2%22/%3E%3Ccircle cx=%228.5%22 cy=%2222.5%22 r=%222.6%22 fill=%22%233fb27a%22 stroke=%22%2306121f%22 stroke-width=%221%22/%3E%3Cpath d=%22M23 13.2c-.7-1.3-2.9-2.8-2.9-5a2.9 2.9 0 015.8 0c0 2.2-2.2 3.7-2.9 5z%22 fill=%22%233d9bff%22 stroke=%22%2306121f%22 stroke-width=%22.9%22/%3E%3Ccircle cx=%2223%22 cy=%228.2%22 r=%221%22 fill=%22%23e7eef8%22/%3E%3C/svg%3E">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Travelcraft","alternateName":"Forever Atlas","applicationCategory":"ReferenceApplication","url":"https://benjamh681.github.io/wow-forever-atlas/","description":"Interactive fan-made map of Azeroth for World of Warcraft: Forever, with zone level ranges, new zones and dungeons, transport routes and a route planner.","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Travelcraft","alternateName":"Forever Atlas","applicationCategory":"ReferenceApplication","url":"https://wow-travelcraft.com/","description":"Interactive fan-made map of Azeroth for World of Warcraft: Forever, with zone level ranges, new zones and dungeons, transport routes and a route planner.","isAccessibleForFree":true,"operatingSystem":"Any"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
 <style>
@@ -879,6 +879,8 @@ const CITY_LINKS = [
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
+  { v: "4.6.2", d: "September 22, 2026", title: "A new home: wow-travelcraft.com", items: [
+    ["new", "Travelcraft now lives at wow-travelcraft.com. The old address still works and brings you here, and your shared routes still open."]] },
   { v: "4.6.1", d: "September 22, 2026", title: "Clearer level warnings", items: [
     ["fix", "Level warnings now read \"At level 8, the mobs here will be well above you.\""]] },
   { v: "4.6", d: "September 22, 2026", title: "Routes that fit your level", items: [

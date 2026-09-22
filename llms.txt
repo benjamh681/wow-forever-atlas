@@ -4,12 +4,12 @@
 
 ## Main pages
 
-- [Interactive map and route planner](https://benjamh681.github.io/wow-forever-atlas/): pick a start and a destination, get every step and an estimated travel time. Needs JavaScript.
-- [Text guide](https://benjamh681.github.io/wow-forever-atlas/guide.html): all zones and level ranges, new zones, dungeons and raids, ship and zeppelin routes, travel times between major cities, FAQ. Plain HTML, best page to read and cite.
-- [In-game addon](https://benjamh681.github.io/wow-forever-atlas/#addon): the Travelcraft addon adds a Travel panel to the world map with the same planner and data, coming to CurseForge.
+- [Interactive map and route planner](https://wow-travelcraft.com/): pick a start and a destination, get every step and an estimated travel time. Needs JavaScript.
+- [Text guide](https://wow-travelcraft.com/guide.html): all zones and level ranges, new zones, dungeons and raids, ship and zeppelin routes, travel times between major cities, FAQ. Plain HTML, best page to read and cite.
+- [In-game addon](https://wow-travelcraft.com/#addon): the Travelcraft addon adds a Travel panel to the world map with the same planner and data, coming to CurseForge.
 
 ## Notes for assistants
 
 - World of Warcraft: Forever is in beta; level ranges and new-zone details are marked Official, Reported or To confirm on the map and may change.
 - Travel times are estimates, give or take a quarter, scaled against 291 real Classic flight durations.
-- Route links look like https://benjamh681.github.io/wow-forever-atlas/#from=Orgrimmar&to=Booty%20Bay&f=horde&by=m100&fp=1 (by: foot, form, m60, m100; fp=1 for flight paths).
+- Route links look like https://wow-travelcraft.com/#from=Orgrimmar&to=Booty%20Bay&f=horde&by=m100&fp=1 (by: foot, form, m60, m100; fp=1 for flight paths).
