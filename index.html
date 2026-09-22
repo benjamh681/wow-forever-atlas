@@ -879,6 +879,9 @@ const CITY_LINKS = [
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
 const CHANGELOG = [
+  { v: "4.6", d: "September 22, 2026", title: "Routes that fit your level", items: [
+    ["new", "With your level set, the planner now keeps you out of zones far above it, and goes the long way round when that is safer. A note tells you how much longer the safer route is."],
+    ["data", "Without a level, routes are unchanged."]] },
   { v: "4.5", d: "September 21, 2026", title: "The ways out of Zephras Isle", items: [
     ["new", "Alliance Skyborne now have a route off Zephras Isle: the skyship from Valanaar to Dalaran, then the Skyborne portal from the Violet Citadel to the Mage Tower in Stormwind, and back. Thanks to the Reddit players who reported it."],
     ["new", "Horde Skyborne too: the zeppelin from Zephras Isle to Thunder Bluff."],
@@ -1232,9 +1235,16 @@ function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A
   ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; if(r.skyborne&&(!ok||!plan.sky)) return; /* Skyborne-only links: used only for trips to or from Zephras Isle, where the traveler must be a Skyborne */ const stops=[r.from,...(r.stops||[]),r.to];
     for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r), cross=contOf(POI[stops[i]])!==contOf(POI[stops[i+1]]); add("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800)+(cross&&seaPen?SEA_PEN:0),{k:"ride",r,ok,cross}); } });
   return A; }
-function shortest(A,src,dst,f){ const D={[src]:0},P={},done=new Set();
+/* Route choice only: a zone well above the traveller's level costs time, so a low-level
+   character is sent the long way round. Gap = the zone's lowest level minus (level + 3):
+   2 min per level, steeper past 4 levels, 15 min per level past 14. About 8 min of detour
+   for a zone 7 levels above, 23 min for 10 levels. Flying over a zone costs nothing. */
+const LVL={gap:3,pen:120,steep:60,far:900};
+function levelPen(zid,lvl){ const z=ZONES[zid]; if(lvl==null||!z||!z.lv) return 0; const gap=z.lv[0]-(lvl+LVL.gap); if(gap<=0) return 0;
+  const over=Math.max(0,gap-4), st=Math.min(over,10); return gap*LVL.pen+st*st*LVL.steep+Math.max(0,over-10)*LVL.far; }
+function shortest(A,src,dst,f,lvl){ const D={[src]:0},P={},done=new Set();
   while(true){ let u=null; for(const n in D) if(!done.has(n)&&(u===null||D[n]<D[u])) u=n; if(u===null) return null; if(u===dst) break; done.add(u);
-    (A[u]||[]).forEach(({to,w,e})=>{ let c=D[u]+w; if(to[0]==="z"&&ZONES[to.slice(2)].faction===foe(f)) c+=600; if(!(to in D)||c<D[to]){D[to]=c;P[to]={u,e};} }); }
+    (A[u]||[]).forEach(({to,w,e})=>{ let c=D[u]+w; if(to[0]==="z"){ if(ZONES[to.slice(2)].faction===foe(f)) c+=600; c+=levelPen(to.slice(2),lvl); } if(!(to in D)||c<D[to]){D[to]=c;P[to]={u,e};} }); }
   const nodes=[dst],edges=[]; let n=dst; while(n!==src){edges.unshift(P[n].e);n=P[n].u;nodes.unshift(n);} return {nodes,edges}; }
 function nodeOf(pl){ if(pl.type==="zone") return GEO.zones[pl.id]&&ZONES[pl.id].status!=="closed"?"z:"+pl.id:null;
   const p=POI[pl.id]; if(NODE_POIS.includes(p)) return "p:"+p.id; return p.z?"z:"+p.z:null; }
@@ -1251,12 +1261,17 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   /* Graph weights hop between zone centres, which overstates walking. Try three weightings and keep the route whose real estimate is lowest. */
   plan.sky=[a,b].some(pl=>(pl.type==="zone"?pl.id:POI[pl.id].z)==="zephras");
   let cands=[], forced=false; const seen=new Set();
-  const gather=strict=>[true,false].forEach(pen=>[1,.75,.55].forEach(k=>{ const p=shortest(buildGraph(plan.f,strict,k,pen),na,nb,plan.f); if(p&&!seen.has(p.nodes.join(">"))){seen.add(p.nodes.join(">"));cands.push(p);} }));
+  const lv=state.level;
+  /* With the level rule, and once without it so the fastest way is known too */
+  const gather=strict=>[true,false].forEach(pen=>[1,.75,.55].forEach(k=>(lv!=null?[lv,null]:[null]).forEach(l=>{ const p=shortest(buildGraph(plan.f,strict,k,pen),na,nb,plan.f,l); if(p&&!seen.has(p.nodes.join(">"))){seen.add(p.nodes.join(">"));cands.push(p);} })));
   gather(true); if(!cands.length){ gather(false); forced=true; }
   let path=cands[0];
   if(!path){ const zid=[a,b].map(pl=>pl.type==="zone"?pl.id:POI[pl.id].z).find(z=>z==="zephras");
     return {ok:false,msg:zid?"No known way in or out of Zephras Isle for this trip.":"No known route between these two places."}; }
-  const built=cands.map(p=>buildPlan(p,a,b,forced)); built.sort((x,y)=>x.time.score-y.time.score);
+  const built=cands.map(p=>{ const r=buildPlan(p,a,b,forced); r.baseScore=r.time.score; p.nodes.slice(1).forEach(n=>{ if(n[0]==="z") r.time.score+=levelPen(n.slice(2),lv); }); return r; });
+  built.sort((x,y)=>x.time.score-y.time.score);
+  const fastest=built.reduce((m,x)=>x.baseScore<m.baseScore?x:m,built[0]);
+  if(fastest!==built[0]&&built[0].time.mid-fastest.time.mid>=60) built[0].levelDetour=built[0].time.mid-fastest.time.mid;
   const best=built[0], quick=built.slice(1).filter(x=>x.time.mid<best.time.mid-120&&x.crossings>best.crossings).sort((x,y)=>x.time.mid-y.time.mid)[0];
   if(plan.alt&&quick){ quick.isAlt=true; quick.other=best; return quick; }
   plan.alt=false; best.other=quick||null; return best; }
@@ -1331,6 +1346,7 @@ function renderPlan(){ const r=plan.res;
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
+       ${r.levelDetour?`<div class="altnote">A longer way round (${fmtMin(r.levelDetour)} more) keeps you out of zones far above level ${state.level}.</div>`:""}
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
        <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?(s.ride[1]===s.ride[2]?fmtMin(s.ride[0]+s.ride[1]):fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2])):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
