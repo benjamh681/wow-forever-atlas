@@ -268,8 +268,9 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 /* Mid-size screens: keep the search box usable */
 .search{min-width:180px}
 @media (max-width: 1400px){ .top{gap:12px} .tools{gap:10px} }
-@media (max-width: 1360px){ .mark .s{display:none} .lvl label{display:none} .ver{display:none} .tools{flex-wrap:nowrap} }
-@media (max-width: 1180px){ .cta{padding:8px 11px;font-size:13px} .cta svg{display:none} .cta.kofi{display:none} }
+@media (max-width: 1660px){ .mark .s{display:none} .lvl label{display:none} .ver{display:none} .tools{flex-wrap:nowrap} }
+@media (max-width: 1180px){ .cta{padding:8px 11px;font-size:13px} .cta svg{display:none} }
+@media (max-width: 1299px){ .cta.kofi{display:none} }
 @media (max-width: 1040px){ .top{flex-wrap:wrap;gap:8px 12px} .search{order:3;max-width:none;flex-basis:100%} }
 @media (max-width: 860px){
   .top{flex-wrap:wrap;gap:8px 12px;padding:8px 10px}
@@ -301,11 +302,12 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 
 /* Ko-fi: quiet outline button, hidden on phones */
-.cta.kofi{background:transparent;color:var(--muted);border:1px solid var(--line);text-decoration:none}
-.cta.kofi:hover{color:var(--text);filter:none}
-.cta.kofi svg{color:#e0607e}
-.cta.kofi{padding:8px 10px}.cta.kofi .kl{display:none}
-@media (min-width:1700px){.cta.kofi{padding:8px 14px}.cta.kofi .kl{display:inline}}
+.cta.kofi{background:#e0607e;color:#fff;border:0;text-decoration:none;padding:8px 14px}
+.cta.kofi:hover{filter:brightness(1.08);color:#fff}
+.cta.kofi svg{color:#fff}.cta.kofi svg path{fill:currentColor}
+/* Support button: its right edge lines up with the left border of the right panel (16px bar padding + gap) */
+@media (min-width:1300px){ .cta.kofi{margin-left:auto} .tools{margin-left:0;flex:none;justify-content:flex-end;width:calc(var(--panel-w) - 36px)} }
+@media (min-width:1300px) and (max-width:1400px){ .tools{width:calc(var(--panel-w) - 28px)} }
 .kofiline{font-size:13px;color:var(--muted);margin-top:14px}
 /* Travelcraft addon: green call to action */
 :root{--get:#2fa56a;--get-hi:#38b877;--get-ink:#ffffff}
