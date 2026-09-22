@@ -892,11 +892,13 @@ const CITY_LINKS = [
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
 /* Travelcraft addon. Paste the CurseForge page address here once the project is approved:
    every button on the map switches from "coming soon" to a real download link. */
-const ADDON_URL = "";
+const ADDON_URL = "https://www.curseforge.com/wow/addons/travelcraft";
 const ADDON_LIVE = !!ADDON_URL;
 /* Ko-fi donation page, shown discreetly in About and at the bottom of the home panel. Never in the addon (Blizzard rule). */
 const KOFI_URL = "https://ko-fi.com/fistao";
 const CHANGELOG = [
+  { v: "4.7", d: "September 22, 2026", title: "The addon is out", items: [
+    ["new", "The Travelcraft addon is live on CurseForge. Every button on the map is now a real download link, and the addon page tells you how to install it."]] },
   { v: "4.6.3", d: "September 22, 2026", title: "Support Travelcraft", items: [
     ["fix", "On mid-size screens, the search box in the top bar was squeezed to almost nothing. It now keeps a usable width."],
     ["new", "Travelcraft is free, with no ads. If you want to support it, there is now a Support button in the top bar, a line under each planned route, and a section in About, all pointing to Ko-fi."]] },
@@ -1190,7 +1192,7 @@ function addonCard(src){ return `<div class="addoncard"><div style="flex:1"><div
 function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>Travelcraft in game</h1>
    <p class="lead">The same route planner, inside your world map. Pick where you are going, see every step and how long it takes, and follow it next to your quests.</p>
    ${addonGet("page")}
-   <p class="getnote">${ADDON_LIVE?"Free. Also on WowUp and other addon managers.":"The addon is being reviewed by CurseForge. This button becomes the download link as soon as it is approved."}</p>
+   <p class="getnote">${ADDON_LIVE?"Free, and open to everyone.":"The addon is being reviewed by CurseForge. This button becomes the download link as soon as it is approved."}</p>
    <img class="shot" src="addon-panel.jpg" alt="Illustration of the Travel panel inside the world map: a route from Undercity to Booty Bay, its steps and travel time" loading="lazy">
    <p class="shotcap">Illustration: the Travel panel opens where the quest log usually is.</p>
    <h2>How it works</h2><ol class="howto">

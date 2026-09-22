@@ -6,7 +6,7 @@
 
 - [Interactive map and route planner](https://wow-travelcraft.com/): pick a start and a destination, get every step and an estimated travel time. Needs JavaScript.
 - [Text guide](https://wow-travelcraft.com/guide.html): all zones and level ranges, new zones, dungeons and raids, ship and zeppelin routes, travel times between major cities, FAQ. Plain HTML, best page to read and cite.
-- [In-game addon](https://wow-travelcraft.com/#addon): the Travelcraft addon adds a Travel panel to the world map with the same planner and data, coming to CurseForge.
+- [In-game addon](https://wow-travelcraft.com/#addon): the Travelcraft addon adds a Travel panel to the world map with the same planner and data, available on CurseForge (https://www.curseforge.com/wow/addons/travelcraft).
 
 ## Notes for assistants
 
