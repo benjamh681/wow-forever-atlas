@@ -265,6 +265,12 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 .planline.portal{stroke:#c9a8ff;stroke-width:3;stroke-dasharray:1 7}
 .planend{vector-effect:non-scaling-stroke;pointer-events:none}
 
+/* Mid-size screens: keep the search box usable */
+.search{min-width:180px}
+@media (max-width: 1400px){ .top{gap:12px} .tools{gap:10px} }
+@media (max-width: 1360px){ .mark .s{display:none} .lvl label{display:none} .ver{display:none} .tools{flex-wrap:nowrap} }
+@media (max-width: 1180px){ .cta{padding:8px 11px;font-size:13px} .cta svg{display:none} .cta.kofi{display:none} }
+@media (max-width: 1040px){ .top{flex-wrap:wrap;gap:8px 12px} .search{order:3;max-width:none;flex-basis:100%} }
 @media (max-width: 860px){
   .top{flex-wrap:wrap;gap:8px 12px;padding:8px 10px}
   .mark .s{display:none}
@@ -294,6 +300,13 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 @media (max-width: 380px){ .mark svg{display:none} }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 
+/* Ko-fi: quiet outline button, hidden on phones */
+.cta.kofi{background:transparent;color:var(--muted);border:1px solid var(--line);text-decoration:none}
+.cta.kofi:hover{color:var(--text);filter:none}
+.cta.kofi svg{color:#e0607e}
+.cta.kofi{padding:8px 10px}.cta.kofi .kl{display:none}
+@media (min-width:1700px){.cta.kofi{padding:8px 14px}.cta.kofi .kl{display:inline}}
+.kofiline{font-size:13px;color:var(--muted);margin-top:14px}
 /* Travelcraft addon: green call to action */
 :root{--get:#2fa56a;--get-hi:#38b877;--get-ink:#ffffff}
 .cta.addon{background:var(--get);color:var(--get-ink)}
@@ -330,6 +343,7 @@ ol.howto li{padding:5px 0}
   </div>
   <button class="cta" id="planCta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 000-7H9a3.5 3.5 0 010-7h6.5"/></svg>Plan a route</button>
   <button class="cta addon" id="addonCta" data-gc="addon-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Get the addon<span class="soon" id="addonSoon">Soon</span></button>
+  <a class="cta kofi" id="kofiCta" href="https://ko-fi.com/fistao" target="_blank" rel="noopener" data-gc="kofi-header" title="Support Travelcraft on Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg><span class="kl">Support</span></a>
   <div class="tools">
     <div class="lvl"><label for="lv">Your level</label><input id="lv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60"><button id="lvclear" hidden>clear</button></div>
     <div class="seg" role="group" aria-label="Color zones by">
@@ -878,7 +892,12 @@ const CITY_LINKS = [
    every button on the map switches from "coming soon" to a real download link. */
 const ADDON_URL = "";
 const ADDON_LIVE = !!ADDON_URL;
+/* Ko-fi donation page, shown discreetly in About and at the bottom of the home panel. Never in the addon (Blizzard rule). */
+const KOFI_URL = "https://ko-fi.com/fistao";
 const CHANGELOG = [
+  { v: "4.6.3", d: "September 22, 2026", title: "Support Travelcraft", items: [
+    ["fix", "On mid-size screens, the search box in the top bar was squeezed to almost nothing. It now keeps a usable width."],
+    ["new", "Travelcraft is free, with no ads. If you want to support it, there is now a Support button in the top bar, a line under each planned route, and a section in About, all pointing to Ko-fi."]] },
   { v: "4.6.2", d: "September 22, 2026", title: "A new home: wow-travelcraft.com", items: [
     ["new", "Travelcraft now lives at wow-travelcraft.com. The old address still works and brings you here, and your shared routes still open."]] },
   { v: "4.6.1", d: "September 22, 2026", title: "Clearer level warnings", items: [
@@ -1185,6 +1204,7 @@ function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">
 function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
    <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map, so both give the same travel time for the same trip. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button></p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
    <h2>Text guide</h2><p>Every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, on one page: <a href="guide.html">WoW Forever guide</a>.</p>
+   <h2>Support Travelcraft</h2><p>Travelcraft is free, with no ads, and kept up to date as Forever changes. If it saved you some time, you can <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-about">buy me a flight on Ko-fi</a>. Thank you!</p>
    <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
    <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
    <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
@@ -1335,7 +1355,7 @@ function newList(){ const nz=Object.values(ZONES).filter(z=>z.status==="new");
    ${nz.map(z=>`<button class="place" data-zone="${z.id}"><span class="pn">${esc(z.name)}</span><span class="pm">${z.lv?"level "+lvText(z):"level ?"}</span></button>`).join("")}
    <h2>Dungeons and raids</h2>${nd.map(placeBtn).join("")}
    <h2>Ship routes</h2>${ROUTES.filter(r=>r.isNew).map(r=>`<button class="place" data-route="${r.id}"><span class="pn">${esc(routeTitle(r))}</span><span class="pm">${kindName(r)}</span></button>`).join("")}
-   <p class="foot">Travelcraft was called Forever Atlas until September 20, 2026. <button class="linkish" data-tabgo="about">About, sources and patch notes</button> <a href="guide.html">Text guide: zones, levels, ships and travel times</a></p>`; }
+   <p class="foot">Travelcraft was called Forever Atlas until September 20, 2026. <button class="linkish" data-tabgo="about">About, sources and patch notes</button> <a href="guide.html">Text guide: zones, levels, ships and travel times</a> <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-home">Support Travelcraft on Ko-fi</a></p>`; }
 function renderPlan(){ const r=plan.res;
   sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:18px">Get the way there, and how long it takes.</p>
    <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="next"></div>
@@ -1352,7 +1372,7 @@ function renderPlan(){ const r=plan.res;
        <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
        ${r.levelDetour?`<div class="altnote">A longer way round (${fmtMin(r.levelDetour)} more) keeps you out of zones far above level ${state.level}.</div>`:""}
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
-       <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}
+       <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}<p class="kofiline">Travelcraft is free. Found this route useful? <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-route">Buy me a flight on Ko-fi</a>.</p>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?(s.ride[1]===s.ride[2]?fmtMin(s.ride[0]+s.ride[1]):fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2])):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
        <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
 
