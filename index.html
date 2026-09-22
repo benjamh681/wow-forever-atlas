@@ -313,6 +313,8 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 :root{--get:#2fa56a;--get-hi:#38b877;--get-ink:#ffffff}
 .cta.addon{background:var(--get);color:var(--get-ink)}
 .cta .soon{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:rgba(255,255,255,.2);border-radius:5px;padding:2px 6px;margin-left:2px}
+/* the big download button is a link: keep its own text colour, not the blue link colour */
+.sheet a.get,.sheet a.get:visited,.sheet a.get:hover{color:var(--get-ink)}
 .get{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;box-sizing:border-box;background:var(--get);color:var(--get-ink);border:0;border-radius:10px;padding:14px 18px;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;margin:6px 0 8px}
 .get:hover{background:var(--get-hi)}
 .get svg{width:20px;height:20px}
