@@ -899,6 +899,9 @@ const ADDON_LIVE = !!ADDON_URL;
 /* Ko-fi donation page, shown discreetly in About and at the bottom of the home panel. Never in the addon (Blizzard rule). */
 const KOFI_URL = "https://ko-fi.com/fistao";
 const CHANGELOG = [
+  { v: "4.8", d: "September 23, 2026", title: "Shorter walks inside a zone", items: [
+    ["fix", "Two places in the same zone are now joined directly, instead of routing through the middle of the zone. Walks inside a zone were much too long: Undercity to the zeppelin towers went from 9 minutes to 2."],
+    ["fix", "Asking for the zone you are already in now says so, instead of planning a walk to the middle of it."]] },
   { v: "4.7", d: "September 22, 2026", title: "The addon is out", items: [
     ["new", "The Travelcraft addon is live on CurseForge. Every button on the map is now a real download link, and the addon page tells you how to install it."]] },
   { v: "4.6.3", d: "September 22, 2026", title: "Support Travelcraft", items: [
@@ -1261,6 +1264,12 @@ function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A
   LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)+dist(g,zc(b)))*S*landK,{k:"land",a,b,via,c,note}); });
   NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*S*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
   CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*S+30),{k:"link",via,fixed,verb}));
+  /* Inside one zone, walk straight from one place to the other instead of going through
+     the middle of the zone (two places on the same side came out far apart) */
+  const inZone={};
+  NODE_POIS.forEach(p=>{ if(p.z&&ZONES[p.z]) (inZone[p.z]=inZone[p.z]||[]).push(p); });
+  Object.values(inZone).forEach(list=>{ for(let i=0;i<list.length;i++) for(let j=i+1;j<list.length;j++)
+    add("p:"+list[i].id,"p:"+list[j].id,Math.max(20,dist(list[i].xy,list[j].xy)*S*landK),{k:"in"}); });
   if(plan.fp){ const fm=POIS.filter(p=>p.fp&&(p.fp==="both"||p.fp===f)); for(let i=0;i<fm.length;i++) for(let j=i+1;j<fm.length;j++) if(contOf(fm[i])===contOf(fm[j])){ const ft=flightTime(f,fm[i],fm[j]); add("p:"+fm[i].id,"p:"+fm[j].id,ft.sec+25,{k:"fly",ft}); } }
   ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; if(r.skyborne&&(!ok||!plan.sky)) return; /* Skyborne-only links: used only for trips to or from Zephras Isle, where the traveler must be a Skyborne */ const stops=[r.from,...(r.stops||[]),r.to];
     for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r), cross=contOf(POI[stops[i]])!==contOf(POI[stops[i+1]]); add("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800)+(cross&&seaPen?SEA_PEN:0),{k:"ride",r,ok,cross}); } });
@@ -1288,6 +1297,8 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   const dead=pl=>pl.type==="zone"&&ZONES[pl.id].status==="closed"?`${pl.name} is not accessible in Forever.`:pl.type==="poi"&&!POI[pl.id].z?`${pl.name} is instanced. You queue for it, you don't walk there.`:null;
   if(!na||!nb) return {ok:false,msg:dead(!na?a:b)||"No route."};
   if(a.id===b.id&&a.type===b.type) return {ok:false,msg:"That's the same place."};
+  /* Heading for a zone the start is already in */
+  if(b.type==="zone"&&(a.type==="zone"?a.id:POI[a.id]&&POI[a.id].z)===b.id) return {ok:false,msg:`You are already in ${b.name}.`};
   /* Graph weights hop between zone centres, which overstates walking. Try three weightings and keep the route whose real estimate is lowest. */
   plan.sky=[a,b].some(pl=>(pl.type==="zone"?pl.id:POI[pl.id].z)==="zephras");
   let cands=[], forced=false; const seen=new Set();
