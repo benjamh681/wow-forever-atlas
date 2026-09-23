@@ -268,9 +268,11 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 /* Mid-size screens: keep the search box usable */
 .search{min-width:180px}
 @media (max-width: 1400px){ .top{gap:12px} .tools{gap:10px} }
-@media (max-width: 1660px){ .mark .s{display:none} .lvl label{display:none} .ver{display:none} .tools{flex-wrap:nowrap} }
+@media (max-width: 1660px){ .mark .s{display:none} .lvl label{display:none} .tools{flex-wrap:nowrap} }
+@media (max-width: 1100px){ .ver{display:none} }
 @media (max-width: 1180px){ .cta{padding:8px 11px;font-size:13px} .cta svg{display:none} }
-@media (max-width: 1299px){ .cta.kofi{display:none} }
+/* No room for the donate button on mid-size screens; it comes back on phones */
+@media (max-width: 1299px) and (min-width: 861px){ .cta.kofi{display:none} }
 @media (max-width: 1040px){ .top{flex-wrap:wrap;gap:8px 12px} .search{order:3;max-width:none;flex-basis:100%} }
 @media (max-width: 860px){
   .top{flex-wrap:wrap;gap:8px 12px;padding:8px 10px}
@@ -284,9 +286,12 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
   .key{width:210px}
   .top{padding:8px 12px;gap:8px 10px}
   .mark .t{font-size:16px}
+  /* Phones: the planner and the donate button stay, the addon one goes.
+     An addon cannot be installed from a phone, and it is still one tap away
+     under every route and at the bottom of the page. */
   .cta{display:none}
-  .cta.addon{display:inline-flex;padding:6px 10px;font-size:12.5px}
-  .cta.addon svg{display:none}
+  #planCta, .cta.kofi{display:inline-flex;padding:6px 10px;font-size:12.5px}
+  #planCta svg, .cta.kofi svg{display:none}
   .lvl label{display:none}
   .lvl input{width:58px}
   .seg button{padding:5px 10px}
@@ -418,6 +423,7 @@ const ZONES = {
     lore: "The sacred mountain where night elves, humans and orcs broke Archimonde beneath the boughs of Nordrassil. Forever opens it for the first time in this era: the forest is slowly healing, wild gods stir, new factions are forming, and something is draining power from the mountain.",
     areas: ["Darkwhisper Gorge approach", "Nordrassil", "Hyjal Summit (raid)", "The Barrow Deeps entrance (raid)"],
     forever: [
+      { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "New endgame zone set in the aftermath of the Battle for Mount Hyjal, reached through Darkwhisper Gorge.", c: "o" },
       { t: "Hosts Hyjal Summit (20 players) and one of three reported entrances to The Barrow Deeps (10 players). Both open December 9, 2026.", c: "r" },
       { t: "Multiple questlines, several reputations, solo and group content; story involves the wild gods.", c: "r" },
@@ -453,6 +459,7 @@ const ZONES = {
     lore: "A pocket of Highborne ruins hidden in the mountains between Mulgore and Desolace, a blank spot on every map since 2004. Its story follows the Shen'dralar, the arcane-addicted exiles of Eldre'Thalas ruled by Prince Tortheldrin, and tangles with the centaur clans next door.",
     areas: ["Access from Desolace via the Valley of Bones"],
     forever: [
+      { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "New zone tied to the Shen'dralar, Eldre'Thalas, Dire Maul and the centaur tribes of the region.", c: "o" },
       { t: "Introduces the NPC Mordent Evenshade; quests reportedly connect to Razorfen Downs and Maraudon.", c: "r" },
       { t: "Exact borders, hubs and faction status are unknown. The shape drawn here is an estimate.", c: "t" }] },
@@ -464,6 +471,7 @@ const ZONES = {
     lore: "A murky swamp of black dragonkin, deserters and giant spiders. Jaina Proudmoore's island city of Theramore holds the east coast, Onyxia broods in the south, and offshore sits Alcaz Island, long rumored to be where the missing King Varian Wrynn was held.",
     areas: ["Theramore Isle", "Brackenwall Village", "Wyrmbog", "Alcaz Island", "Witch Hill", "The Den of Flame"],
     forever: [
+      { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "Alcaz Island Prison becomes a dungeon: Defias and naga fight over the prison tied to Varian Wrynn's captivity.", c: "o" },
       { t: "Onyxia's Lair returns as a 40-player raid on December 9, 2026. Any rework is unconfirmed.", c: "r" }] },
   feralas: { name: "Feralas", cont: "Kalimdor", lv: [40, 50], faction: "contested", status: "classic",
@@ -496,6 +504,7 @@ const ZONES = {
     lore: "The haunted heartland of fallen Lordaeron, where the Forsaken wake in Deathknell and the Scarlet Crusade holds the monastery in the north. The ruined capital sits above the Undercity.",
     areas: ["Deathknell (undead start)", "Brill", "Agamand Mills", "Whispering Wood", "Bandarion Keep", "Scarlet Monastery grounds"],
     forever: [
+      { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "Bandarion Keep in the Whispering Wood anchors the new Forsaken paladin storyline, which follows Warcraft III: Forsaken Kingdom.", c: "o" },
       { t: "Ruins of Lordaeron is a new dungeon in the ruined capital above the Undercity.", c: "o" },
       { t: "Starting zones gain new NPCs, quests, recipes and profession hooks.", c: "o" }] },
@@ -544,6 +553,7 @@ const ZONES = {
     lore: "Snowbound home of the Ironforge dwarves and the exiled gnomes, whose irradiated city of Gnomeregan lies in the west. Dwarves and gnomes start in Coldridge Valley.",
     areas: ["Coldridge Valley (dwarf & gnome start)", "Kharanos", "Brewnall Village", "Gol'Bolar Quarry", "Frostmane Hold"],
     forever: [
+      { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "Hall of Thanes, a new dungeon beneath Ironforge: intruders have disturbed the tombs of the dwarven kings.", c: "o" },
       { t: "A new flight point, Tidegear Coast, appears in the beta client. Its position on the coast is an estimate.", c: "r" },
       { t: "Starting zones gain new NPCs, quests, recipes and profession hooks.", c: "o" }] },
@@ -577,6 +587,7 @@ const ZONES = {
     lore: "The green heart of the kingdom of Stormwind. Humans start at Northshire Abbey, learn to fear Hogger, and walk the road to Goldshire a thousand times.",
     areas: ["Northshire Abbey (human start)", "Goldshire", "Eastvale Logging Camp", "Fargodeep and Jasperlode mines", "Westbrook Garrison"],
     forever: [
+      { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "Stormwind gains a harbor with a ship route to Auberdine.", c: "o" },
       { t: "Starting zones gain new NPCs, quests, recipes and profession hooks.", c: "o" }] },
   redridge: { name: "Redridge Mountains", cont: "Eastern Kingdoms", lv: [15, 25], faction: "contested", status: "changed",
@@ -899,6 +910,9 @@ const ADDON_LIVE = !!ADDON_URL;
 /* Ko-fi donation page, shown discreetly in About and at the bottom of the home panel. Never in the addon (Blizzard rule). */
 const KOFI_URL = "https://ko-fi.com/fistao";
 const CHANGELOG = [
+  { v: "4.9", d: "September 23, 2026", title: "Starting zones", items: [
+    ["fix", "On phones the top bar now keeps Plan a route and Support, and drops Get the addon: an addon cannot be installed from a phone, and the download is still under every route and at the bottom of the page. The version button is back on laptop screens."],
+    ["data", "The six starting zones now say what beta players report: the extra quests take you to around level 12, and higher with the new race and class combinations. Thanks to the players who reported it."]] },
   { v: "4.8", d: "September 23, 2026", title: "Shorter walks inside a zone", items: [
     ["fix", "Two places in the same zone are now joined directly, instead of routing through the middle of the zone. Walks inside a zone were much too long: Undercity to the zeppelin towers went from 9 minutes to 2."],
     ["fix", "Asking for the zone you are already in now says so, instead of planning a walk to the middle of it."]] },
