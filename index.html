@@ -314,6 +314,7 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 @media (min-width:1300px){ .cta.kofi{margin-left:auto} .tools{margin-left:0;flex:none;justify-content:flex-end;width:calc(var(--panel-w) - 36px)} }
 @media (min-width:1300px) and (max-width:1400px){ .tools{width:calc(var(--panel-w) - 28px)} }
 .kofiline{font-size:13px;color:var(--muted);margin-top:14px}
+.reportline{font-size:13px;color:var(--muted);margin:14px 0 0}
 /* Travelcraft addon: green call to action */
 :root{--get:#2fa56a;--get-hi:#38b877;--get-ink:#ffffff}
 .cta.addon{background:var(--get);color:var(--get-ink)}
@@ -909,7 +910,12 @@ const ADDON_URL = "https://www.curseforge.com/wow/addons/travelcraft";
 const ADDON_LIVE = !!ADDON_URL;
 /* Ko-fi donation page, shown discreetly in About and at the bottom of the home panel. Never in the addon (Blizzard rule). */
 const KOFI_URL = "https://ko-fi.com/fistao";
+/* Feedback form (Tally). Opens as a popup over the map, with the current route and settings sent as hidden fields.
+   If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
+const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.10", d: "September 23, 2026", title: "Report a problem", items: [
+    ["new", "A Report a problem or suggest something link under every route and in About. It opens a short form over the map and sends the route you were looking at with it, so you only have to say what you noticed. Every report is read, and fixes show up in these patch notes."]] },
   { v: "4.9", d: "September 23, 2026", title: "Starting zones", items: [
     ["data", "The six new flight points found in the beta client are now listed in the text guide too. Tainted Foothills on Mount Hyjal is open to both factions (linked to Everlook), and Farholde Keep and Rog'mar show the flight masters they link to."],
     ["fix", "On phones the top bar now keeps Plan a route and Support, and drops Get the addon: an addon cannot be installed from a phone, and the download is still under every route and at the bottom of the page. The version button is back on laptop screens."],
@@ -1228,6 +1234,7 @@ function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">
 function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
    <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map, so both give the same travel time for the same trip. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button></p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
    <h2>Text guide</h2><p>Every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, on one page: <a href="guide.html">WoW Forever guide</a>.</p>
+   <h2>Feedback</h2><p>A wrong route, time or place, a missing boat or flight, or an idea: every report is read, and fixes show up in the patch notes below.</p>${reportLink("about")}
    <h2>Support Travelcraft</h2><p>Travelcraft is free, with no ads, and kept up to date as Forever changes. If it saved you some time, you can <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-about">buy me a flight on Ko-fi</a>. Thank you!</p>
    <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
    <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
@@ -1237,7 +1244,7 @@ function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">
    <h2>About travel times</h2><p>A hand-drawn map has no scale, so one was measured. Flights move at a constant speed, and the Classic community has timed hundreds of them. Laying 291 of those timings over this map gave the same scale on both continents, within 2%. Walking and riding times are that scale converted to run speed, with a margin for winding roads. Expect them to be right within a quarter, not to the second.</p>
    <p>Flight times are the measured Classic ones where they exist. Ships and zeppelins count two minutes on board plus up to five of waiting. Mount speeds come from datamining: reported, not confirmed by Blizzard. If you time a trip in the beta and the planner is off, say so: the scale is one number and easy to correct.</p>
    <h2>Sources</h2><ul class="facts">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a></li>`).join("")}</ul>
-   <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft, Warcraft and all related names are trademarks of Blizzard Entertainment, Inc. Spotted a mistake? That is what the comments are for.</p>`; }
+   <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft, Warcraft and all related names are trademarks of Blizzard Entertainment, Inc.</p>`; }
 
 function render(){ const s=state.sel;
   if(state.tab==="about") renderAbout();
@@ -1252,6 +1259,18 @@ const norm=s=>s.toLowerCase().replace(/[\u2019'`]/g,"'");
 const GATES=GEO.gates||{};
 const NODE_POIS=POIS.filter(p=>["city","port","zep","sky"].includes(p.t)||p.fp);
 const plan={f:"alliance",from:"",to:"",res:null,speed:"foot",auto:true,fp:false,alt:false,opts:false};
+/* Feedback link: helpers live here because they read the planner state */
+function fbZone(){ const zn=id=>ZONES[id]?ZONES[id].name:"", pz=id=>POI[id]&&POI[id].z?zn(POI[id].z):""; const s=state.sel;
+  if(s&&s.type==="zone") return zn(s.id); if(s&&s.type==="poi") return pz(s.id);
+  const b=plan.to&&PLACES[norm(plan.to.trim())]; return !b?"":b.type==="zone"?zn(b.id):pz(b.id); }
+function fbDevice(){ const w=Math.min(screen.width,screen.height); return !matchMedia("(pointer:coarse)").matches?"desktop":w<600?"phone":"tablet"; }
+function fbFields(){ const ok=!!(plan.res&&plan.res.ok); return {route_from:ok?plan.from:"",route_to:ok?plan.to:"",zone:fbZone(),faction:plan.f,level:state.level!=null?String(state.level):"",version:CHANGELOG[0].v,device:fbDevice()}; }
+function fbUrl(){ const q=new URLSearchParams(); Object.entries(fbFields()).forEach(([k,v])=>{ if(v) q.set(k,v); }); return `https://tally.so/r/${FEEDBACK_FORM}?${q}`; }
+let tallyLoad=null;
+function loadTally(){ if(window.Tally||tallyLoad) return; tallyLoad=document.createElement("script"); tallyLoad.src="https://tally.so/widgets/embed.js"; tallyLoad.async=true; tallyLoad.onerror=()=>{tallyLoad=null;}; document.head.appendChild(tallyLoad); }
+function reportLink(where){ setTimeout(loadTally,1200); return `<p class="reportline"><a href="https://tally.so/r/${FEEDBACK_FORM}" target="_blank" rel="noopener" data-report="1" data-gc="feedback-${where}">Report a problem or suggest something</a></p>`; }
+document.addEventListener("click",e=>{ const a=e.target.closest("a[data-report]"); if(!a) return; a.href=fbUrl();
+  if(window.Tally&&window.Tally.openPopup){ e.preventDefault(); window.Tally.openPopup(FEEDBACK_FORM,{layout:"modal",width:520,overlay:true,hiddenFields:fbFields()}); } });
 const SPEEDS={foot:["On foot",1],form:["Travel form",1.4],m60:["Mount 60%",1.6],m100:["Mount 100%",2]};
 try{const sv=JSON.parse(localStorage.getItem("fa-plan")||"{}"); if(sv.f==="horde"||sv.f==="alliance") plan.f=sv.f; if(SPEEDS[sv.speed]){plan.speed=sv.speed;plan.auto=false;} plan.fp=!!sv.fp;}catch(e){}
 const savePlan=()=>{try{localStorage.setItem("fa-plan",JSON.stringify({f:plan.f,speed:plan.auto?null:plan.speed,fp:plan.fp}))}catch(e){}};
@@ -1406,6 +1425,7 @@ function renderPlan(){ const r=plan.res;
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
        <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}<p class="kofiline">Travelcraft is free. Found this route useful? <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-route">Buy me a flight on Ko-fi</a>.</p>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?(s.ride[1]===s.ride[2]?fmtMin(s.ride[0]+s.ride[1]):fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2])):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
+       ${reportLink("route")}
        <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
 
 /* ---------------- selection ---------------- */
