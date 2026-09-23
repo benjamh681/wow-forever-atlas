@@ -664,12 +664,12 @@ const POIS = [
   { id: "swharbor", n: "Stormwind Harbor", t: "port", z: "elwynn", e: [35.4, 69.8], f: "alliance", isNew: true, d: "New in Forever. Ship to Auberdine.", c: "o" },
   { id: "bootybay", n: "Booty Bay", t: "port", z: "stv", e: [50.0, 98.1], f: "neutral", d: "Pirate-flavored goblin port at the southern tip of Stranglethorn. Boat to Ratchet.", c: "c", fp: "both" },
   { id: "powderfuse", n: "Powderfuse Port", t: "port", z: "riverglades", e: [98.1, 73.6], f: "neutral", isNew: true, d: "Neutral goblin port of the Powderfuse goblins. Ship to Steamwheedle Port in Tanaris, and a flight point in the beta client. Exact position to be confirmed.", c: "t", fp: "both" },
-  { id: "farholde", n: "Farholde Keep", t: "town", z: "riverglades", e: [87.5, 76.4], f: "alliance", isNew: true, d: "Alliance hold of the Riverglades and the faction's flight point there. Position estimated.", c: "r", fp: "alliance" },
-  { id: "rogmar", n: "Rog'mar", t: "town", z: "riverglades", e: [92.6, 67.4], f: "horde", isNew: true, d: "Horde settlement of the Riverglades and the faction's flight point there. Position estimated.", c: "r", fp: "horde" },
+  { id: "farholde", n: "Farholde Keep", t: "town", z: "riverglades", e: [87.5, 76.4], f: "alliance", isNew: true, d: "Alliance hold of the Riverglades and the faction's flight point there. The beta client links it to Lakeshire, Morgan's Vigil and Thelsamar. Position estimated.", c: "r", fp: "alliance" },
+  { id: "rogmar", n: "Rog'mar", t: "town", z: "riverglades", e: [92.6, 67.4], f: "horde", isNew: true, d: "Horde settlement of the Riverglades and the faction's flight point there. The beta client links it to Stonard and Hammerfall. Position estimated.", c: "r", fp: "horde" },
   { n: "Sunnyglade", t: "area", z: "riverglades", e: [91.0, 75.2], isNew: true, d: "Farming town of Stormwind burned by the Old Horde in the First War, rebuilt by freed peasants. Position estimated.", c: "r" },
   { n: "Bolder'ok", t: "area", z: "riverglades", e: [94.4, 70.0], isNew: true, d: "Settlement of the Bolder'ok ogre clan. Position estimated.", c: "r" },
   { id: "eternity", n: "Summit of Eternity", t: "town", z: "hyjal", k: [65.6, 22.8], isNew: true, d: "Flight point on Mount Hyjal in the beta client. Which faction it serves, and its position, are unknown.", c: "t", fp: "both" },
-  { id: "taintedfoot", n: "Tainted Foothills", t: "town", z: "hyjal", k: [57.2, 24.9], isNew: true, d: "Second flight point of Mount Hyjal in the beta client. Which faction it serves, and its position, are unknown.", c: "t", fp: "both" },
+  { id: "taintedfoot", n: "Tainted Foothills", t: "town", z: "hyjal", k: [57.2, 24.9], isNew: true, d: "Flight point on Mount Hyjal, open to both factions: the beta client links it to Everlook in Winterspring. Position estimated.", c: "r", fp: "both" },
   { id: "tidegear", n: "Tidegear Coast", t: "town", z: "dunmorogh", e: [39.0, 52.6], f: "alliance", isNew: true, d: "New Dun Morogh flight point in the beta client, on the coast. Position estimated.", c: "r", fp: "alliance" },
   { id: "uczep", n: "Tirisfal zeppelin towers", t: "zep", z: "tirisfal", e: [47.6, 13.4], f: "horde", d: "Outside the Undercity. Zeppelins to Orgrimmar and Grom'gol.", c: "c" },
   { id: "gromgol", n: "Grom'gol Base Camp", t: "zep", z: "stv", e: [46.6, 89.2], f: "horde", d: "Horde camp in northern Stranglethorn. Zeppelins to Orgrimmar and Tirisfal.", c: "c", fp: "horde" },
@@ -911,6 +911,7 @@ const ADDON_LIVE = !!ADDON_URL;
 const KOFI_URL = "https://ko-fi.com/fistao";
 const CHANGELOG = [
   { v: "4.9", d: "September 23, 2026", title: "Starting zones", items: [
+    ["data", "The six new flight points found in the beta client are now listed in the text guide too. Tainted Foothills on Mount Hyjal is open to both factions (linked to Everlook), and Farholde Keep and Rog'mar show the flight masters they link to."],
     ["fix", "On phones the top bar now keeps Plan a route and Support, and drops Get the addon: an addon cannot be installed from a phone, and the download is still under every route and at the bottom of the page. The version button is back on laptop screens."],
     ["data", "The six starting zones now say what beta players report: the extra quests take you to around level 12, and higher with the new race and class combinations. Thanks to the players who reported it."]] },
   { v: "4.8", d: "September 23, 2026", title: "Shorter walks inside a zone", items: [
