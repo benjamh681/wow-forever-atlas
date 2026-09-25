@@ -296,6 +296,11 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
   .cta{display:none}
   #planCta, .cta.kofi{display:inline-flex;padding:6px 10px;font-size:12.5px}
   #planCta svg, .cta.kofi svg{display:none}
+  /* Phones: About shrinks to its icon and opens the second line, so Plan a route and Support keep the first */
+  .cta.about{display:inline-flex;padding:6px;width:32px;height:32px;justify-content:center;order:1}
+  .tools{order:2}
+  .cta.about .lbl{display:none}
+  .cta.about svg{display:block;width:17px;height:17px}
   .lvl label{display:none}
   .lvl input{width:58px}
   .seg button{padding:5px 10px}
@@ -315,7 +320,7 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 .cta.kofi:hover{filter:brightness(1.08);color:#fff}
 .cta.kofi svg{color:#fff}.cta.kofi svg path{fill:currentColor}
 /* Support button: its right edge lines up with the left border of the right panel (16px bar padding + gap) */
-@media (min-width:1300px){ .cta.kofi{margin-left:auto} .tools{margin-left:0;flex:none;justify-content:flex-end;width:calc(var(--panel-w) - 36px)} }
+@media (min-width:1300px){ .cta.about{margin-left:auto} .cta.kofi{margin-left:0} .tools{margin-left:0;flex:none;justify-content:flex-end;width:calc(var(--panel-w) - 36px)} }
 @media (min-width:1300px) and (max-width:1400px){ .tools{width:calc(var(--panel-w) - 28px)} }
 .kofiline{font-size:13px;color:var(--muted);margin-top:14px}
 .reportline{font-size:13px;color:var(--muted);margin:14px 0 0}
@@ -340,6 +345,39 @@ ol.steps li.end::before{background:var(--accent);border-color:var(--accent);colo
 .shotcap{font-size:12.5px;color:var(--muted);margin:0 0 16px}
 ol.howto{margin:0;padding-left:20px}
 ol.howto li{padding:5px 0}
+
+/* About: a quiet outlined button in the header, and a page of folding sections */
+.cta.about{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px var(--line-2)}
+.cta.about:hover{box-shadow:inset 0 0 0 1px var(--accent);color:var(--text);filter:none}
+.ab-group{margin:22px 0 0}
+.ab-label{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px 2px}
+.ab-card{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.ab-card>details+details{border-top:1px solid var(--line)}
+.ab-card summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;min-height:48px}
+.ab-card summary::-webkit-details-marker{display:none}
+.ab-card summary:hover{background:rgba(127,160,200,.06)}
+.ab-card summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.ab-st{flex:1;min-width:0}
+.ab-t{display:block;font-weight:600;font-size:15px;color:var(--text);line-height:1.3}
+.ab-s{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.ab-chev{flex:none;width:16px;height:16px;color:var(--muted);transition:transform .15s}
+details[open]>summary .ab-chev{transform:rotate(90deg);color:var(--accent)}
+.ab-body{padding:0 14px 14px;font-size:14.5px}
+.ab-body>p:first-child{margin-top:0}
+.ab-body .facts li{padding:7px 0}
+.ab-new{margin:14px 0 0;border:1px solid var(--line-2);border-left:3px solid var(--accent);border-radius:10px;padding:12px 14px;background:var(--surface-2)}
+.ab-new .ab-k{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.ab-new h3{margin:3px 0 6px;font-size:15.5px;font-weight:600}
+.ab-new ul{list-style:none;margin:0;padding:0}
+.ab-new li{display:grid;grid-template-columns:40px 1fr;gap:8px;padding:3px 0;font-size:14px}
+.ab-new .ab-more{margin-top:6px;font-size:13px}
+.ab-rel summary .rel-v{font-weight:700;font-size:14.5px;min-width:52px}
+.ab-rel summary .rel-t{font-weight:500;font-size:14.5px;flex:1;min-width:0}
+.ab-rel summary .rel-d{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.ab-rel .ab-body ul{list-style:none;margin:0;padding:0}
+.ab-rel .ab-body li{display:grid;grid-template-columns:40px 1fr;gap:8px;padding:3px 0;font-size:14px}
+.ab-older>summary{color:var(--accent);font-size:14px;font-weight:600}
+.ab-older .ab-card{border:0;border-radius:0;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
@@ -357,6 +395,7 @@ ol.howto li{padding:5px 0}
   </div>
   <button class="cta" id="planCta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 000-7H9a3.5 3.5 0 010-7h6.5"/></svg>Plan a route</button>
   <button class="cta addon" id="addonCta" data-gc="addon-header"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Get the addon<span class="soon" id="addonSoon">Soon</span></button>
+  <button class="cta about" id="aboutCta" data-gc="about-header" title="About Travelcraft, sources and patch notes" aria-label="About Travelcraft"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/></svg><span class="lbl">About</span></button>
   <a class="cta kofi" id="kofiCta" href="https://ko-fi.com/fistao" target="_blank" rel="noopener" data-gc="kofi-header" title="Support Travelcraft on Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg><span class="kl">Support</span></a>
   <div class="tools">
     <div class="lvl"><label for="lv">Your level</label><input id="lv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60"><button id="lvclear" hidden>clear</button></div>
@@ -918,6 +957,9 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.13", d: "September 26, 2026", title: "A clearer About page", items: [
+    ["new", "An About button in the top bar. The page now opens on what is new, and its sections fold away: open only the one you need."],
+    ["fix", "Updated the text on the addon (now also in Spanish) and on how travel times are measured."]] },
   { v: "4.12", d: "September 25, 2026", title: "Sea detours when they pay", items: [
     ["fix", "The planner now takes a detour by sea when it saves real time. It used to count seven extra minutes for each change of continent, which hid good routes on the new Forever ship line between Stormwind, Auberdine and Southshore. Stormwind City to the Ruins of Lordaeron, for one, now goes by ship in about 24 minutes instead of 33 on foot. Thanks to the player who reported it."]] },
   { v: "4.11", d: "September 25, 2026", title: "Truer walking times", items: [
@@ -1241,19 +1283,43 @@ function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">
    ${addonGet("bottom")}
    <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. <button class="linkish" data-tabgo="about">About, sources and patch notes</button></p>`; }
 
-function renderAbout(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${CHANGELOG[0].v}, updated ${CHANGELOG[0].d}. Called Forever Atlas until September 20, 2026.</p>
-   <h2>The in-game addon</h2><p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map, so both give the same travel time for the same trip. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button></p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English and French.</p>
-   <h2>Text guide</h2><p>Every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, on one page: <a href="guide.html">WoW Forever guide</a>.</p>
-   <h2>Feedback</h2><p>A wrong route, time or place, a missing boat or flight, or an idea: every report is read, and fixes show up in the patch notes below.</p>${reportLink("about")}
-   <h2>Support Travelcraft</h2><p>Travelcraft is free, with no ads, and kept up to date as Forever changes. If it saved you some time, you can <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-about">buy me a flight on Ko-fi</a>. Thank you!</p>
-   <h2 id="notes">Patch notes</h2>${CHANGELOG.map(r=>`<div class="rel"><div class="rel-h"><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d}</span></div><ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul></div>`).join("")}
-   <h2>Sources and confidence</h2><p class="lead">This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from r/wowforever. Much of it will change.</p>
-   <h2>How to read the labels</h2><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>
-   <h2>About the map itself</h2><p>The continents are redrawn by hand in the spirit of the Classic world map. They are not traced from game files. Borders of the new zones, the position of new dungeons and every sea lane are approximations. Zephras Isle lies in Skywall; it is drawn in the Great Sea so it has somewhere to live.</p>
-   <h2>New flight points</h2><p>Six flight points appear in the beta client and in the zone pages built from it: Farholde Keep, Rog'mar and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. Blizzard has not announced them, no one has timed a flight from them, and their positions on this map are estimates. Which faction the two Hyjal points serve is unknown; they are drawn as neutral here.</p>
-   <h2>About travel times</h2><p>A hand-drawn map has no scale, so one was measured. Flights move at a constant speed, and the Classic community has timed hundreds of them. Laying 291 of those timings over this map gave the same scale on both continents, within 2%. Walking and riding times are that scale converted to run speed, with a margin for winding roads. Expect them to be right within a quarter, not to the second.</p>
-   <p>Flight times are the measured Classic ones where they exist. Ships and zeppelins count two minutes on board plus up to five of waiting. Mount speeds come from datamining: reported, not confirmed by Blizzard. If you time a trip in the beta and the planner is off, say so: the scale is one number and easy to correct.</p>
-   <h2>Sources</h2><ul class="facts">${SOURCES.map(s=>`<li><a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])}</a></li>`).join("")}</ul>
+function renderAbout(){
+  const chev=`<svg class="ab-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>`;
+  const sec=(id,t,sub,body,open)=>`<details id="ab-${id}"${open?" open":""}><summary><span class="ab-st"><span class="ab-t">${t}</span>${sub?`<span class="ab-s">${sub}</span>`:""}</span>${chev}</summary><div class="ab-body">${body}</div></details>`;
+  const items=r=>`<ul>${r.items.map(([k,m])=>`<li><span class="tag ${k}">${k}</span><span>${esc(m)}</span></li>`).join("")}</ul>`;
+  const rel=(r,open)=>`<details class="ab-rel"${open?" open":""}><summary><span class="rel-v">v${r.v}</span><span class="rel-t">${esc(r.title)}</span><span class="rel-d">${r.d.replace(/, \d{4}$/,"")}</span>${chev}</summary><div class="ab-body">${items(r)}</div></details>`;
+  const latest=CHANGELOG[0], recent=CHANGELOG.slice(1,6), older=CHANGELOG.slice(6);
+  sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>About Travelcraft</h1><p class="where">Version ${latest.v}, updated ${latest.d}. Called Forever Atlas until September 20, 2026.</p>
+   <div class="ab-new"><div class="ab-k">What's new in v${latest.v}</div><h3>${esc(latest.title)}</h3>${items(latest)}<button class="linkish ab-more" data-abgo="notes">All patch notes</button></div>
+
+   <div class="ab-group"><div class="ab-label">Travelcraft</div><div class="ab-card">
+   ${sec("addon","The in-game addon",ADDON_LIVE?"The same planner inside the game, on CurseForge":"Coming soon on CurseForge",
+     `<p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map. In game it measures walking on the real ground, so its times can differ a little from this map. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button></p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English, French and Spanish.</p>`)}
+   ${sec("guide","Text guide","Every zone, ship and travel time on one page",
+     `<p>Every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, on one page: <a href="guide.html">WoW Forever guide</a>.</p>`)}
+   ${sec("feedback","Report a problem or suggest something","Every report is read",
+     `<p>A wrong route, time or place, a missing boat or flight, or an idea: every report is read, and fixes show up in the patch notes.</p>${reportLink("about")}`)}
+   ${sec("support","Support Travelcraft","Free, no ads",
+     `<p>Travelcraft is free, with no ads, and kept up to date as Forever changes. If it saved you some time, you can <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-about">buy me a flight on Ko-fi</a>. Thank you!</p>`)}
+   </div></div>
+
+   <div class="ab-group"><div class="ab-label">How it works</div><div class="ab-card">
+   ${sec("labels","How to read the labels","Official, Reported, To confirm, Classic",
+     `<p>This is a fan-made map, assembled from public information since September 17, 2026, the day the beta opened, and corrected along the way with feedback from players. Much of it will change.</p><ul class="facts">${Object.entries(CONF).map(([k,v])=>`<li>${seal(k)}${esc(v[1])}.</li>`).join("")}</ul>`)}
+   ${sec("times","Travel times","Where the minutes come from",
+     `<p>Flight times are the ones the Classic community timed, 291 of them; where a pair was never timed, the time is estimated from distance and says so. Walking and riding times use the real size of each zone, measured in game with the Travelcraft addon, at run speed with a margin for winding roads. Expect them to be right within a quarter, not to the second.</p><p>Ships and zeppelins count two minutes on board plus up to five of waiting. A route that changes continent by sea has to save real time to win, so the planner does not send you back and forth for a minute. Mount speeds come from datamining: reported, not confirmed by Blizzard. If you time a trip in the beta and the planner is off, say so.</p>`)}
+   ${sec("map","About the map itself","Drawn by hand, not traced from game files",
+     `<p>The continents are redrawn by hand in the spirit of the Classic world map. They are not traced from game files. Borders of the new zones, the position of new dungeons and every sea lane are approximations. Zephras Isle lies in Skywall; it is drawn in the Great Sea so it has somewhere to live.</p>`)}
+   ${sec("fp","New flight points","Six points seen in the beta client",
+     `<p>Six flight points appear in the beta client and in the zone pages built from it: Farholde Keep, Rog'mar and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. Blizzard has not announced them, no one has timed a flight from them, and their positions on this map are estimates. Which faction the two Hyjal points serve is unknown; they are drawn as neutral here.</p>`)}
+   ${sec("sources","Sources",`${SOURCES.length} public sources`,
+     `<ul class="facts">${SOURCES.map(x=>`<li><a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a></li>`).join("")}</ul>`)}
+   </div></div>
+
+   <div class="ab-group" id="notes"><div class="ab-label">Patch notes</div><div class="ab-card">
+   ${[latest,...recent].map((r,k)=>rel(r,k===0)).join("")}
+   ${older.length?`<details class="ab-older"><summary><span class="ab-st">Earlier versions (${older.length})</span>${chev}</summary><div class="ab-card">${older.map(r=>rel(r,false)).join("")}</div></details>`:""}
+   </div></div>
    <p class="foot">Unofficial fan project, not affiliated with or endorsed by Blizzard Entertainment. World of Warcraft, Warcraft and all related names are trademarks of Blizzard Entertainment, Inc.</p>`; }
 
 function render(){ const s=state.sel;
@@ -1492,7 +1558,12 @@ $("#addonCta").onclick=()=>{state.tab="addon";clearMarks();state.sel=null;render
 if(ADDON_LIVE) $("#addonSoon").remove();
 /* Count clicks on the addon buttons in GoatCounter (buttons are drawn after the counter loads, so count by hand) */
 document.addEventListener("click",e=>{ const t=e.target.closest("[data-gc]"); if(t&&window.goatcounter&&window.goatcounter.count) window.goatcounter.count({path:t.dataset.gc,title:t.textContent.trim().slice(0,60),event:true}); });
-$("#ver").textContent="v"+CHANGELOG[0].v; $("#ver").onclick=()=>{state.tab="about";render();drawPlan();paint();syncHash();};
+$("#ver").textContent="v"+CHANGELOG[0].v;
+const openAbout=focus=>{state.tab="about";render();drawPlan();paint();syncHash();
+  const el=focus&&document.getElementById(focus); if(el){ if(el.tagName==="DETAILS") el.open=true; el.scrollIntoView({block:"start"}); } else { const sh=document.querySelector(".sheet"); if(sh) sh.scrollTop=0; } };
+$("#ver").onclick=()=>openAbout("notes");
+$("#aboutCta").onclick=()=>openAbout(null);
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-abgo]"); if(b){ const el=document.getElementById(b.dataset.abgo); if(el) el.scrollIntoView({block:"start",behavior:"smooth"}); } });
 $("#home").onclick=ev=>{ev.preventDefault();state.tab="plan";select(null);drawPlan();paint();fitAll(true);};
 addEventListener("resize",()=>{const old=fitK;fitK=calcFit(); if(Math.abs(V.k-old)<1e-6) fitAll(false); else {V=clampV(V);apply();}});
 
