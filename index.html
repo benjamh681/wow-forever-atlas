@@ -918,6 +918,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.11", d: "September 25, 2026", title: "Truer walking times", items: [
+    ["new", "Walking and riding times now use the real size of each zone, measured in game with the Travelcraft addon. The map is drawn by hand and some zones are stretched for legibility, so times on foot were often too long. They now match the addon much more closely."]] },
   { v: "4.10.1", d: "September 25, 2026", title: "Search results", items: [
     ["fix", "The site now shows its icon and a clearer description in search results."]] },
   { v: "4.10", d: "September 23, 2026", title: "Report a problem", items: [
@@ -1281,10 +1283,16 @@ const SPEEDS={foot:["On foot",1],form:["Travel form",1.4],m60:["Mount 60%",1.6],
 try{const sv=JSON.parse(localStorage.getItem("fa-plan")||"{}"); if(sv.f==="horde"||sv.f==="alliance") plan.f=sv.f; if(SPEEDS[sv.speed]){plan.speed=sv.speed;plan.auto=false;} plan.fp=!!sv.fp;}catch(e){}
 const savePlan=()=>{try{localStorage.setItem("fa-plan",JSON.stringify({f:plan.f,speed:plan.auto?null:plan.speed,fp:plan.fp}))}catch(e){}};
 /* Scale: 291 real Classic flight durations give 0.76 s per map unit in the air, the same on both continents.
-   At roughly 25 yd/s effective flight speed that is about 19 yards per map unit. Running is 7 yd/s, roads wind about 15%. */
-const FOOT_SPU=19*1.15/7;
+   On foot, each zone has its own scale: the map is drawn by hand and zones are stretched for legibility.
+   YPU = real yards per map unit, measured from the real in-game positions of places and zone crossings
+   (the ones the Travelcraft addon uses), pulled toward 15 where a zone has few measures.
+   Running is 7 yd/s, roads wind about 15%. */
+const YPU={alterac:15.0,arathi:12.9,ashenvale:14.9,azshara:15.6,badlands:15.7,barrens:14.1,blastedlands:18.1,burningsteppes:13.2,darkshore:14.1,deadwind:14.9,desolace:13.2,dunmorogh:18.3,durotar:14.0,duskwood:16.9,dustwallow:15.2,elwynn:14.1,epl:15.6,felwood:13.8,feralas:18.0,hillsbrad:13.9,hinterlands:14.6,lochmodan:14.3,mulgore:18.6,needles:22,redridge:13.1,searinggorge:15.1,silverpine:14.7,stonetalon:20.3,stv:15.5,swamp:12.1,tirisfal:12.9,westfall:15.2,wetlands:14.8,winterspring:16.0,wpl:16.9}, YPU_DEFAULT=15;
+const FOOT_SPU=YPU_DEFAULT*1.15/7;
 const autoSpeed=()=>state.level>=60?"m100":state.level>=40?"m60":"foot";
 const spu=()=>FOOT_SPU/SPEEDS[plan.speed][1];
+const spuZ=z=>(YPU[z]||YPU_DEFAULT)*1.15/7/SPEEDS[plan.speed][1]; /* walking seconds per map unit in zone z */
+const zoneOfNode=n=>n[0]==="z"?n.slice(2):(POI[n.slice(2)]&&POI[n.slice(2)].z);
 const RIDE={boat:[120,0,300],zep:[120,0,300],sky:[120,0,300],portal:[15,0,0],ferry:[90,0,180],tram:[75,0,90]}; /* seconds on board, min wait, max wait */
 const rideOf=r=>RIDE[r.kind==="tram"?"tram":(r.id==="r-aub-rut"||r.id==="r-fea-for")?"ferry":r.kind];
 
@@ -1301,15 +1309,15 @@ const EXAMPLES=[["Darnassus","Ironforge","alliance"],["Orgrimmar","Riverglades",
 const SEA_PEN=420; /* seconds added, for route choice only, each time a ship or zeppelin changes continent */
 function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
   const S=spu();
-  LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)+dist(g,zc(b)))*S*landK,{k:"land",a,b,via,c,note}); });
-  NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*S*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
-  CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*S+30),{k:"link",via,fixed,verb}));
+  LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)*spuZ(a)+dist(g,zc(b))*spuZ(b))*landK,{k:"land",a,b,via,c,note}); });
+  NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*spuZ(p.z)*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
+  CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*spuZ(POI[a].z)+30),{k:"link",via,fixed,verb}));
   /* Inside one zone, walk straight from one place to the other instead of going through
      the middle of the zone (two places on the same side came out far apart) */
   const inZone={};
   NODE_POIS.forEach(p=>{ if(p.z&&ZONES[p.z]) (inZone[p.z]=inZone[p.z]||[]).push(p); });
   Object.values(inZone).forEach(list=>{ for(let i=0;i<list.length;i++) for(let j=i+1;j<list.length;j++)
-    add("p:"+list[i].id,"p:"+list[j].id,Math.max(20,dist(list[i].xy,list[j].xy)*S*landK),{k:"in"}); });
+    add("p:"+list[i].id,"p:"+list[j].id,Math.max(20,dist(list[i].xy,list[j].xy)*spuZ(list[i].z)*landK),{k:"in"}); });
   if(plan.fp){ const fm=POIS.filter(p=>p.fp&&(p.fp==="both"||p.fp===f)); for(let i=0;i<fm.length;i++) for(let j=i+1;j<fm.length;j++) if(contOf(fm[i])===contOf(fm[j])){ const ft=flightTime(f,fm[i],fm[j]); add("p:"+fm[i].id,"p:"+fm[j].id,ft.sec+25,{k:"fly",ft}); } }
   ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; if(r.skyborne&&(!ok||!plan.sky)) return; /* Skyborne-only links: used only for trips to or from Zephras Isle, where the traveler must be a Skyborne */ const stops=[r.from,...(r.stops||[]),r.to];
     for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r), cross=contOf(POI[stops[i]])!==contOf(POI[stops[i+1]]); add("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800)+(cross&&seaPen?SEA_PEN:0),{k:"ride",r,ok,cross}); } });
@@ -1358,7 +1366,7 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   plan.alt=false; best.other=quick||null; return best; }
 function buildPlan(path,a,b,forced){
   const F=plan.f, steps=[], zones=new Set(), segs=[], fps=[]; let cur=[placeXY(a)], crossings=0;
-  const S=spu(); let prevPt=placeXY(a), pend=0; const leg=pt=>{ const s=dist(prevPt,pt)*S; prevPt=pt; return s; };
+  let prevPt=placeXY(a), pend=0; const leg=(pt,z)=>{ const s=dist(prevPt,pt)*spuZ(z); prevPt=pt; return s; };
   const take=x=>{ const s=x+pend; pend=0; return s; };
   const zwarn=z=>{ const w=[]; if(z.faction===foe(F)) w.push([`${FSHORT[z.faction]} territory: guards and players will attack you.`,""]);
     if(state.level!=null&&z.lv&&z.lv[0]>state.level+3) w.push([`Level ${lvText(z)} zone. At level ${state.level}, the mobs here will be well above you.`,"soft"]); return w; };
@@ -1366,11 +1374,11 @@ function buildPlan(path,a,b,forced){
   steps.push({t:`Start in ${a.name}`,s:a.type==="poi"?`${TNAME[POI[a.id].t]} in ${ZONES[sz].name}`:`Level ${lvText(ZONES[sz])}`,w:zwarn(ZONES[sz])});
   path.edges.forEach((e,i)=>{ const u=path.nodes[i], v=path.nodes[i+1], last=i===path.edges.length-1;
     if(e.k==="land"){ const z=ZONES[v.slice(2)]; zones.add(z.id); const w=zwarn(z); if(e.note) w.push([e.note,"soft"]);
-      const gp=GATES[e.a+"|"+e.b]||GATES[e.b+"|"+e.a]||nodeXY(v); cur.push(gp); steps.push({t:`Cross into ${z.name}`,s:`Through ${e.via}${z.lv?" · level "+lvText(z):""}`,c:e.c!=="c"?e.c:null,w,sec:take(leg(gp))}); }
-    else if(e.k==="in"){ if(v[0]==="p"){ cur.push(nodeXY(v)); const s=leg(nodeXY(v)); if(!last) steps.push({t:`Make your way to ${nodeName(v)}`,s:`${TNAME[POI[v.slice(2)].t]} in ${ZONES[POI[v.slice(2)].z].name}`,w:[],sec:take(s)}); else pend+=s; } else zones.add(v.slice(2)); }
+      const gp=GATES[e.a+"|"+e.b]||GATES[e.b+"|"+e.a]||nodeXY(v); cur.push(gp); steps.push({t:`Cross into ${z.name}`,s:`Through ${e.via}${z.lv?" · level "+lvText(z):""}`,c:e.c!=="c"?e.c:null,w,sec:take(leg(gp,zoneOfNode(u)))}); }
+    else if(e.k==="in"){ if(v[0]==="p"){ cur.push(nodeXY(v)); const s=leg(nodeXY(v),zoneOfNode(v)); if(!last) steps.push({t:`Make your way to ${nodeName(v)}`,s:`${TNAME[POI[v.slice(2)].t]} in ${ZONES[POI[v.slice(2)].z].name}`,w:[],sec:take(s)}); else pend+=s; } else zones.add(v.slice(2)); }
     else if(e.k==="fly"){ const A=POI[u.slice(2)], B=POI[v.slice(2)]; if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:"air",pts:[A.xy,B.xy]}); cur=[B.xy]; prevPt=B.xy; zones.add(B.z); fps.push(A.id,B.id);
       steps.push({t:`Fly from ${A.n} to ${B.n}`,s:e.ft.real?"Flight path · time measured in Classic":"Flight path · estimated time",w:zwarn(ZONES[B.z]),sec:take(0)+e.ft.sec,fix:e.ft.sec}); }
-    else if(e.k==="link"){ cur.push(nodeXY(v)); const walked=leg(nodeXY(v)), s=e.fixed||Math.max(30,walked); if(!last) steps.push({t:`${e.verb||"Walk to"} ${nodeName(v)}`,s:`Through ${e.via}`,w:[],sec:take(s),fix:e.fixed||0}); else pend+=s; }
+    else if(e.k==="link"){ cur.push(nodeXY(v)); const walked=leg(nodeXY(v),zoneOfNode(v)), s=e.fixed||Math.max(30,walked); if(!last) steps.push({t:`${e.verb||"Walk to"} ${nodeName(v)}`,s:`Through ${e.via}`,w:[],sec:take(s),fix:e.fixed||0}); else pend+=s; }
     else { const r=e.r, ia=r.pts.indexOf(POI[u.slice(2)].xy), ib=r.pts.indexOf(POI[v.slice(2)].xy); let pts=r.pts.slice(Math.min(ia,ib),Math.max(ia,ib)+1); if(ia>ib) pts=pts.reverse();
       if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:r.kind==="tram"?"land":r.kind==="portal"?"portal":"sea",pts}); cur=[POI[v.slice(2)].xy]; zones.add(POI[v.slice(2)].z);
       if(e.cross) crossings++;
@@ -1380,7 +1388,7 @@ function buildPlan(path,a,b,forced){
       const rd=rideOf(r); prevPt=POI[v.slice(2)].xy; steps.push({t:`${kindName(r)} from ${nodeName(u)} to ${nodeName(v)}`,s:r.isNew?"New in Forever":"Classic route",c:r.c!=="c"?r.c:null,w,ride:rd,sec:take(0)}); } });
   const ez=b.type==="zone"?b.id:POI[b.id].z; zones.add(ez); cur.push(placeXY(b)); if(cur.length>1) segs.push({k:"land",pts:cur});
   const ew=[]; if(b.type==="poi"&&POI[b.id].f===foe(F)) ew.push([`${FSHORT[POI[b.id].f]} ${POI[b.id].t==="city"?"capital":"town"}. You will not be welcome.`,""]);
-  const lastS=steps[steps.length-1], fin=take(leg(placeXY(b)));
+  const lastS=steps[steps.length-1], fin=take(leg(placeXY(b),b.type==="zone"?b.id:POI[b.id].z));
   if(b.type==="zone"&&lastS.t===`Cross into ${b.name}`){ lastS.end=true; lastS.sec=(lastS.sec||0)+fin; }
   else steps.push({sec:fin,t:`Arrive at ${b.name}`,s:(path.edges.length===0?"Same zone, just follow the roads · ":"")+(b.type==="poi"?`${TNAME[POI[b.id].t]} in ${ZONES[ez].name}`:`Level ${lvText(ZONES[ez])}`),w:ew,end:true});
   let land=0,fixed=0,rmin=0,rmax=0; steps.forEach(s=>{ const fx=Math.min(s.fix||0,s.sec||0); fixed+=fx; land+=(s.sec||0)-fx; if(s.ride){rmin+=s.ride[0]+s.ride[1]; rmax+=s.ride[0]+s.ride[2];} });
@@ -1432,7 +1440,7 @@ function renderPlan(){ const r=plan.res;
        <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}<p class="kofiline">Travelcraft is free. Found this route useful? <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-route">Buy me a flight on Ko-fi</a>.</p>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?(s.ride[1]===s.ride[2]?fmtMin(s.ride[0]+s.ride[1]):fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2])):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
        ${reportLink("route")}
-       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand; its scale was set against 291 real Classic flight durations, then converted to running speed. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
+       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand: flight times come from 291 real Classic flights, and walking times from the real size of each zone, measured in game. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
 
 /* ---------------- selection ---------------- */
 function clearMarks(){ selPath.setAttribute("d",""); $$(".poi.on").forEach(e=>e.classList.remove("on")); ROUTES.forEach(r=>{r.line.classList.remove("on","dimmed");}); }
