@@ -378,6 +378,66 @@ details[open]>summary .ab-chev{transform:rotate(90deg);color:var(--accent)}
 .ab-rel .ab-body li{display:grid;grid-template-columns:40px 1fr;gap:8px;padding:3px 0;font-size:14px}
 .ab-older>summary{color:var(--accent);font-size:14px;font-weight:600}
 .ab-older .ab-card{border:0;border-radius:0;border-top:1px solid var(--line)}
+
+/* Level in the trip options, dungeon picks, and a calmer route result */
+.lvrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.lvrow label{font-weight:600;font-size:14px}
+.lvrow input{width:74px;background:var(--bg);border:1px solid var(--line-2);border-radius:8px;color:var(--text);padding:7px 10px;font:inherit;font-size:15px}
+.lvrow .lvh{font-size:12.5px;color:var(--muted);flex-basis:100%}
+.addlv{color:var(--accent);font-weight:600}
+.dj-invite{margin:18px 0 0;background:var(--surface-2);border:1px dashed var(--line-2);border-radius:12px;padding:12px 14px}
+.dj-invite p{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.dj-invite .lvrow{margin:0}
+.dj-card{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.dj-row{display:flex;width:100%;text-align:left;align-items:center;gap:12px;padding:10px 14px;border:0;border-top:1px solid var(--line);background:none;color:var(--text);cursor:pointer;font:inherit}
+.dj-row:first-child{border-top:0}
+.dj-row:hover{background:rgba(127,160,200,.06)}
+.dj-lv{flex:none;width:50px;text-align:center;font-size:12.5px;font-weight:700;border:1px solid var(--line-2);border-radius:7px;padding:4px 0}
+.dj-lv.fit{border-color:var(--accent);color:var(--accent)}
+.dj-m{flex:1;min-width:0}
+.dj-n{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;font-weight:600;font-size:15px}
+.dj-s{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+.dj-new{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);border-radius:4px;padding:0 5px;line-height:16px}
+.risk{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.risk:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.risk.safe{color:var(--c-o);background:rgba(63,178,122,.12)}
+.risk.care{color:var(--c-r);background:rgba(224,162,58,.12)}
+.risk.danger{color:var(--c-t);background:rgba(226,102,90,.13)}
+.dj-head{display:flex;align-items:baseline;justify-content:space-between;margin:20px 2px 8px}
+.dj-head .ab-label{margin:0}
+.dj-all{font-size:13px;color:var(--accent);background:none;border:0;cursor:pointer;padding:0}
+.dj-note{font-size:12.5px;color:var(--muted);margin:8px 2px 0}
+.jr{border:1px solid var(--line-2);border-left:3px solid var(--c-o);border-radius:10px;background:var(--surface-2);padding:12px 14px;margin:12px 0 0}
+.jr.care{border-left-color:var(--c-r)} .jr.danger{border-left-color:var(--c-t)}
+.jr .jr-k{display:flex;align-items:center;justify-content:space-between;margin:0 0 4px}
+.jr ul{margin:6px 0 0;padding:0;list-style:none}
+.jr li{position:relative;padding:3px 0 3px 16px;font-size:14px}
+.jr li:before{content:"";position:absolute;left:3px;top:11px;width:5px;height:5px;border-radius:50%;background:var(--muted)}
+.jr.danger li:before{background:var(--c-t)} .jr.care li:before{background:var(--c-r)}
+.jr-tip{margin:6px 0 0;font-size:13.5px;color:var(--muted)}
+.jr-d{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.dj-facts{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.dj-facts span{font-size:12.5px;border:1px solid var(--line-2);border-radius:6px;padding:3px 8px}
+.dj-facts span.g{color:var(--gold);border-color:var(--gold)}
+.actrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0 0}
+.actrow .reportline{margin:0}
+details.fine{margin:18px 0 0;border-top:1px solid var(--line);padding-top:10px}
+details.fine summary{cursor:pointer;font-size:13px;color:var(--muted);list-style:none}
+details.fine summary::-webkit-details-marker{display:none}
+details.fine summary:before{content:"\203A";display:inline-block;margin-right:6px;transition:transform .15s}
+details.fine[open] summary:before{transform:rotate(90deg)}
+details.fine p{font-size:13px;color:var(--muted);margin:8px 0 0}
+.tail{margin:22px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+.tail .addoncard{margin-top:0}
+
+/* Find route: dim when there is nothing to find, quiet when the route is up to date, bright when it needs a click */
+.btn.primary.wait{background:var(--surface-2);border-color:var(--line-2);color:var(--muted)}
+.btn.primary.idle{background:transparent;border-color:var(--line-2);color:var(--text);font-weight:500}
+/* Ready: orange, the one colour no other button uses, opposite the blues of the page */
+.btn.primary.ready{background:#f08a24;border-color:#f08a24;color:#1a0d00;animation:findglow 1.4s ease-out 3}
+.btn.primary.ready:hover{filter:brightness(1.08)}
+@keyframes findglow{0%{box-shadow:0 0 0 0 rgba(240,138,36,.6)}70%{box-shadow:0 0 0 9px rgba(240,138,36,0)}100%{box-shadow:0 0 0 0 rgba(240,138,36,0)}}
+@media (prefers-reduced-motion: reduce){.btn.primary.ready{animation:none;box-shadow:0 0 0 3px rgba(240,138,36,.35)}}
 </style>
 </head>
 <body>
@@ -957,6 +1017,11 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.14", d: "September 26, 2026", title: "Dungeons for your level", items: [
+    ["new", "Set your level in the trip options and the planner lists the dungeons that fit you, how long each takes to reach, and how safe the way is: Safe trip, Watch out, or Risky trip when it crosses enemy territory or ends in an enemy capital."],
+    ["new", "On a route to a dungeon or raid, a Getting there card says what to expect on the way."],
+    ["fix", "The route result is easier to read: time first, then the way, with the rest further down."],
+    ["fix", "Find route lights up in orange only when there is something to find: it stays quiet while the route on screen is up to date, and turns into Update route as soon as you change a place."]] },
   { v: "4.13", d: "September 26, 2026", title: "A clearer About page", items: [
     ["new", "An About button in the top bar. The page now opens on what is new, and its sections fold away: open only the one you need."],
     ["fix", "Updated the text on the addon (now also in Spanish) and on how travel times are measured."]] },
@@ -1436,7 +1501,7 @@ function buildPlan(path,a,b,forced){
   const F=plan.f, steps=[], zones=new Set(), segs=[], fps=[]; let cur=[placeXY(a)], crossings=0;
   let prevPt=placeXY(a), pend=0; const leg=(pt,z)=>{ const s=dist(prevPt,pt)*spuZ(z); prevPt=pt; return s; };
   const take=x=>{ const s=x+pend; pend=0; return s; };
-  const zwarn=z=>{ const w=[]; if(z.faction===foe(F)) w.push([`${FSHORT[z.faction]} territory: guards and players will attack you.`,""]);
+  const zwarn=z=>{ const w=[]; if(z.faction===foe(F)) w.push([`${FSHORT[z.faction]} territory: guards and players will attack you.`,"","foe"]);
     if(state.level!=null&&z.lv&&z.lv[0]>state.level+3) w.push([`Level ${lvText(z)} zone. At level ${state.level}, the mobs here will be well above you.`,"soft"]); return w; };
   const sz=a.type==="zone"?a.id:POI[a.id].z; zones.add(sz);
   steps.push({t:`Start in ${a.name}`,s:a.type==="poi"?`${TNAME[POI[a.id].t]} in ${ZONES[sz].name}`:`Level ${lvText(ZONES[sz])}`,w:zwarn(ZONES[sz])});
@@ -1479,7 +1544,7 @@ function planHash(){ const q=new URLSearchParams({from:plan.from,to:plan.to,f:pl
 function syncHash(){ try{ history.replaceState(null,"",plan.res&&plan.res.ok&&state.tab==="plan"?planHash():location.pathname+location.search+(state.tab==="addon"?"#addon":"")); }catch(e){} }
 function loadHash(){ if(location.hash.length<2) return false; const q=new URLSearchParams(location.hash.slice(1)); if(!q.get("from")||!q.get("to")) return false;
   plan.from=q.get("from"); plan.to=q.get("to"); if(q.get("f")==="horde"||q.get("f")==="alliance") plan.f=q.get("f"); if(SPEEDS[q.get("by")]){plan.speed=q.get("by");plan.auto=false;} plan.fp=q.get("fp")==="1"; plan.alt=q.get("alt")==="1"; return true; }
-function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok){ fitPlan(); const e=$(".eta"); if(e&&innerWidth<860) sheet.scrollTop=e.offsetTop-sheet.offsetTop-12; } syncHash(); }
+function runPlan(){ plan.res=(plan.from&&plan.to)?computePlan():null; plan.shown=plan.res&&plan.res.ok?[(plan.from||"").trim(),(plan.to||"").trim()]:null; clearMarks(); state.sel=null; state.tab="plan"; render(); drawPlan(); paint(); restyle(); if(plan.res&&plan.res.ok){ fitPlan(); const e=$(".eta"); if(e&&innerWidth<860) sheet.scrollTop=e.offsetTop-sheet.offsetTop-12; } syncHash(); }
 function openPlan(){ state.tab="plan"; runPlan(); }
 
 function newList(){ const nz=Object.values(ZONES).filter(z=>z.status==="new");
@@ -1489,26 +1554,86 @@ function newList(){ const nz=Object.values(ZONES).filter(z=>z.status==="new");
    <h2>Dungeons and raids</h2>${nd.map(placeBtn).join("")}
    <h2>Ship routes</h2>${ROUTES.filter(r=>r.isNew).map(r=>`<button class="place" data-route="${r.id}"><span class="pn">${esc(routeTitle(r))}</span><span class="pm">${kindName(r)}</span></button>`).join("")}
    <p class="foot">Travelcraft was called Forever Atlas until September 20, 2026. <button class="linkish" data-tabgo="about">About, sources and patch notes</button> <a href="guide.html">Text guide: zones, levels, ships and travel times</a> <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-home">Support Travelcraft on Ko-fi</a></p>`; }
+/* Dungeons for the player's level: shown under the options when no route is on screen */
+const ENEMY_CITY_DJ={"Ragefire Chasm":["horde","The entrance is inside Orgrimmar, a Horde capital."],"The Stockade":["alliance","The entrance is inside Stormwind City, an Alliance capital."],
+  "Hall of Thanes":["alliance","The entrance is beneath Ironforge, an Alliance capital."],"Ruins of Lordaeron":["horde","The entrance is in the ruins right above the Undercity, a Horde capital."]};
+const djCache={};
+function tripTo(toName){ const fromName=(plan.from&&PLACES[norm(plan.from.trim())])?plan.from:(plan.f==="horde"?"Orgrimmar":"Stormwind City");
+  const key=[fromName,toName,plan.f,state.level,plan.speed,plan.fp].join("|"); if(djCache[key]) return djCache[key];
+  const save={from:plan.from,to:plan.to,res:plan.res,alt:plan.alt}; plan.from=fromName; plan.to=toName; plan.alt=false;
+  let r=null; try{ r=computePlan(); }catch(e){ r=null; } Object.assign(plan,save);
+  const out=r&&r.ok?{from:fromName,mins:r.time.mid,risk:tripRisk(r,toName)}:{from:fromName,mins:null,risk:null};
+  djCache[key]=out; return out; }
+/* safe: friendly or contested zones at your level; care: zones well above your level; danger: enemy territory or an enemy capital */
+function tripRisk(r,toName){ const foeZones=[], high=[];
+  r.steps.forEach(st=>{ const zn=(st.t.match(/^(?:Cross into|Start in) (.+)$/)||[])[1]; (st.w||[]).forEach(w=>{ if(w[2]==="foe"&&zn&&!foeZones.includes(zn)) foeZones.push(zn); if(w[1]==="soft"&&/^Level /.test(w[0])&&zn&&!high.includes(zn)) high.push(zn); }); });
+  const city=ENEMY_CITY_DJ[toName]&&ENEMY_CITY_DJ[toName][0]===foe(plan.f)?ENEMY_CITY_DJ[toName][1]:null;
+  const lvl=foeZones.length||city?"danger":high.length?"care":"safe"; return {lvl,foeZones,high,city}; }
+const RISK_TXT={safe:"Safe trip",care:"Watch out",danger:"Risky trip"};
+function djRow(p,fit){ const t=tripTo(p.n); const lv=p.lv[0]===p.lv[1]?p.lv[0]:`${p.lv[0]}\u2013${p.lv[1]}`;
+  return `<button class="dj-row" data-dj="${esc(p.n)}"><span class="dj-lv${fit?" fit":""}">${lv}</span><span class="dj-m"><span class="dj-n">${esc(p.n)}${p.isNew?' <span class="dj-new">New</span>':""}</span><span class="dj-s">${esc(ZONES[p.z].name)}${t.mins!=null?" \u00b7 "+fmtMin(t.mins):""}</span></span>${t.risk?`<span class="risk ${t.risk.lvl}">${RISK_TXT[t.risk.lvl]}</span>`:""}</button>`; }
+function dungeonBlock(){
+  if(state.level==null) return `<div class="dj-invite"><div class="ab-label" style="margin:0 0 6px">Dungeons for your level</div><p>Enter your level to see which dungeons fit you, how long they take to reach and how safe the way is.</p><div class="lvrow"><label for="planLv2">Your level</label><input id="planLv2" class="planlv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60"></div></div>`;
+  const L=state.level, all=POIS.filter(p=>p.t==="dungeon"&&p.lv&&p.z&&ZONES[p.z]);
+  const fit=all.filter(p=>p.lv[0]<=L+2&&p.lv[1]>=L-1).sort((a,b)=>Math.abs((a.lv[0]+a.lv[1])/2-L)-Math.abs((b.lv[0]+b.lv[1])/2-L));
+  const next=all.filter(p=>!fit.includes(p)&&p.lv[0]>L+2&&p.lv[0]<=L+12).sort((a,b)=>a.lv[0]-b.lv[0]);
+  /* Safest first, then quickest: the point is to save the player a trip into trouble */
+  const RR={safe:0,care:1,danger:2}, rank=p=>{ const t=tripTo(p.n); return [t.risk?RR[t.risk.lvl]:3, t.mins!=null?t.mins:1e9]; };
+  fit.sort((a,b)=>{ const x=rank(a), y=rank(b); return x[0]-y[0]||x[1]-y[1]; });
+  const shown=state.djAll?fit:fit.slice(0,4); const start=tripTo((fit[0]||all[0]).n).from;
+  return `<div class="dj-head"><div class="ab-label">Dungeons for level ${L}</div>${fit.length>4||next.length?`<button class="dj-all" id="djAll">${state.djAll?"Show fewer":"Show more"}</button>`:""}</div>
+   ${shown.length?`<div class="dj-card">${shown.map(p=>djRow(p,true)).join("")}</div>`:`<p class="hint">No dungeon fits level ${L} exactly.</p>`}
+   ${state.djAll&&next.length?`<div class="dj-head"><div class="ab-label">Next up \u00b7 levels ${L+3} to ${L+12}</div></div><div class="dj-card">${next.map(p=>djRow(p,false)).join("")}</div>`:""}
+   <p class="dj-note">From ${esc(start)}, for the ${FSHORT[plan.f]}. Tap one to plan the route.</p>`; }
+/* On a route to a dungeon or raid: how the way looks */
+function gettingThere(r){ const b=PLACES[norm((plan.to||"").trim())]; if(!b||b.type!=="poi") return ""; const p=POI[b.id]; if(!p||(p.t!=="dungeon"&&p.t!=="raid")) return "";
+  const k=tripRisk(r,p.n), lines=[];
+  if(k.foeZones.length) lines.push(`${FSHORT[foe(plan.f)]} territory on the way: ${k.foeZones.map(esc).join(", ")}. Guards will attack you.`);
+  if(k.city) lines.push(esc(k.city));
+  if(k.high.length) lines.push(`Zones well above level ${state.level} on the way: ${k.high.map(esc).join(", ")}.`);
+  if(!lines.length) lines.push(`No enemy territory on the way${state.level!=null?", and nothing far above your level":""}.`);
+  const lv=p.lv?(p.lv[0]===p.lv[1]?`level ${p.lv[0]}`:`levels ${p.lv[0]}\u2013${p.lv[1]}`):"";
+  return `<div class="jr ${k.lvl}"><div class="jr-k"><span class="ab-label" style="margin:0">Getting there</span><span class="risk ${k.lvl}">${RISK_TXT[k.lvl]}</span></div>
+   <ul>${lines.map(l=>`<li>${l}</li>`).join("")}</ul>${k.lvl==="danger"?`<p class="jr-tip">On a PvP realm, go as a group.</p>`:""}
+   <div class="dj-facts"><span>${p.t==="raid"?"Raid":"Dungeon"}${lv?" \u00b7 "+lv:""}</span>${p.isNew?'<span class="g">New in Forever</span>':""}</div>${p.d?`<p class="jr-d">${esc(p.d)}</p>`:""}</div>`; }
+/* Find route shows when there is something to do: dim until both places are filled,
+   bright (with a short glow) when the places differ from the route on screen, quiet when the route shown is up to date */
+function planBtnState(fromV,toV){ const f=(fromV??plan.from??"").trim(), t=(toV??plan.to??"").trim();
+  if(!f||!t) return "wait";
+  const shown=plan.res&&plan.res.ok;
+  const ref=plan.shown||(shown?[(plan.from||"").trim(),(plan.to||"").trim()]:null);
+  if(shown&&ref&&f===ref[0]&&t===ref[1]) return "idle";
+  return "ready"; }
+function planBtnClass(){ return planBtnState(); }
+function planBtnLabel(st){ st=st||planBtnState(); return st==="ready"&&plan.res&&plan.res.ok?"Update route":"Find route"; }
+function refreshPlanBtn(){ const b=document.getElementById("planGo"), f=document.getElementById("planFrom"), t=document.getElementById("planTo"); if(!b||!f||!t) return;
+  const st=planBtnState(f.value,t.value); b.classList.remove("wait","idle","ready"); b.classList.add(st);
+  b.textContent=st==="ready"&&plan.res&&plan.res.ok?"Update route":"Find route"; }
+document.addEventListener("input",ev=>{ if(ev.target&&(ev.target.id==="planFrom"||ev.target.id==="planTo")) refreshPlanBtn(); });
 function renderPlan(){ const r=plan.res;
+  const lvTxt=state.level!=null?`Level ${state.level}`:'<span class="addlv">Add your level</span>';
   sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:18px">Get the way there, and how long it takes.</p>
    <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="next"></div>
    <div class="row"><label for="planTo">To</label><input id="planTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="go"></div></div>
-   <div class="planbtns"><button class="btn primary" id="planGo">Find route</button><button class="btn" id="planSwap" aria-label="Swap from and to">Swap</button>${plan.from||plan.to?'<button class="btn ghost" id="planClear">Clear</button>':""}</div>
-   <details class="opts" id="opts"${plan.opts?" open":""}><summary><span>${FSHORT[plan.f]} \u00b7 ${SPEEDS[plan.speed][0]} \u00b7 ${plan.fp?"flight paths":"no flight paths"}</span><span class="optc">Change</span></summary>
-    <div class="optb"><div class="seg" role="group" aria-label="Your faction" style="display:inline-flex;margin:0 0 12px"><button data-pf="alliance" aria-pressed="${plan.f==="alliance"}">Alliance</button><button data-pf="horde" aria-pressed="${plan.f==="horde"}">Horde</button></div>
+   <div class="planbtns"><button class="btn primary ${planBtnClass()}" id="planGo">${planBtnLabel()}</button><button class="btn" id="planSwap" aria-label="Swap from and to">Swap</button>${plan.from||plan.to?'<button class="btn ghost" id="planClear">Clear</button>':""}</div>
+   <details class="opts" id="opts"${plan.opts?" open":""}><summary><span>${FSHORT[plan.f]} \u00b7 ${lvTxt} \u00b7 ${SPEEDS[plan.speed][0]} \u00b7 ${plan.fp?"flight paths":"no flight paths"}</span><span class="optc">Change</span></summary>
+    <div class="optb"><div class="lvrow"><label for="planLv">Your level</label><input id="planLv" class="planlv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60" value="${state.level!=null?state.level:""}"><span class="lvh">For mount speed, level warnings and dungeon picks.</span></div>
+    <div class="seg" role="group" aria-label="Your faction" style="display:inline-flex;margin:0 0 12px"><button data-pf="alliance" aria-pressed="${plan.f==="alliance"}">Alliance</button><button data-pf="horde" aria-pressed="${plan.f==="horde"}">Horde</button></div>
     <div class="seg wide" role="group" aria-label="How you travel on land">${Object.entries(SPEEDS).map(([k,v])=>`<button data-ps="${k}" aria-pressed="${plan.speed===k}">${v[0]}</button>`).join("")}</div>
-    <p class="hint">${plan.auto?(state.level!=null?`Picked from your level (${state.level}). Change it if you ride something else.`:"Type your level at the top and this picks itself."):"Your choice. "}${plan.auto?"":'<button class="linkish" data-ps="auto">Back to automatic</button>'}</p>
+    <p class="hint">${plan.auto?(state.level!=null?`Picked from your level (${state.level}). Change it if you ride something else.`:"Set your level above and this picks itself."):"Your choice. "}${plan.auto?"":'<button class="linkish" data-ps="auto">Back to automatic</button>'}</p>
     <label class="check"><input type="checkbox" id="planFp" ${plan.fp?"checked":""}><span>I have the flight paths<small>Off by default: a new character has to reach each flight master on foot first.</small></span></label></div></details>
-   ${!r?`<p class="tryl">Or try one</p><div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>${addonCard("empty")}${newList()}`
+   ${!r?`${dungeonBlock()}<p class="tryl">Or try one</p><div class="chips">${EXAMPLES.map((e,i)=>`<button class="chip" data-ex="${i}"><span class="dot" style="background:${FCOL[e[2]]}"></span>${esc(e[0])} \u2192 ${esc(e[1])}</button>`).join("")}</div>${addonCard("empty")}${newList()}`
      :!r.ok?(r.msg?`<p class="warn" style="margin-top:14px;font-size:15px">${esc(r.msg)}</p>`:"")
      :`${r.forced?`<p class="warn" style="margin-top:14px;font-size:14px">There is no ${FSHORT[plan.f]}-friendly way to make this trip. This route uses enemy transport.</p>`:""}
-       <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" · ")}</div></div>
+       <div class="eta"><div class="eta-n">About ${fmtMin(r.time.mid)}</div><div class="eta-s">${[fmtMin(r.time.lo)!==fmtMin(r.time.hi)?`Between ${fmtMin(r.time.lo)} and ${fmtMin(r.time.hi)}`:"",r.steps.some(s=>s.sec>20&&!s.fix&&!s.ride)?SPEEDS[plan.speed][0].toLowerCase():"",plan.fp?"with flight paths":"no flight paths",r.time.rides?"depends on how long you wait for transport":""].filter(Boolean).join(" \u00b7 ")}</div></div>
+       ${gettingThere(r)}
        ${r.levelDetour?`<div class="altnote">A longer way round (${fmtMin(r.levelDetour)} more) keeps you out of zones far above level ${state.level}.</div>`:""}
        ${r.other?`<div class="altnote">${r.isAlt?`This is the quickest route on paper, but it crosses the sea ${r.crossings} times and only works out if you catch every ship. The steadier way takes about ${fmtMin(r.other.time.mid)}.`:`There is a quicker way on paper, about ${fmtMin(r.other.time.mid)}, but it crosses the sea ${r.other.crossings} times and depends on catching every ship.`} <button class="linkish" id="planAlt">${r.isAlt?"Show the steadier route":"Show it anyway"}</button></div>`:""}
-       <div class="share"><button class="btn" id="planCopy">Copy link to this route</button></div>${addonCard("route")}<p class="kofiline">Travelcraft is free. Found this route useful? <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-route">Buy me a flight on Ko-fi</a>.</p>
+       <div class="ab-label" style="margin:20px 2px 6px">The way</div>
        <ol class="steps">${r.steps.map(s=>`<li class="${s.end?"end":""}"><div class="st-t">${esc(s.t)}<span class="st-m">${s.ride?(s.ride[1]===s.ride[2]?fmtMin(s.ride[0]+s.ride[1]):fmtMin(s.ride[0]+s.ride[1]).replace(" min","")+"\u2013"+fmtMin(s.ride[0]+s.ride[2])):(s.sec>20?"\u2248 "+fmtMin(s.sec):"")}</span></div><div class="st-s">${esc(s.s)}${s.c?seal(s.c):""}</div>${s.w.map(([m,k])=>`<span class="warn ${k}">${esc(m)}</span>`).join("")}</li>`).join("")}</ol>
-       ${reportLink("route")}
-       <p class="foot">Times are estimates, give or take a quarter. The map is drawn by hand: flight times come from 291 real Classic flights, and walking times from the real size of each zone, measured in game. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Flight times come from measurements made in Classic; where a pair was never measured, the time is estimated from distance and says so. Blizzard has announced no change to the Classic flight network; the six flight points found in the beta client are datamined, so their durations here are estimated from distance. New-zone links are as reliable as their label says.</p>`}`; }
+       <div class="actrow"><button class="btn" id="planCopy">Copy link to this route</button>${reportLink("route")}</div>
+       <details class="fine"><summary>How these times are estimated</summary><p>Times are estimates, give or take a quarter. The map is drawn by hand: flight times come from 291 real Classic flights, and walking times from the real size of each zone, measured in game. Ships and zeppelins count up to five minutes of waiting. Mount speeds (60% at level 40, 100% at level 60) come from datamining, not from Blizzard. The planner avoids bouncing between continents: a route that crosses the sea more often has to be clearly faster to win, and when it is, you are told. Where a pair of flight points was never timed, the time is estimated from distance and says so. The six flight points found in the beta client are datamined, so their durations here are estimated. New-zone links are as reliable as their label says.</p></details>
+       <div class="tail">${addonCard("route")}<p class="kofiline">Travelcraft is free. Found this route useful? <a href="${KOFI_URL}" target="_blank" rel="noopener" data-gc="kofi-route">Buy me a flight on Ko-fi</a>.</p></div>`}`; }
 
 /* ---------------- selection ---------------- */
 function clearMarks(){ selPath.setAttribute("d",""); $$(".poi.on").forEach(e=>e.classList.remove("on")); ROUTES.forEach(r=>{r.line.classList.remove("on","dimmed");}); }
@@ -1578,6 +1703,8 @@ sheet.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b)
   else if(b.id==="planCopy"){const url=location.origin+location.pathname+planHash();const done=()=>{b.textContent="Link copied";setTimeout(()=>{if(b.isConnected)b.textContent="Copy link to this route";},1800);};
     if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done,()=>prompt("Copy this link:",url)); else prompt("Copy this link:",url);}
   else if(b.id==="planAlt"){plan.alt=!plan.alt;runPlan();}
+  else if(b.dataset.dj){plan.to=b.dataset.dj;readPlanFromOnly();plan.alt=false;runPlan();}
+  else if(b.id==="djAll"){state.djAll=!state.djAll;render();}
   else if(b.id==="planGo"){readPlanInputs();plan.alt=false;runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
   else if(b.id==="planClear"){plan.from=plan.to="";plan.res=null;drawPlan();paint();render();} });
 sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();if(plan.from&&plan.to){plan.alt=false;runPlan();ev.target.blur();}else(plan.from?$("#planTo"):$("#planFrom")).focus();}  });
@@ -1588,6 +1715,10 @@ $$("[data-layer]").forEach(c=>c.onchange=()=>{state.layers[c.dataset.layer]=c.ch
 $("#m-faction").onclick=()=>setMode("faction"); $("#m-level").onclick=()=>setMode("level");
 function setMode(m){state.mode=m;$("#m-faction").setAttribute("aria-pressed",m==="faction");$("#m-level").setAttribute("aria-pressed",m==="level");paint();}
 $("#lv").addEventListener("input",ev=>{const v=parseInt(ev.target.value,10);state.level=v>=1&&v<=60?v:null;$("#lvclear").hidden=state.level==null;if(plan.auto)plan.speed=autoSpeed();if(state.tab==="plan"){readPlanInputs();if(plan.res)plan.res=computePlan();render();drawPlan();}paint();});
+function readPlanFromOnly(){ const f=document.getElementById("planFrom"); if(f) plan.from=f.value; }
+document.addEventListener("change",ev=>{ const t=ev.target; if(!t.classList||!t.classList.contains("planlv")) return;
+  const top=$("#lv"); top.value=t.value; top.dispatchEvent(new Event("input",{bubbles:true})); });
+document.addEventListener("keydown",ev=>{ const t=ev.target; if(ev.key==="Enter"&&t.classList&&t.classList.contains("planlv")) t.blur(); });
 $("#lvclear").onclick=()=>{$("#lv").value="";state.level=null;$("#lvclear").hidden=true;if(plan.auto)plan.speed=autoSpeed();if(state.tab==="plan"){readPlanInputs();if(plan.res)plan.res=computePlan();render();drawPlan();}paint();};
 
 /* search */
