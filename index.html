@@ -443,6 +443,12 @@ details.fine p{font-size:13px;color:var(--muted);margin:8px 0 0}
 .btn.clear{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text);font-weight:600}
 .btn.clear svg{width:14px;height:14px;color:var(--c-t)}
 .btn.clear:hover{border-color:var(--c-t);background:rgba(226,102,90,.10)}
+
+/* A missing place when Find route is pressed */
+.planbox .row.nudge input{border-color:#f08a24;box-shadow:0 0 0 3px rgba(240,138,36,.25);animation:nudgex .42s ease-in-out}
+.planbox .row.nudge input::placeholder{color:#f5a54f;opacity:1}
+@keyframes nudgex{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@media (prefers-reduced-motion: reduce){.planbox .row.nudge input{animation:none}}
 </style>
 </head>
 <body>
@@ -1022,6 +1028,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.16", d: "September 26, 2026", title: "Find route shows what is missing", items: [
+    ["fix", "Press Find route with a place still empty, after Route to here or Route from here for example, and the empty field gives a small shake, lights up and asks for what it needs."]] },
   { v: "4.15", d: "September 26, 2026", title: "Clear route, easier to find", items: [
     ["fix", "Clear is now a Clear route button at the end of the planner's buttons: one click empties the trip and resets the map."]] },
   { v: "4.14", d: "September 26, 2026", title: "Dungeons for your level", items: [
@@ -1617,6 +1625,15 @@ function refreshPlanBtn(){ const b=document.getElementById("planGo"), f=document
   const st=planBtnState(f.value,t.value); b.classList.remove("wait","idle","ready"); b.classList.add(st);
   b.textContent=st==="ready"&&plan.res&&plan.res.ok?"Update route":"Find route"; }
 document.addEventListener("input",ev=>{ if(ev.target&&(ev.target.id==="planFrom"||ev.target.id==="planTo")) refreshPlanBtn(); });
+/* Find route with a place missing: the empty field gives a small shake and an orange ring, takes the focus,
+   and says what it needs. Nothing else moves. */
+function nudgeMissing(){ const f=$("#planFrom"), t=$("#planTo"); if(!f||!t) return;
+  const el=!f.value.trim()?f:t; const row=el.closest(".row")||el;
+  row.classList.remove("nudge"); void row.offsetWidth; row.classList.add("nudge");
+  const ph=el.getAttribute("data-ph")||el.placeholder; el.setAttribute("data-ph",ph);
+  el.placeholder=el===f?"Pick where you start":"Pick where you are going";
+  el.focus(); clearTimeout(nudgeMissing.t);
+  nudgeMissing.t=setTimeout(()=>{ row.classList.remove("nudge"); if(el.isConnected&&!el.value) el.placeholder=ph; },2600); }
 function renderPlan(){ const r=plan.res;
   const lvTxt=state.level!=null?`Level ${state.level}`:'<span class="addlv">Add your level</span>';
   sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:18px">Get the way there, and how long it takes.</p>
@@ -1712,9 +1729,9 @@ sheet.addEventListener("click",ev=>{ const b=ev.target.closest("button"); if(!b)
   else if(b.id==="planAlt"){plan.alt=!plan.alt;runPlan();}
   else if(b.dataset.dj){plan.to=b.dataset.dj;readPlanFromOnly();plan.alt=false;runPlan();}
   else if(b.id==="djAll"){state.djAll=!state.djAll;render();}
-  else if(b.id==="planGo"){readPlanInputs();plan.alt=false;runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
+  else if(b.id==="planGo"){readPlanInputs(); if(!(plan.from||"").trim()||!(plan.to||"").trim()){ nudgeMissing(); return; } plan.alt=false;runPlan();} else if(b.id==="planSwap"){readPlanInputs();[plan.from,plan.to]=[plan.to,plan.from];runPlan();}
   else if(b.id==="planClear"){plan.from=plan.to="";plan.res=null;drawPlan();paint();render();} });
-sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();if(plan.from&&plan.to){plan.alt=false;runPlan();ev.target.blur();}else(plan.from?$("#planTo"):$("#planFrom")).focus();}  });
+sheet.addEventListener("keydown",ev=>{ if(ev.key!=="Enter") return; if(ev.target.matches("#planFrom,#planTo")){ev.preventDefault();readPlanInputs();if(plan.from&&plan.to){plan.alt=false;runPlan();ev.target.blur();}else nudgeMissing();}  });
 sheet.addEventListener("input",ev=>{ if(ev.target.matches("#planFrom,#planTo")) readPlanInputs(); });
 sheet.addEventListener("toggle",ev=>{ if(ev.target.id==="opts") plan.opts=ev.target.open; },true);
 sheet.addEventListener("change",ev=>{ if(ev.target.id==="planFp"){ readPlanInputs(); plan.fp=ev.target.checked; savePlan(); runPlan(); } });
