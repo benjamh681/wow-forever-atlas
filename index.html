@@ -438,6 +438,11 @@ details.fine p{font-size:13px;color:var(--muted);margin:8px 0 0}
 .btn.primary.ready:hover{filter:brightness(1.08)}
 @keyframes findglow{0%{box-shadow:0 0 0 0 rgba(240,138,36,.6)}70%{box-shadow:0 0 0 9px rgba(240,138,36,0)}100%{box-shadow:0 0 0 0 rgba(240,138,36,0)}}
 @media (prefers-reduced-motion: reduce){.btn.primary.ready{animation:none;box-shadow:0 0 0 3px rgba(240,138,36,.35)}}
+
+/* Clear route: a real button at the end of the row, so resetting the map is always one obvious click */
+.btn.clear{margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text);font-weight:600}
+.btn.clear svg{width:14px;height:14px;color:var(--c-t)}
+.btn.clear:hover{border-color:var(--c-t);background:rgba(226,102,90,.10)}
 </style>
 </head>
 <body>
@@ -1017,6 +1022,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.15", d: "September 26, 2026", title: "Clear route, easier to find", items: [
+    ["fix", "Clear is now a Clear route button at the end of the planner's buttons: one click empties the trip and resets the map."]] },
   { v: "4.14", d: "September 26, 2026", title: "Dungeons for your level", items: [
     ["new", "Set your level in the trip options and the planner lists the dungeons that fit you, how long each takes to reach, and how safe the way is: Safe trip, Watch out, or Risky trip when it crosses enemy territory or ends in an enemy capital."],
     ["new", "On a route to a dungeon or raid, a Getting there card says what to expect on the way."],
@@ -1615,7 +1622,7 @@ function renderPlan(){ const r=plan.res;
   sheet.innerHTML=`<h1>Where are you going?</h1><p class="where" style="margin-bottom:18px">Get the way there, and how long it takes.</p>
    <div class="planbox"><div class="row"><label for="planFrom">From</label><input id="planFrom" list="places" value="${esc(plan.from)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="next"></div>
    <div class="row"><label for="planTo">To</label><input id="planTo" list="places" value="${esc(plan.to)}" placeholder="Zone, town, dungeon or port" autocomplete="off" enterkeyhint="go"></div></div>
-   <div class="planbtns"><button class="btn primary ${planBtnClass()}" id="planGo">${planBtnLabel()}</button><button class="btn" id="planSwap" aria-label="Swap from and to">Swap</button>${plan.from||plan.to?'<button class="btn ghost" id="planClear">Clear</button>':""}</div>
+   <div class="planbtns"><button class="btn primary ${planBtnClass()}" id="planGo">${planBtnLabel()}</button><button class="btn" id="planSwap" aria-label="Swap from and to">Swap</button>${plan.from||plan.to?'<button class="btn clear" id="planClear" title="Clear the route and reset the map"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Clear route</button>':""}</div>
    <details class="opts" id="opts"${plan.opts?" open":""}><summary><span>${FSHORT[plan.f]} \u00b7 ${lvTxt} \u00b7 ${SPEEDS[plan.speed][0]} \u00b7 ${plan.fp?"flight paths":"no flight paths"}</span><span class="optc">Change</span></summary>
     <div class="optb"><div class="lvrow"><label for="planLv">Your level</label><input id="planLv" class="planlv" type="number" min="1" max="60" inputmode="numeric" placeholder="1-60" value="${state.level!=null?state.level:""}"><span class="lvh">For mount speed, level warnings and dungeon picks.</span></div>
     <div class="seg" role="group" aria-label="Your faction" style="display:inline-flex;margin:0 0 12px"><button data-pf="alliance" aria-pressed="${plan.f==="alliance"}">Alliance</button><button data-pf="horde" aria-pressed="${plan.f==="horde"}">Horde</button></div>
