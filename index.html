@@ -918,6 +918,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.12", d: "September 25, 2026", title: "Sea detours when they pay", items: [
+    ["fix", "The planner now takes a detour by sea when it saves real time. It used to count seven extra minutes for each change of continent, which hid good routes on the new Forever ship line between Stormwind, Auberdine and Southshore. Stormwind City to the Ruins of Lordaeron, for one, now goes by ship in about 24 minutes instead of 33 on foot. Thanks to the player who reported it."]] },
   { v: "4.11", d: "September 25, 2026", title: "Truer walking times", items: [
     ["new", "Walking and riding times now use the real size of each zone, measured in game with the Travelcraft addon. The map is drawn by hand and some zones are stretched for legibility, so times on foot were often too long. They now match the addon much more closely."]] },
   { v: "4.10.1", d: "September 25, 2026", title: "Search results", items: [
@@ -1306,7 +1308,7 @@ const fromTo=n=>`<div class="fromto"><button class="btn" data-planfrom="${esc(n)
 const foe=f=>f==="alliance"?"horde":"alliance";
 const EXAMPLES=[["Darnassus","Ironforge","alliance"],["Orgrimmar","Riverglades","horde"],["Auberdine","Mount Hyjal","alliance"],["Gadgetzan","Krol'dok Stronghold","horde"]];
 
-const SEA_PEN=420; /* seconds added, for route choice only, each time a ship or zeppelin changes continent */
+const SEA_PEN=240; /* seconds added, for route choice only, each time a ship or zeppelin changes continent: a sea detour has to beat the land route even with the longest waits (was 420 until 4.12) */
 function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
   const S=spu();
   LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)*spuZ(a)+dist(g,zc(b))*spuZ(b))*landK,{k:"land",a,b,via,c,note}); });
