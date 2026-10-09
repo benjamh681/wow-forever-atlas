@@ -537,7 +537,7 @@ html[lang=es] .planbox label{width:46px}
     <div class="results" id="results" role="listbox"></div>
   </div>
   <button class="cta" id="planCta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3.5 3.5 0 000-7H9a3.5 3.5 0 010-7h6.5"/></svg>Plan a route</button>
-  <a class="cta addon" id="addonCta" href="/addons/" data-gc="addon-header" title="Travelcraft and SameSame, free addons for WoW Forever"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Addons</a>
+  <a class="cta addon" id="addonCta" href="/addons/" data-gc="addon-header" title="Travelcraft, SameSame and Shadowflare, free addons for WoW Forever"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Addons</a>
   <button class="cta about" id="aboutCta" data-gc="about-header" title="About Travelcraft, sources and patch notes" aria-label="About Travelcraft"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/></svg><span class="lbl">About</span></button>
   <div class="langpick" id="langPick"></div>
   <a class="cta kofi" id="kofiCta" href="https://ko-fi.com/fistao" target="_blank" rel="noopener" data-gc="kofi-header" title="Support Travelcraft on Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg><span class="kl">Support</span></a>
@@ -1208,6 +1208,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.26", d: "October 9, 2026", title: "New addon: Shadowflare", items: [
+    ["new", "The Addons page now presents Shadowflare, my new addon for warlocks: an alert the moment Shadow Trance procs, with 20+ looks to choose from. A small dot on the Addons button points to it until you have seen it."]] },
   { v: "4.25.2", d: "October 7, 2026", title: "Zephras Isle airships", items: [
     ["fix", "Zephras Isle, checked in game: both airships from Valanaar, to Dalaran and to Skywatcher Plateau in Mulgore, are open to both factions, and routes now use them that way."],
     ["new", "A new status, Confirmed, marks what was checked in game on the beta."]] },
@@ -1572,7 +1574,7 @@ function addonCard(src){ return `<div class="addoncard"><div style="flex:1"><div
 function renderAddon(){ sheet.innerHTML=`<button class="back" data-tabgo="plan">\u2190 Route planner</button><h1>Travelcraft in game</h1>
    <p class="lead">The same route planner, inside your world map. Pick where you are going, see every step and how long it takes, and follow it next to your quests.</p>
    ${addonGet("page")}
-   <p class="getnote"><a href="/addons/" data-gc="addons-from-addon-tab">All my addons, with screenshots: Travelcraft and SameSame</a></p>
+   <p class="getnote"><a href="/addons/" data-gc="addons-from-addon-tab">All my addons, with screenshots: Travelcraft, SameSame and Shadowflare</a></p>
    <p class="getnote">${ADDON_LIVE?"Free, and open to everyone.":"The addon is being reviewed by CurseForge. This button becomes the download link as soon as it is approved."}</p>
    <img class="shot" src="addon-panel.jpg" alt="Illustration of the Travel panel inside the world map: a route from Undercity to Booty Bay, its steps and travel time" loading="lazy">
    <p class="shotcap">Illustration: the Travel panel opens where the quest log usually is.</p>
@@ -1597,7 +1599,7 @@ function renderAbout(){
 
    <div class="ab-group"><div class="ab-label">Travelcraft</div><div class="ab-card">
    ${sec("addon","The in-game addon",ADDON_LIVE?"The same planner inside the game, on CurseForge":"Coming soon on CurseForge",
-     `<p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map. In game it measures walking on the real ground, so its times can differ a little from this map. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button> My other addon, SameSame, sets up a new character like your main: <a href="/addons/" data-gc="addons-about">see both addons</a>.</p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English, French and Spanish.</p>`)}
+     `<p>Travelcraft is also an addon for World of Warcraft: Forever, ${ADDON_LIVE?`available on <a href="${ADDON_URL}" target="_blank" rel="noopener" data-gc="addon-about">CurseForge</a>`:"coming very soon on CurseForge"}. It runs the same planner on the same data as this map. In game it measures walking on the real ground, so its times can differ a little from this map. <button class="linkish" data-tabgo="addon" data-gc="addon-about-more">More about the addon</button> My other addons: SameSame sets up a new character like your main, and Shadowflare shows warlocks when Shadow Trance procs: <a href="/addons/" data-gc="addons-about">see all three addons</a>.</p><ul class="facts"><li>Open the world map and click the round button under the map legend: the Travel panel opens where the quest log usually is.</li><li>Pick a start and a destination from the menus, type a name, or hold Ctrl and click the map.</li><li>Choose how you travel. Flights use the flight masters your character has discovered, or all of them, or none.</li><li>Click Track route to follow the steps next to your quests. They update as you move.</li></ul><p>The addon draws on the game's own maps, so its routes line up with what you see in game. It is in English, French and Spanish.</p>`)}
    ${sec("guide","Text guide","Every zone, ship and travel time on one page",
      `<p>Every zone with its level range, the new zones and dungeons, all ships and zeppelins, and travel times between major cities, on one page: <a href="guide.html">WoW Forever guide</a>.</p>`)}
    ${sec("feedback","Report a problem or suggest something","Every report is read",
@@ -1933,13 +1935,13 @@ $("#planCta").onclick=()=>{state.tab="plan";clearMarks();state.sel=null;render()
 /* Count clicks on the addon buttons in GoatCounter (buttons are drawn after the counter loads, so count by hand) */
 // "New in the addon": a thin strip at the top of the map, once per addon version
 // What's new in the addon: a small dot on the Addons button, once per addon version, until the visitor goes there
-(()=>{ const NEWS="1.24", a=document.getElementById("addonCta"); if(!a) return;
+(()=>{ const NEWS="shadowflare", a=document.getElementById("addonCta"); if(!a) return;
   let seen=null; try{ seen=localStorage.getItem("tc-news") }catch(e){}
   if(seen===NEWS) return;
   const dot=document.createElement("span"); dot.className="cta-dot"; dot.setAttribute("aria-hidden","true"); a.appendChild(dot);
   a.classList.add("has-news");
-  a.setAttribute("title","New in the addon: Ctrl+click a quest on the map to plan the route");
-  a.setAttribute("href",a.getAttribute("href").split("#")[0]+"#travelcraft-new");
+  a.setAttribute("title","New addon: Shadowflare, Shadow Trance alerts for warlocks");
+  a.setAttribute("href",a.getAttribute("href").split("#")[0]+"#shadowflare");
   a.setAttribute("data-gc","addon-header-news");
   a.addEventListener("click",()=>{ try{ localStorage.setItem("tc-news",NEWS) }catch(e){} });
 })();

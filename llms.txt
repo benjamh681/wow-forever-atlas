@@ -18,5 +18,5 @@
 - Route links look like https://wow-travelcraft.com/#from=Orgrimmar&to=Booty%20Bay&f=horde&by=m100&fp=1 (by: foot, form, m60, m100; fp=1 for flight paths).
 
 ## Addons
-- [Addons page](https://wow-travelcraft.com/addons/): Travelcraft (the same route planner inside the world map) and SameSame (sets up a new character like your main in one click), both free on CurseForge.
+- [Addons page](https://wow-travelcraft.com/addons/): Travelcraft (the same route planner inside the world map), SameSame (sets up a new character like your main in one click) and Shadowflare (shows warlocks the moment Shadow Trance procs), all free on CurseForge.
 - The whole site is available in English, French (/fr/), Spanish (/es/) and German (/de/).
