@@ -1091,8 +1091,8 @@ const ROUTES = [
   { id: "r-sw-aub", kind: "boat", f: "alliance", from: "swharbor", to: "auberdine", isNew: true, c: "o",
     note: "New in Forever: an early path between the Eastern Kingdoms and Kalimdor for Alliance levelers. Sea lane drawn here is illustrative.",
     via: [[1500, 1000], [1330, 800], [1240, 560], [1130, 380], [960, 240], [700, 160], [526, 202], [446, 234], [392, 262], [346, 312]] },
-  { id: "r-men-sou-aub", kind: "boat", f: "alliance", from: "menethil", to: "auberdine", stops: ["southshore"], isNew: true, c: "t",
-    note: "New in Forever: Menethil Harbor, Southshore and Auberdine on one line. One source says it sails one way round (Menethil, Southshore, Auberdine, then straight back to Menethil); not confirmed elsewhere, so both directions are used here.",
+  { id: "r-men-sou-aub", kind: "boat", f: "alliance", from: "menethil", to: "auberdine", stops: ["southshore"], isNew: true, c: "r", oneway: true,
+    note: "New in Forever: Menethil Harbor, Southshore and Auberdine on one line, sailing one way round: Menethil, Southshore, Auberdine, then straight back to Menethil. Two player reports agree, so routes use it in that direction only.",
     via: [[1700, 640], "southshore", [1690, 590], [1600, 690], [1500, 690], [1440, 620], [1425, 520], [1410, 400], [1300, 300], [1120, 262], [900, 178], [700, 120], [514, 182], [434, 218], [380, 246], [330, 300]] },
   { id: "r-ste-pow", kind: "boat", f: "neutral", from: "steamwheedle", to: "powderfuse", isNew: true, c: "o",
     note: "New in Forever: the Steamwheedle route to Powderfuse Port, open to Horde and Alliance. Sea lane and port position are illustrative.",
@@ -1208,6 +1208,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.26.1", d: "October 9, 2026", title: "Menethil, Southshore and Auberdine boat", items: [
+    ["fix", "A second player confirms that this boat sails one way round: Menethil, Southshore, Auberdine, then straight back to Menethil. Routes now use it in that direction only, so from Auberdine to Southshore the way goes through Menethil. Thanks to the players who reported it."]] },
   { v: "4.26", d: "October 9, 2026", title: "New addon: Shadowflare", items: [
     ["new", "The Addons page now presents Shadowflare, my new addon for warlocks: an alert the moment Shadow Trance procs, with 20+ looks to choose from. A small dot on the Addons button points to it until you have seen it."]] },
   { v: "4.25.2", d: "October 7, 2026", title: "Zephras Isle airships", items: [
