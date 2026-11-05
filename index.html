@@ -718,7 +718,7 @@ const ZONES = {
     forever: [
       { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "New endgame zone set in the aftermath of the Battle for Mount Hyjal, reached through Darkwhisper Gorge.", c: "o" },
-      { t: "Hosts Hyjal Summit (20 players) and one of three reported entrances to The Barrow Deeps (10 players). Both open December 9, 2026.", c: "r" },
+      { t: "Hosts Hyjal Summit (20 players) and one of the three entrances to The Barrow Deeps (10 players), with Winterspring and Blackmaw Hold. Both open December 9, 2026.", c: "o" },
       { t: "Multiple questlines, several reputations, solo and group content; story involves the wild gods.", c: "r" },
       { t: "Two flight points in the beta client: Summit of Eternity and Tainted Foothills. Faction and position unknown.", c: "r" },
       { t: "'Hyjal Crater' appears in the client as a 5-player queue, alongside a Mak'gora Arena. Not a zone.", c: "r" }] },
@@ -766,7 +766,7 @@ const ZONES = {
     forever: [
       { t: "Starting zones have more quests in Forever: players report leaving around level 12, and higher with the new race and class combinations. The zone level range itself is unchanged.", c: "r" },
       { t: "Alcaz Island Prison becomes a dungeon: Defias and naga fight over the prison tied to Varian Wrynn's captivity.", c: "o" },
-      { t: "Onyxia's Lair returns as a 40-player raid on December 9, 2026. Any rework is unconfirmed.", c: "r" }] },
+      { t: "Onyxia's Lair returns as a 40-player raid on December 9, 2026. Each player needs the Drakefire Amulet to enter.", c: "o" }] },
   feralas: { name: "Feralas", cont: "Kalimdor", lv: [40, 50], faction: "contested", status: "classic",
     lore: "Rainforest with the ruins of Eldre'Thalas, the Dire Maul dungeon. Off the west coast: Sardor Isle with Feathermoon Stronghold in the north, and the naga-held Isle of Dread in the south.",
     areas: ["Feathermoon Stronghold (Sardor Isle)", "Camp Mojache", "The Twin Colossals", "Isle of Dread", "Ruins of Isildien", "Forgotten Coast"],
@@ -1051,7 +1051,7 @@ const POIS = [
   { n: "Scholomance", t: "dungeon", z: "wpl", e: [59.4, 18], lv: [58, 60], c: "c" },
   { n: "Stratholme", t: "dungeon", z: "epl", e: [74.6, 9.4], lv: [58, 60], c: "c" },
   // Classic raids
-  { n: "Onyxia's Lair", t: "raid", z: "dustwallow", k: [68.6, 70.4], lv: [60, 60], d: "40 players. Returns December 9, 2026. Any rework is unconfirmed.", c: "r" },
+  { n: "Onyxia's Lair", t: "raid", z: "dustwallow", k: [68.6, 70.4], lv: [60, 60], d: "40 players, level 60. Opens December 9, 2026. Each player needs the Drakefire Amulet to enter, from a quest chain that starts in the Burning Steppes (Alliance, Helendis Riverhorn) or in Kargath, Badlands (Horde, Warlord Goretooth).", c: "o" },
   { n: "Ahn'Qiraj", t: "raid", z: "silithus", k: [27, 96.6], lv: [60, 60], d: "Ruins (20) and Temple (40). Not open at launch; schedule not announced.", c: "r" },
   { n: "Zul'Gurub", t: "raid", z: "stv", e: [61.4, 87.4], lv: [60, 60], d: "20 players in Classic. Not open at launch; schedule not announced.", c: "r" },
   { n: "Naxxramas", t: "raid", z: "epl", e: [80.5, 12.6], lv: [60, 60], d: "40 players in Classic. Not open at launch; schedule not announced.", c: "r" },
@@ -1067,7 +1067,7 @@ const POIS = [
   { n: "Blackmaw Hold", t: "dungeon", z: "azshara", k: [76.4, 24.2], lv: [55, 60], isNew: true, d: "A furbolg city behind Azshara's sealed gate. Corruption threatens its people, and its tunnels lead toward The Barrow Deeps. Position estimated.", c: "r" },
   { n: "Shaper's Terrace", t: "dungeon", z: "ungoro", k: [46.6, 82.8], lv: [58, 60], isNew: true, d: "Titan facility in the crater's hills, with old machinery and power crystals. Position estimated.", c: "r" },
   { n: "Hyjal Summit", t: "raid", z: "hyjal", k: [64.5, 21.6], lv: [60, 60], isNew: true, d: "20 players. Opens December 9, 2026. Position estimated.", c: "o" },
-  { n: "The Barrow Deeps", t: "raid", z: "hyjal", k: [59.6, 26.6], lv: [60, 60], isNew: true, d: "10 players. Rumored demon hunter prison. Three entrances reported: one on Hyjal, one through Blackmaw Hold's tunnels, the third unknown. Opens December 9, 2026.", c: "r" },
+  { n: "The Barrow Deeps", t: "raid", z: "hyjal", k: [59.6, 26.6], lv: [60, 60], isNew: true, d: "10 players. Rumored demon hunter prison. Three entrances, says Blizzard: on Mount Hyjal, in Winterspring and through Blackmaw Hold. Opens December 9, 2026.", c: "o" },
 
   // Battlegrounds
   { n: "Warsong Gulch", t: "bg", z: "ashenvale", k: [62.5, 39.6], d: "10v10 capture the flag. A winter version of the map was datamined.", c: "c" },
@@ -1208,6 +1208,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.44", d: "November 5, 2026", title: "Raids: Onyxia's key, Barrow Deeps entrances", items: [
+    ["data", "From Blizzard's raid overview: Onyxia's Lair needs the Drakefire Amulet for every player, and the third entrance to The Barrow Deeps is in Winterspring. Both now marked Official."]] },
   { v: "4.43", d: "November 3, 2026", title: "Shadowflare: 33 procs", items: [
     ["data", "The Addons page shows Shadowflare with 33 procs, after the class changes of the game's release: Ghostly Strike takes the place of Cutthroat, and Thousand Cuts is gone."]] },
   { v: "4.42", d: "October 29, 2026", title: "Addons page: Travelcraft 1.32", items: [
