@@ -8,7 +8,7 @@ Il contient l'outil qui fabrique les pages Trajets et Maîtres de vol dans les t
 - `/flight-paths/`, `/fr/vols/`, `/es/vuelos/` : tous les maîtres de vol par zone.
 
 ## Mettre à jour après un changement de la carte
-1. `python3 _build/extract.py` : relit les trajets dans la carte (EN, FR, ES). Supprimer `data.json` avant pour tout recalculer.
+1. `python3 _build/extract.py` : relit les trajets dans la carte (EN, FR, ES, DE ; l'allemand ajouté le 9 novembre). Supprimer `data.json` avant pour tout recalculer.
 2. `python3 _build/extract_fp.py` : relit les maîtres de vol et leurs vols.
 3. `python3 _build/build.py .` : réécrit toutes les pages.
 4. `python3 _build/check_site.py .` : vérifie les liens.

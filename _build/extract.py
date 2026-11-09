@@ -25,13 +25,13 @@ with sync_playwright() as p:
     pg.route('**/*',lambda r: r.abort() if r.request.url.startswith('http') else r.continue_())
     for s,a,c,f,g in PAIRS:
         if s in data: continue
-        d={'a':a,'b':c,'f':f,'g':g,'en':{},'fr':{},'es':{}}
+        d={'a':a,'b':c,'f':f,'g':g,'en':{},'fr':{},'es':{},'de':{}}
         for by in ['foot','form','m60','m100']: d['en'][by]=run(pg,'en',a,c,f,by,False)
         d['en']['fly']=run(pg,'en',a,c,f,'m100',True)
         d['en']['rev_foot']=run(pg,'en',c,a,f,'foot',False)
         d['en']['rev_fly']=run(pg,'en',c,a,f,'m100',True)
         d['en']['other']=run(pg,'en',a,c,other[f],'foot',False)
-        for L in ['fr','es']:
+        for L in ['fr','es','de']:
             d[L]['foot']=run(pg,L,a,c,f,'foot',False)
             d[L]['fly']=run(pg,L,a,c,f,'m100',True)
             d[L]['other']=run(pg,L,a,c,other[f],'foot',False)

@@ -1208,6 +1208,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.45", d: "November 9, 2026", title: "Routes leave a zone by the nearest exit", items: [
+    ["fix", "When a route leaves a zone from a place, it now goes straight to the way out, as the addon does. Booty Bay to Westfall for the Horde now flies to Grom'gol first: about 10 min instead of 14."]] },
   { v: "4.44", d: "November 5, 2026", title: "Raids: Onyxia's key, Barrow Deeps entrances", items: [
     ["data", "From Blizzard's raid overview: Onyxia's Lair needs the Drakefire Amulet for every player, and the third entrance to The Barrow Deeps is in Winterspring. Both now marked Official."]] },
   { v: "4.43", d: "November 3, 2026", title: "Shadowflare: 33 procs", items: [
@@ -1724,11 +1726,18 @@ const SEA_PEN=240; /* seconds added, for route choice only, each time a ship or 
 /* Flight points whose links are known from the beta client fly only to those; a longer trip chains the flights */
 const FP_LINKS={"Tainted Foothills":["Everlook","Summit of Eternity"],"Summit of Eternity":["Tainted Foothills"]};
 const fpLinked=(a,b)=>(!FP_LINKS[a.n]||FP_LINKS[a.n].includes(b.n))&&(!FP_LINKS[b.n]||FP_LINKS[b.n].includes(a.n));
-function buildGraph(f,strict,landK,seaPen){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
+function buildGraph(f,strict,landK,seaPen,exits){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
   const addOne=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});A[b]=A[b]||[];};
   const S=spu();
   LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)*spuZ(a)+dist(g,zc(b))*spuZ(b))*landK,{k:"land",a,b,via,c,note}); });
   NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*spuZ(p.z)*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
+  /* Leaving a zone from a place: straight to its way out, not by the middle of the zone (as the addon
+     does): a place near an exit (Grom'gol, at the north of Stranglethorn) was weighed from the middle.
+     Tried with and without these links, so the routes found before are still candidates */
+  const exitsOf={}; LAND_EDGES.forEach(([a,b,via,c,note])=>{ (exitsOf[a]=exitsOf[a]||[]).push([a,b,via,c,note]); (exitsOf[b]=exitsOf[b]||[]).push([b,a,via,c,note]); });
+  if(exits) NODE_POIS.forEach(p=>{ if(p.id==="feathermoon"||!p.z||!ZONES[p.z]) return;
+    (exitsOf[p.z]||[]).forEach(([from,to,via,c,note])=>{ const g=GATES[from+"|"+to]||GATES[to+"|"+from]||zc(to);
+      addOne("p:"+p.id,"z:"+to,(dist(p.xy,g)*spuZ(from)+dist(g,zc(to))*spuZ(to))*landK,{k:"land",a:from,b:to,via,c,note}); }); });
   CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*spuZ(POI[a].z)+30),{k:"link",via,fixed,verb}));
   /* Inside one zone, walk straight from one place to the other instead of going through
      the middle of the zone (two places on the same side came out far apart) */
@@ -1770,7 +1779,7 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   let cands=[], forced=false; const seen=new Set();
   const lv=state.level;
   /* With the level rule, and once without it so the fastest way is known too */
-  const gather=strict=>[true,false].forEach(pen=>[1,.75,.55].forEach(k=>(lv!=null?[lv,null]:[null]).forEach(l=>{ const p=shortest(buildGraph(plan.f,strict,k,pen),na,nb,plan.f,l); if(p&&!seen.has(p.nodes.join(">"))){seen.add(p.nodes.join(">"));cands.push(p);} })));
+  const gather=strict=>[true,false].forEach(ex=>[true,false].forEach(pen=>[1,.75,.55].forEach(k=>(lv!=null?[lv,null]:[null]).forEach(l=>{ const p=shortest(buildGraph(plan.f,strict,k,pen,ex),na,nb,plan.f,l); const key=p&&p.nodes.join(">")+"|"+p.edges.map(e=>e.k).join(","); if(p&&!seen.has(key)){seen.add(key);cands.push(p);} }))));
   gather(true); if(!cands.length){ gather(false); forced=true; }
   let path=cands[0];
   if(!path){ const zid=[a,b].map(pl=>pl.type==="zone"?pl.id:POI[pl.id].z).find(z=>z==="zephras");
