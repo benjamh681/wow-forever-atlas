@@ -1208,6 +1208,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.46", d: "November 10, 2026", title: "Addons page: Travelcraft 1.33", items: [
+    ["data", "The Addons page shows what is new in Travelcraft 1.33: the route on the minimap, a button that can be moved on the map, Ctrl+click without opening the panel, and less memory. A small dot on the Addons button points to it until you have seen it."]] },
   { v: "4.45", d: "November 9, 2026", title: "Routes leave a zone by the nearest exit", items: [
     ["fix", "When a route leaves a zone from a place, it now goes straight to the way out, as the addon does. Booty Bay to Westfall for the Horde now flies to Grom'gol first: about 10 min instead of 14."]] },
   { v: "4.44", d: "November 5, 2026", title: "Raids: Onyxia's key, Barrow Deeps entrances", items: [
@@ -1985,12 +1987,12 @@ $("#planCta").onclick=()=>{state.tab="plan";clearMarks();state.sel=null;render()
 /* Count clicks on the addon buttons in GoatCounter (buttons are drawn after the counter loads, so count by hand) */
 // "New in the addon": a thin strip at the top of the map, once per addon version
 // What's new in the addon: a small dot on the Addons button, once per addon version, until the visitor goes there
-(()=>{ const NEWS="travelcraft-1.32", a=document.getElementById("addonCta"); if(!a) return;
+(()=>{ const NEWS="travelcraft-1.33", a=document.getElementById("addonCta"); if(!a) return;
   let seen=null; try{ seen=localStorage.getItem("tc-news") }catch(e){}
   if(seen===NEWS) return;
   const dot=document.createElement("span"); dot.className="cta-dot"; dot.setAttribute("aria-hidden","true"); a.appendChild(dot);
   a.classList.add("has-news");
-  a.setAttribute("title","Travelcraft 1.32: what's new");
+  a.setAttribute("title","Travelcraft 1.33: what's new");
   a.setAttribute("href",a.getAttribute("href").split("#")[0]+"#travelcraft-new");
   a.setAttribute("data-gc","addon-header-news");
   a.addEventListener("click",()=>{ try{ localStorage.setItem("tc-news",NEWS) }catch(e){} });
