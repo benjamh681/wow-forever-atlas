@@ -1208,6 +1208,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.49", d: "November 12, 2026", title: "Addons page: MarkWheel 1.2", items: [
+    ["data", "The Addons page shows what is new in MarkWheel 1.2: a new wheel like the ping wheel, one key for one action, and Alt-3 by default. A small dot on the Addons button points to it until you have seen it."]] },
   { v: "4.48", d: "November 12, 2026", title: "Shadowflare: 37 procs", items: [
     ["data", "The Addons page shows Shadowflare with 37 procs: the hunter's Deadly Aspects is now two alerts, Quick Shots and Quick Strikes, so each can have its own look."]] },
   { v: "4.47", d: "November 12, 2026", title: "New addon: MarkWheel", items: [
@@ -1991,13 +1993,13 @@ $("#planCta").onclick=()=>{state.tab="plan";clearMarks();state.sel=null;render()
 /* Count clicks on the addon buttons in GoatCounter (buttons are drawn after the counter loads, so count by hand) */
 // "New in the addon": a thin strip at the top of the map, once per addon version
 // What's new in the addon: a small dot on the Addons button, once per addon version, until the visitor goes there
-(()=>{ const NEWS="markwheel-1.0", a=document.getElementById("addonCta"); if(!a) return;
+(()=>{ const NEWS="markwheel-1.2", a=document.getElementById("addonCta"); if(!a) return;
   let seen=null; try{ seen=localStorage.getItem("tc-news") }catch(e){}
   if(seen===NEWS) return;
   const dot=document.createElement("span"); dot.className="cta-dot"; dot.setAttribute("aria-hidden","true"); a.appendChild(dot);
   a.classList.add("has-news");
-  a.setAttribute("title","New addon: MarkWheel");
-  a.setAttribute("href",a.getAttribute("href").split("#")[0]+"#markwheel");
+  a.setAttribute("title","MarkWheel 1.2: what's new");
+  a.setAttribute("href",a.getAttribute("href").split("#")[0]+"#markwheel-new");
   a.setAttribute("data-gc","addon-header-news");
   a.addEventListener("click",()=>{ try{ localStorage.setItem("tc-news",NEWS) }catch(e){} });
 })();
