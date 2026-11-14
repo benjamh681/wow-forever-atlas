@@ -817,7 +817,7 @@ const ZONES = {
     forever: [
       { t: "Dalaran's barrier falls and the rebuilt city can be entered; players help its denizens.", c: "r" },
       { t: "City of Dalaran is a new dungeon about strange magical trouble inside the city.", c: "o" },
-      { t: "A skyship links Dalaran to Valanaar on Zephras Isle, open to both factions. A Skyborne portal in the Violet Citadel links the city to the Mage Tower in Stormwind, both ways; players report that only Skyborne can use it.", c: "r" },
+      { t: "A skyship links Dalaran to Valanaar on Zephras Isle, open to both factions. A Skyborne portal in the Violet Citadel goes from the city to the Mage Tower in Stormwind, one way only; players report that only Skyborne can use it.", c: "r" },
       { t: "Whether Dalaran works as a sanctuary for both factions is not known.", c: "t" }] },
   hillsbrad: { name: "Hillsbrad Foothills", cont: "Eastern Kingdoms", lv: [20, 30], faction: "contested", status: "changed",
     lore: "Farmland between Southshore (Alliance) and Tarren Mill (Horde), two towns close to each other and a well-known world PvP spot.",
@@ -868,7 +868,7 @@ const ZONES = {
       { t: "One way in is a new turnoff on the road from Redridge to the Burning Steppes.", c: "r" }] },
   riverglades: { name: "Riverglades", cont: "Eastern Kingdoms", lv: [35, 45], lvNote: "Blizzard says 'mid-30s to mid-40s'; some outlets write 30-45", faction: "contested", status: "new",
     lore: "New zone in Forever on the east coast of the Eastern Kingdoms: rivers, grassland, and human and orc settlements. Gnolls from Redridge, the ogres of Krol'dok Stronghold and the Twilight's Hammer are there.",
-    areas: ["Powderfuse Port (neutral goblin port)", "Krol'dok Stronghold (outdoor ogre dungeon)", "Gnoll camps", "Human and orc frontier settlements"],
+    areas: ["Powderfuse Port (neutral goblin port)", "Krol'dok Stronghold (ogre dungeon)", "Gnoll camps", "Human and orc frontier settlements"],
     forever: [
       { t: "New zone roughly the size of Stranglethorn Vale, built from previously unreachable land, with nearly 200 quests for both factions.", c: "o" },
       { t: "Connected to Burning Steppes, Redridge Mountains, Swamp of Sorrows and Badlands.", c: "o" },
@@ -960,8 +960,8 @@ const POIS = [
   { id: "powderfuse", n: "Powderfuse Port", t: "port", z: "riverglades", e: [98.1, 73.6], f: "neutral", isNew: true, d: "Neutral goblin port of the Powderfuse goblins. Ship to Steamwheedle Port in Tanaris, open to both factions. Its flight point only links to Farholde Keep (Alliance) in the beta files: no Horde flight yet, to be confirmed. Exact position to be confirmed.", c: "t", fp: "alliance" },
   { id: "farholde", n: "Farholde Keep", t: "town", z: "riverglades", e: [87.5, 76.4], f: "alliance", isNew: true, d: "Alliance hold of the Riverglades and the faction's flight point there, seen in game. The beta client links it to Lakeshire, Morgan's Vigil, Thelsamar and Powderfuse Port. Position on this map estimated.", c: "g", fp: "alliance" },
   { id: "rogmar", n: "Rog'mar", t: "town", z: "riverglades", e: [92.6, 67.4], f: "horde", isNew: true, d: "Horde settlement of the Riverglades and the faction's flight point there. The beta client links it to Stonard, Hammerfall, Kargath and Flame Crest. Position estimated.", c: "r", fp: "horde" },
-  { n: "Sunnyglade", t: "area", z: "riverglades", e: [91.0, 75.2], isNew: true, d: "Farming town of Stormwind burned by the Old Horde in the First War, rebuilt by freed peasants. Position estimated.", c: "r" },
-  { n: "Bolder'ok", t: "area", z: "riverglades", e: [94.4, 70.0], isNew: true, d: "Settlement of the Bolder'ok ogre clan. Position estimated.", c: "r" },
+  { n: "Sunnyglade", t: "area", z: "riverglades", e: [91.0, 75.2], isNew: true, d: "Farming town of Stormwind burned by the Old Horde in the First War. In Forever it lies in ruins, held by the Twilight's Hammer. Position estimated.", c: "r" },
+  { n: "Bolder'ok", t: "area", z: "riverglades", e: [94.4, 70.0], isNew: true, d: "Settlement of the Bolder'ok ogre clan, allies of the Horde. Position estimated.", c: "r" },
   { id: "eternity", n: "Summit of Eternity", t: "town", z: "hyjal", k: [65.6, 22.8], isNew: true, d: "Flight point on Mount Hyjal, open to both factions. The beta client links it only to Tainted Foothills; the flight time is estimated from distance. Position estimated.", c: "r", fp: "both" },
   { id: "taintedfoot", n: "Tainted Foothills", t: "town", z: "hyjal", k: [57.2, 24.9], isNew: true, d: "Flight point on Mount Hyjal, open to both factions: the beta client links it to Everlook in Winterspring (Alliance and Horde flight masters) and to Summit of Eternity. Position estimated.", c: "r", fp: "both" },
   { id: "tidegear", n: "Tidegear Coast", t: "town", z: "dunmorogh", e: [39.0, 52.6], f: "alliance", isNew: true, d: "New Dun Morogh flight point in the beta client, on the coast. Position estimated.", c: "r", fp: "alliance" },
@@ -1062,7 +1062,7 @@ const POIS = [
   { n: "Excavation Site", t: "dungeon", z: "wetlands", e: [68.0, 46.8], lv: [26, 31], isNew: true, d: "A mysterious dig above Whelgar's Excavation. Level 26 to 31 per Blizzard's beta notes of October 1.", c: "o" },
   { n: "City of Dalaran", t: "dungeon", z: "alterac", e: [40.4, 23.2], lv: [28, 33], isNew: true, d: "Magical trouble inside the newly opened city.", c: "o" },
   { n: "The Drowned City", t: "dungeon", z: "stv", e: [42.2, 94.6], lv: [35, 40], isNew: true, d: "Ancient troll ruins risen off the coast: trolls, naga and stranded pirates. Playable at BlizzCon 2026. Which coast is not known; marker position estimated.", c: "t" },
-  { n: "Krol'dok Stronghold", t: "dungeon", z: "riverglades", e: [88.6, 71.4], lv: [40, 45], isNew: true, d: "Large outdoor ogre dungeon. Blizzard corrected its range to 40-45. Position estimated.", c: "t" },
+  { n: "Krol'dok Stronghold", t: "dungeon", z: "riverglades", e: [88.6, 71.4], lv: [40, 45], isNew: true, d: "Ogre dungeon with six bosses. Its entrance is a cave in the north-west of the zone, on a hill above Sunnyglade. A quest inside leads to a key that opens a shortcut. Blizzard corrected its range to 40-45. Position estimated.", c: "t" },
   { n: "Alcaz Island Prison", t: "dungeon", z: "dustwallow", k: [85, 63], lv: [48, 53], isNew: true, d: "The once-unreachable prison tied to Varian Wrynn's captivity. Defias and naga are fighting over it.", c: "o" },
   { n: "Blackmaw Hold", t: "dungeon", z: "azshara", k: [76.4, 24.2], lv: [55, 60], isNew: true, d: "A furbolg city behind Azshara's sealed gate. Corruption threatens its people, and its tunnels lead toward The Barrow Deeps. Position estimated.", c: "r" },
   { n: "Shaper's Terrace", t: "dungeon", z: "ungoro", k: [46.6, 82.8], lv: [58, 60], isNew: true, d: "Titan facility in the crater's hills, with old machinery and power crystals. Position estimated.", c: "r" },
@@ -1208,6 +1208,10 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.50", d: "November 14, 2026", title: "Riverglades: Krol'dok Stronghold", items: [
+    ["fix", "Krol'dok Stronghold is a dungeon you enter through a cave, not an outdoor one. Its text now gives its six bosses, its entrance and the key that opens a shortcut."],
+    ["data", "Riverglades: Sunnyglade is now shown in ruins and held by the Twilight's Hammer, and Bolder'ok as an ogre town allied with the Horde."],
+    ["fix", "Alterac Mountains: the zone text now says the Skyborne portal from Dalaran to Stormwind goes one way only, as the rest of the map does since 4.34."]] },
   { v: "4.49", d: "November 12, 2026", title: "Addons page: MarkWheel 1.2", items: [
     ["data", "The Addons page shows what is new in MarkWheel 1.2: a new wheel like the ping wheel, one key for one action, and Alt-3 by default. A small dot on the Addons button points to it until you have seen it."]] },
   { v: "4.48", d: "November 12, 2026", title: "Shadowflare: 37 procs", items: [
