@@ -1195,6 +1195,11 @@ const CITY_LINKS = [
   ["orgzep", "orgrimmar", "the front gate"],
   ["uczep", "undercity", "the ruins of Lordaeron"],
   ["rutheran", "darnassus", "the portal at the foot of the tree", 30, "Head to"],
+  /* Along the beach, partly swimming: a safe way for low levels (Tally feedback of November 17, 2026,
+     level 10, Auberdine to Booty Bay; Warcraft Wiki, "Auberdine to Booty Bay travel guide"). The
+     factor 1.4 (longer than the straight line, on foot) is an estimate. Offered only to characters
+     Dustwallow Marsh is too high for: with no level, or high enough, the routes are those of before */
+  ["theramore", "ratchet", "the beach north of Theramore", null, null, { shore: 1.4, f: "alliance", avoid: "dustwallow", note: "Level 37-38 murlocs on the beach: swim around them." }],
 ];
 
 // ---- Patch notes. Newest first. The header version chip reads CHANGELOG[0].v. Tags: new, fix, data
@@ -1208,6 +1213,10 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.52", d: "November 18, 2026", title: "Low levels: the beach from Theramore", items: [
+    ["fix", "Low levels: walking across a zone far above your level now counts even when you arrive in it by boat. A level 10 character landed in Theramore was sent across Dustwallow Marsh."],
+    ["new", "Alliance: from Theramore, the beach north to Ratchet, partly swimming. Low-level characters on their way to Ratchet or Booty Bay now take it instead of crossing the marsh. Thanks to the player who reported it."],
+    ["fix", "French, Spanish and German: the warning about zones above your level is now translated."]] },
   { v: "4.51", d: "November 16, 2026", title: "Shadowflare: 38 procs", items: [
     ["data", "The Addons page shows Shadowflare with 38 procs, including a new alert for Retribution paladins, and the stack looks of its new settings."]] },
   { v: "4.50", d: "November 14, 2026", title: "Riverglades: Krol'dok Stronghold", items: [
@@ -1740,8 +1749,10 @@ const SEA_PEN=240; /* seconds added, for route choice only, each time a ship or 
 /* Flight points whose links are known from the beta client fly only to those; a longer trip chains the flights */
 const FP_LINKS={"Tainted Foothills":["Everlook","Summit of Eternity"],"Summit of Eternity":["Tainted Foothills"]};
 const fpLinked=(a,b)=>(!FP_LINKS[a.n]||FP_LINKS[a.n].includes(b.n))&&(!FP_LINKS[b.n]||FP_LINKS[b.n].includes(a.n));
-function buildGraph(f,strict,landK,seaPen,exits){ const A={}; const add=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});(A[b]=A[b]||[]).push({to:a,w,e});};
-  const addOne=(a,b,w,e)=>{(A[a]=A[a]||[]).push({to:b,w,e});A[b]=A[b]||[];};
+function buildGraph(f,strict,landK,seaPen,exits){ const A={}; const add=(a,b,w,e,zf)=>{(A[a]=A[a]||[]).push({to:b,w,e,zf});(A[b]=A[b]||[]).push({to:a,w,e,zf});};
+  const addOne=(a,b,w,e,zf)=>{(A[a]=A[a]||[]).push({to:b,w,e,zf});A[b]=A[b]||[];};
+  /* zf: the zone walked across when leaving a place on foot. Its level counts as for a zone entered
+     (a level 10 character landed in Theramore by boat was sent across Dustwallow Marsh) */
   const S=spu();
   LAND_EDGES.forEach(([a,b,via,c,note])=>{ const g=GATES[a+"|"+b]||zc(b); add("z:"+a,"z:"+b,(dist(zc(a),g)*spuZ(a)+dist(g,zc(b))*spuZ(b))*landK,{k:"land",a,b,via,c,note}); });
   NODE_POIS.forEach(p=>{ if(p.id!=="feathermoon") add("p:"+p.id,"z:"+p.z,Math.max(30,dist(p.xy,zc(p.z))*spuZ(p.z)*.6),{k:"in"}); }); /* Feathermoon sits on an island: ferry only */
@@ -1751,14 +1762,18 @@ function buildGraph(f,strict,landK,seaPen,exits){ const A={}; const add=(a,b,w,e
   const exitsOf={}; LAND_EDGES.forEach(([a,b,via,c,note])=>{ (exitsOf[a]=exitsOf[a]||[]).push([a,b,via,c,note]); (exitsOf[b]=exitsOf[b]||[]).push([b,a,via,c,note]); });
   if(exits) NODE_POIS.forEach(p=>{ if(p.id==="feathermoon"||!p.z||!ZONES[p.z]) return;
     (exitsOf[p.z]||[]).forEach(([from,to,via,c,note])=>{ const g=GATES[from+"|"+to]||GATES[to+"|"+from]||zc(to);
-      addOne("p:"+p.id,"z:"+to,(dist(p.xy,g)*spuZ(from)+dist(g,zc(to))*spuZ(to))*landK,{k:"land",a:from,b:to,via,c,note}); }); });
-  CITY_LINKS.forEach(([a,b,via,fixed,verb])=>add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*spuZ(POI[a].z)+30),{k:"link",via,fixed,verb}));
+      addOne("p:"+p.id,"z:"+to,(dist(p.xy,g)*spuZ(from)+dist(g,zc(to))*spuZ(to))*landK,{k:"land",a:from,b:to,via,c,note},from); }); });
+  CITY_LINKS.forEach(([a,b,via,fixed,verb,o])=>{ if(o&&o.f&&o.f!==f) return;
+    /* Along a shore, partly swimming: on foot whatever the mount, longer than the straight line */
+    if(o&&o.shore){ const foot=z=>(YPU[z]||YPU_DEFAULT)*1.15/7, sec=Math.round(dist(POI[a].xy,POI[b].xy)*(foot(POI[a].z)+foot(POI[b].z))/2*o.shore);
+      add("p:"+a,"p:"+b,sec*landK,{k:"link",via,fixed:sec,shore:true,note:o.note,avoid:o.avoid}); return; }
+    add("p:"+a,"p:"+b,fixed||(dist(POI[a].xy,POI[b].xy)*spuZ(POI[a].z)+30),{k:"link",via,fixed,verb}); });
   /* Inside one zone, walk straight from one place to the other instead of going through
      the middle of the zone (two places on the same side came out far apart) */
   const inZone={};
   NODE_POIS.forEach(p=>{ if(p.z&&ZONES[p.z]) (inZone[p.z]=inZone[p.z]||[]).push(p); });
-  Object.values(inZone).forEach(list=>{ for(let i=0;i<list.length;i++) for(let j=i+1;j<list.length;j++)
-    add("p:"+list[i].id,"p:"+list[j].id,Math.max(20,dist(list[i].xy,list[j].xy)*spuZ(list[i].z)*landK),{k:"in"}); });
+  Object.entries(inZone).forEach(([zid,list])=>{ for(let i=0;i<list.length;i++) for(let j=i+1;j<list.length;j++)
+    add("p:"+list[i].id,"p:"+list[j].id,Math.max(20,dist(list[i].xy,list[j].xy)*spuZ(list[i].z)*landK),{k:"in"},zid); });
   if(plan.fp){ const fm=POIS.filter(p=>p.fp&&(p.fp==="both"||p.fp===f)); for(let i=0;i<fm.length;i++) for(let j=i+1;j<fm.length;j++) if(contOf(fm[i])===contOf(fm[j])&&fpLinked(fm[i],fm[j])){ const ft=flightTime(f,fm[i],fm[j]); add("p:"+fm[i].id,"p:"+fm[j].id,ft.sec+25,{k:"fly",ft}); } }
   ROUTES.forEach(r=>{ const ok=r.f==="neutral"||r.f===f; if(strict&&!ok) return; if(r.skyborne&&(!ok||!plan.sky)) return; /* Skyborne-only links: used only for trips to or from Zephras Isle, where the traveler must be a Skyborne */ const stops=[r.from,...(r.stops||[]),r.to];
     for(let i=0;i<stops.length-1;i++) { const rd=rideOf(r), cross=contOf(POI[stops[i]])!==contOf(POI[stops[i+1]]); (r.oneway?addOne:add)("p:"+stops[i],"p:"+stops[i+1],rd[0]+(rd[1]+rd[2])/2+(ok?0:1800)+(cross&&seaPen?SEA_PEN:0),{k:"ride",r,ok,cross}); } });
@@ -1766,14 +1781,15 @@ function buildGraph(f,strict,landK,seaPen,exits){ const A={}; const add=(a,b,w,e
 /* Route choice only: a zone well above the traveller's level costs time, so a low-level
    character is sent the long way round. Gap = the zone's lowest level minus (level + 3):
    2 min per level, steeper past 4 levels, 15 min per level past 14. About 8 min of detour
-   for a zone 7 levels above, 23 min for 10 levels. Flying over a zone costs nothing. */
+   for a zone 7 levels above, 23 min for 10 levels. Flying over a zone costs nothing. Walking out
+   of a place across its zone counts too (4.52). */
 const LVL={gap:3,pen:120,steep:60,far:900};
 function levelPen(zid,lvl){ const z=ZONES[zid]; if(lvl==null||!z||!z.lv) return 0; const gap=z.lv[0]-(lvl+LVL.gap); if(gap<=0) return 0;
   const over=Math.max(0,gap-4), st=Math.min(over,10); return gap*LVL.pen+st*st*LVL.steep+Math.max(0,over-10)*LVL.far; }
 function shortest(A,src,dst,f,lvl){ const D={[src]:0},P={},done=new Set();
   while(true){ let u=null; for(const n in D) if(!done.has(n)&&(u===null||D[n]<D[u])) u=n; if(u===null) return null; if(u===dst) break; done.add(u);
-    (A[u]||[]).forEach(({to,w,e})=>{ let c=D[u]+w; if(to[0]==="z"){ if(ZONES[to.slice(2)].faction===foe(f)) c+=600; c+=levelPen(to.slice(2),lvl); } if(!(to in D)||c<D[to]){D[to]=c;P[to]={u,e};} }); }
-  const nodes=[dst],edges=[]; let n=dst; while(n!==src){edges.unshift(P[n].e);n=P[n].u;nodes.unshift(n);} return {nodes,edges}; }
+    (A[u]||[]).forEach(({to,w,e,zf})=>{ if(e&&e.shore&&e.avoid&&levelPen(e.avoid,lvl)<=0) return; /* a shore: only for characters too low for the zone it goes round */ let c=D[u]+w; if(to[0]==="z"){ if(ZONES[to.slice(2)].faction===foe(f)) c+=600; c+=levelPen(to.slice(2),lvl); } if(zf) c+=levelPen(zf,lvl); if(!(to in D)||c<D[to]){D[to]=c;P[to]={u,e,zf};} }); }
+  const nodes=[dst],edges=[],crossed=[]; let n=dst; while(n!==src){edges.unshift(P[n].e);if(P[n].zf) crossed.push(P[n].zf);n=P[n].u;nodes.unshift(n);} return {nodes,edges,crossed}; }
 function nodeOf(pl){ if(pl.type==="zone") return GEO.zones[pl.id]&&ZONES[pl.id].status!=="closed"?"z:"+pl.id:null;
   const p=POI[pl.id]; if(NODE_POIS.includes(p)) return "p:"+p.id; return p.z?"z:"+p.z:null; }
 const nodeName=n=>n[0]==="z"?ZONES[n.slice(2)].name:POI[n.slice(2)].n;
@@ -1798,7 +1814,7 @@ function computePlan(){ const a=PLACES[norm(plan.from.trim())], b=PLACES[norm(pl
   let path=cands[0];
   if(!path){ const zid=[a,b].map(pl=>pl.type==="zone"?pl.id:POI[pl.id].z).find(z=>z==="zephras");
     return {ok:false,msg:zid?"No known way in or out of Zephras Isle for this trip.":"No known route between these two places."}; }
-  const built=cands.map(p=>{ const r=buildPlan(p,a,b,forced); r.baseScore=r.time.score; p.nodes.slice(1).forEach(n=>{ if(n[0]==="z") r.time.score+=levelPen(n.slice(2),lv); }); return r; });
+  const built=cands.map(p=>{ const r=buildPlan(p,a,b,forced); r.baseScore=r.time.score; p.nodes.slice(1).forEach(n=>{ if(n[0]==="z") r.time.score+=levelPen(n.slice(2),lv); }); (p.crossed||[]).forEach(z=>{ r.time.score+=levelPen(z,lv); }); return r; });
   built.sort((x,y)=>x.time.score-y.time.score);
   const fastest=built.reduce((m,x)=>x.baseScore<m.baseScore?x:m,built[0]);
   if(fastest!==built[0]&&built[0].time.mid-fastest.time.mid>=60) built[0].levelDetour=built[0].time.mid-fastest.time.mid;
@@ -1819,7 +1835,9 @@ function buildPlan(path,a,b,forced){
     else if(e.k==="in"){ if(v[0]==="p"){ cur.push(nodeXY(v)); const s=leg(nodeXY(v),zoneOfNode(v)); if(!last) steps.push({t:`Make your way to ${nodeName(v)}`,s:`${TNAME[POI[v.slice(2)].t]} in ${ZONES[POI[v.slice(2)].z].name}`,w:[],sec:take(s)}); else pend+=s; } else zones.add(v.slice(2)); }
     else if(e.k==="fly"){ const A=POI[u.slice(2)], B=POI[v.slice(2)]; if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:"air",pts:[A.xy,B.xy]}); cur=[B.xy]; prevPt=B.xy; zones.add(B.z); fps.push(A.id,B.id);
       steps.push({t:`Fly from ${A.n} to ${B.n}`,s:e.ft.real?"Flight path · time measured in Classic":"Flight path · estimated time",w:zwarn(ZONES[B.z]),sec:take(0)+e.ft.sec,fix:e.ft.sec}); }
-    else if(e.k==="link"){ cur.push(nodeXY(v)); const walked=leg(nodeXY(v),zoneOfNode(v)), s=e.fixed||Math.max(30,walked); if(!last) steps.push({t:`${e.verb||"Walk to"} ${nodeName(v)}`,s:`Through ${e.via}`,w:[],sec:take(s),fix:e.fixed||0}); else pend+=s; }
+    else if(e.k==="link"){ cur.push(nodeXY(v)); const walked=leg(nodeXY(v),zoneOfNode(v)), s=e.fixed||Math.max(30,walked);
+      if(e.shore) steps.push({t:`Follow the shore to ${nodeName(v)}`,s:"On foot, partly swimming. Reported by players.",w:e.note?[[e.note,""]]:[],sec:take(s),fix:e.fixed||0});
+      else if(!last) steps.push({t:`${e.verb||"Walk to"} ${nodeName(v)}`,s:`Through ${e.via}`,w:[],sec:take(s),fix:e.fixed||0}); else pend+=s; }
     else { const r=e.r, ia=r.pts.indexOf(POI[u.slice(2)].xy), ib=r.pts.indexOf(POI[v.slice(2)].xy); let pts=r.pts.slice(Math.min(ia,ib),Math.max(ia,ib)+1); if(ia>ib) pts=pts.reverse();
       if(cur.length>1) segs.push({k:"land",pts:cur}); segs.push({k:r.kind==="tram"?"land":r.kind==="portal"?"portal":"sea",pts}); cur=[POI[v.slice(2)].xy]; zones.add(POI[v.slice(2)].z);
       if(e.cross) crossings++;
