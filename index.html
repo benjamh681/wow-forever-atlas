@@ -720,7 +720,7 @@ const ZONES = {
       { t: "New endgame zone set in the aftermath of the Battle for Mount Hyjal, reached through Darkwhisper Gorge.", c: "o" },
       { t: "Hosts Hyjal Summit (20 players) and one of the three entrances to The Barrow Deeps (10 players), with Winterspring and Blackmaw Hold. Both open December 9, 2026.", c: "o" },
       { t: "Multiple questlines, several reputations, solo and group content; story involves the wild gods.", c: "r" },
-      { t: "Two flight points in the beta client: Summit of Eternity and Tainted Foothills. Faction and position unknown.", c: "r" },
+      { t: "Two flight points: Summit of Eternity and Tainted Foothills, open to both factions. Positions estimated.", c: "r" },
       { t: "'Hyjal Crater' appears in the client as a 5-player queue, alongside a Mak'gora Arena. Not a zone.", c: "r" }] },
   ashenvale: { name: "Ashenvale", cont: "Kalimdor", lv: [18, 30], faction: "contested", status: "classic",
     lore: "Night elf forest and the main front between the factions: Warsong lumber camps against the Sentinels. Astranaar is the Alliance town, Splintertree Post the Horde's.",
@@ -1213,6 +1213,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.53", d: "November 20, 2026", title: "Mount Hyjal: both factions", items: [
+    ["fix", "Mount Hyjal: the zone text and the Sources panel now say its two flight points serve both factions, as their map pins already did."]] },
   { v: "4.52", d: "November 18, 2026", title: "Low levels: the beach from Theramore", items: [
     ["fix", "Low levels: walking across a zone far above your level now counts even when you arrive in it by boat. A level 10 character landed in Theramore was sent across Dustwallow Marsh."],
     ["new", "Alliance: from Theramore, the beach north to Ratchet, partly swimming. Low-level characters on their way to Ratchet or Booty Bay now take it instead of crossing the marsh. Thanks to the player who reported it."],
@@ -1682,7 +1684,7 @@ function renderAbout(){
    ${sec("map","About the map itself","Drawn by hand, not traced from game files",
      `<p>The continents are redrawn by hand in the spirit of the Classic world map. They are not traced from game files. Borders of the new zones, the position of new dungeons and every sea lane are approximations. Zephras Isle lies in Skywall; it is drawn in the Great Sea so it has somewhere to live.</p>`)}
    ${sec("fp","New flight points","Six points seen in the beta client",
-     `<p>Six flight points appear in the beta client and in the zone pages built from it: Farholde Keep, Rog'mar and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. Blizzard has not announced them, no one has timed a flight from them, and their positions on this map are estimates. Which faction the two Hyjal points serve is unknown; they are drawn as neutral here.</p>`)}
+     `<p>Six flight points appear in the beta client and in the zone pages built from it: Farholde Keep, Rog'mar and Powderfuse Port in the Riverglades, Summit of Eternity and Tainted Foothills on Mount Hyjal, and Tidegear Coast in Dun Morogh. Blizzard has not announced them, no one has timed a flight from them, and their positions on this map are estimates. The two Hyjal points serve both factions.</p>`)}
    ${sec("sources","Sources",`${SOURCES.length} public sources`,
      `<ul class="facts">${SOURCES.map(x=>`<li><a href="${x[1]}" target="_blank" rel="noopener">${esc(x[0])}</a></li>`).join("")}</ul>`)}
    </div></div>
