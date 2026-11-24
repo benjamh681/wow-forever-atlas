@@ -1213,6 +1213,8 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.55", d: "November 24, 2026", title: "Riverglades: real flights to Farholde Keep and Rog'mar", items: [
+    ["fix", "Farholde Keep and Rog'mar now fly only to their real destinations (Lakeshire, Morgan's Vigil and Thelsamar; Stonard, Hammerfall, Kargath and Flame Crest). A 2-minute flight from Nethergarde Keep to Farholde Keep was shown, which does not exist. Thanks to the player who reported it."]] },
   { v: "4.54", d: "November 23, 2026", title: "No flights from Powderfuse Port and Tidegear Coast", items: [
     ["fix", "Powderfuse Port and Tidegear Coast are no longer used as flight points: players report no flight master there yet. Farholde Keep's flights now list only Lakeshire, Morgan's Vigil and Thelsamar."]] },
   { v: "4.53", d: "November 20, 2026", title: "Mount Hyjal: both factions", items: [
@@ -1750,8 +1752,11 @@ const foe=f=>f==="alliance"?"horde":"alliance";
 const EXAMPLES=[["Darnassus","Ironforge","alliance"],["Orgrimmar","Riverglades","horde"],["Auberdine","Mount Hyjal","alliance"],["Gadgetzan","Krol'dok Stronghold","horde"]];
 
 const SEA_PEN=240; /* seconds added, for route choice only, each time a ship or zeppelin changes continent: a sea detour has to beat the land route even with the longest waits (was 420 until 4.12) */
-/* Flight points whose links are known from the beta client fly only to those; a longer trip chains the flights */
-const FP_LINKS={"Tainted Foothills":["Everlook","Summit of Eternity"],"Summit of Eternity":["Tainted Foothills"]};
+/* Flight points whose links are known fly only to those; a longer trip chains the flights. Farholde Keep and
+   Rog'mar since 4.55 (Tally feedback of November 23, 2026: a direct Nethergarde Keep - Farholde Keep flight of
+   2 min was shown; their real links from allthings.how, wowforeverinfo.com and wowforever.be) */
+const FP_LINKS={"Tainted Foothills":["Everlook","Summit of Eternity"],"Summit of Eternity":["Tainted Foothills"],
+  "Farholde Keep":["Lakeshire","Morgan's Vigil","Thelsamar"],"Rog'mar":["Stonard","Hammerfall","Kargath","Flame Crest"]};
 const fpLinked=(a,b)=>(!FP_LINKS[a.n]||FP_LINKS[a.n].includes(b.n))&&(!FP_LINKS[b.n]||FP_LINKS[b.n].includes(a.n));
 function buildGraph(f,strict,landK,seaPen,exits){ const A={}; const add=(a,b,w,e,zf)=>{(A[a]=A[a]||[]).push({to:b,w,e,zf});(A[b]=A[b]||[]).push({to:a,w,e,zf});};
   const addOne=(a,b,w,e,zf)=>{(A[a]=A[a]||[]).push({to:b,w,e,zf});A[b]=A[b]||[];};
