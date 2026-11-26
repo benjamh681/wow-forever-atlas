@@ -712,7 +712,7 @@ const ZONES = {
   felwood: { name: "Felwood", cont: "Kalimdor", lv: [48, 55], faction: "contested", status: "classic",
     lore: "Corrupted forest north of Ashenvale. The Emerald Circle works to cleanse it, and the Shadow Council holds Jaedenar.",
     areas: ["Jaedenar", "Bloodvenom Post", "Talonbranch Glade", "Emerald Sanctuary", "Timbermaw Hold", "Irontree Woods"], forever: [] },
-  hyjal: { name: "Mount Hyjal", cont: "Kalimdor", lv: [60, 60], faction: "contested", status: "new",
+  hyjal: { name: "Mount Hyjal", cont: "Kalimdor", lv: [55, 60], lvNote: "Quests start at level 55; most are level 57 to 59", faction: "contested", status: "new",
     lore: "The mountain of the World Tree, Nordrassil, where Archimonde was defeated. It opens for the first time in Forever, with a story about the wild gods.",
     areas: ["Darkwhisper Gorge approach", "Nordrassil", "Hyjal Summit (raid)", "The Barrow Deeps entrance (raid)"],
     forever: [
@@ -1078,9 +1078,9 @@ const POIS = [
 
 // ---- Travel routes. via = absolute sea waypoints between the two endpoints
 const ROUTES = [
-  { id: "r-men-aub", kind: "boat", f: "alliance", from: "menethil", to: "auberdine", isNew: false, c: "c",
-    note: "Classic route. Forever adds a Menethil, Southshore, Auberdine line; whether this direct boat stays alongside it is not confirmed.",
-    via: [[1650, 700], [1540, 725], [1400, 660], [1350, 500], [1180, 340], [960, 215], [700, 140], [520, 192], [440, 226], [386, 254], [338, 306]] },
+  { id: "r-men-aub", kind: "boat", f: "alliance", from: "auberdine", to: "menethil", isNew: false, c: "r", oneway: true,
+    note: "Last leg of the one-way loop: from Auberdine the ship sails straight back to Menethil Harbor, then on to Southshore. There is no direct ship from Menethil Harbor to Auberdine any more.",
+    via: [[338, 306], [386, 254], [440, 226], [520, 192], [700, 140], [960, 215], [1180, 340], [1350, 500], [1400, 660], [1540, 725], [1650, 700]] },
   { id: "r-men-the", kind: "boat", f: "alliance", from: "menethil", to: "theramore", isNew: false, c: "c", note: "Classic route, still in the beta files alongside the new Menethil line.",
     via: [[1660, 700], [1590, 725], [1530, 790], [1300, 930], [960, 1040], [830, 1050]] },
   { id: "r-aub-rut", kind: "boat", f: "alliance", from: "auberdine", to: "rutheran", isNew: false, c: "c", note: "Classic route to Teldrassil.",
@@ -1092,6 +1092,7 @@ const ROUTES = [
     note: "New in Forever: an early path between the Eastern Kingdoms and Kalimdor for Alliance levelers. Sea lane drawn here is illustrative.",
     via: [[1500, 1000], [1330, 800], [1240, 560], [1130, 380], [960, 240], [700, 160], [526, 202], [446, 234], [392, 262], [346, 312]] },
   { id: "r-men-sou-aub", kind: "boat", f: "alliance", from: "menethil", to: "auberdine", stops: ["southshore"], isNew: true, c: "r", oneway: true,
+    hint: { menethil: "Menethil Harbor has two ships: board the one for Southshore and Auberdine, not the one for Theramore Isle." },
     note: "New in Forever: Menethil Harbor, Southshore and Auberdine on one line, sailing one way round: Menethil, Southshore, Auberdine, then straight back to Menethil. Two player reports agree, so routes use it in that direction only.",
     via: [[1700, 640], "southshore", [1690, 590], [1600, 690], [1500, 690], [1440, 620], [1425, 520], [1410, 400], [1300, 300], [1120, 262], [900, 178], [700, 120], [514, 182], [434, 218], [380, 246], [330, 300]] },
   { id: "r-ste-pow", kind: "boat", f: "neutral", from: "steamwheedle", to: "powderfuse", isNew: true, c: "o",
@@ -1213,6 +1214,10 @@ const KOFI_URL = "https://ko-fi.com/fistao";
    If the Tally script is not loaded yet, the link opens the same form in a new tab, with the same fields in its address. */
 const FEEDBACK_FORM = "RGp5WQ";
 const CHANGELOG = [
+  { v: "4.56", d: "November 26, 2026", title: "Menethil Harbor ships and Mount Hyjal levels", items: [
+    ["fix", "There is no direct ship from Menethil Harbor to Auberdine any more: the ship sails Menethil Harbor, Southshore, Auberdine, then straight back to Menethil Harbor. Trips from Menethil Harbor to Auberdine now go through Southshore and take about 9 minutes instead of 5."],
+    ["new", "When a trip boards at Menethil Harbor, the plan says which of its two ships to take."],
+    ["fix", "Mount Hyjal now shows levels 55-60 instead of 60: its quests start at level 55, so a level 57 character now sees it as a zone for their level. Thanks to the player who reported it."]] },
   { v: "4.55", d: "November 24, 2026", title: "Riverglades: real flights to Farholde Keep and Rog'mar", items: [
     ["fix", "Farholde Keep and Rog'mar now fly only to their real destinations (Lakeshire, Morgan's Vigil and Thelsamar; Stonard, Hammerfall, Kargath and Flame Crest). A 2-minute flight from Nethergarde Keep to Farholde Keep was shown, which does not exist. Thanks to the player who reported it."]] },
   { v: "4.54", d: "November 23, 2026", title: "No flights from Powderfuse Port and Tidegear Coast", items: [
@@ -1853,6 +1858,7 @@ function buildPlan(path,a,b,forced){
       const w=zwarn(ZONES[POI[v.slice(2)].z]); if(!e.ok) w.push([`${FSHORT[r.f]} ports. Their guards will attack you on the docks. There is no ${FSHORT[F]} alternative.`,""]);
       if(r.stops&&r.stops.length) w.push(["Stop order on this line is not confirmed yet.","soft"]);
       if(r.skyborne) w.push([r.kind==="portal"?"Skyborne only. Players report that other races cannot take it.":"Made for Skyborne. Whether other races can board is not known.","soft"]);
+      if(r.hint&&r.hint[u.slice(2)]) w.push([r.hint[u.slice(2)],"soft"]);
       const rd=rideOf(r); prevPt=POI[v.slice(2)].xy; steps.push({t:`${kindName(r)} from ${nodeName(u)} to ${nodeName(v)}`,s:r.isNew?"New in Forever":"Classic route",c:r.c!=="c"?r.c:null,w,ride:rd,sec:take(0)}); } });
   const ez=b.type==="zone"?b.id:POI[b.id].z; zones.add(ez); cur.push(placeXY(b)); if(cur.length>1) segs.push({k:"land",pts:cur});
   const ew=[]; if(b.type==="poi"&&POI[b.id].f===foe(F)) ew.push([`${FSHORT[POI[b.id].f]} ${POI[b.id].t==="city"?"capital":"town"}. You will not be welcome.`,""]);
